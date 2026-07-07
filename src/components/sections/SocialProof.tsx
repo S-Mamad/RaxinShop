@@ -1,4 +1,3 @@
-import Link from "next/link";
 import site from "@/data/site.json";
 import type { SiteConfig } from "@/types";
 
@@ -9,12 +8,12 @@ export function SocialProof() {
 
   return (
     <div className="mt-8">
-      <p className="telemetry mb-3 text-dim">همکاری با</p>
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <p className="label-mono mb-3 text-dim">همکاری با</p>
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
         {data.clients.map((client, i) => (
-          <span key={client.name} className="flex items-center gap-4">
+          <span key={client.name} className="flex items-center gap-3">
             {client.href ? (
-              <Link
+              <a
                 href={client.href}
                 className="text-sm text-muted transition-colors hover:text-accent"
                 {...(client.href.startsWith("http")
@@ -22,7 +21,7 @@ export function SocialProof() {
                   : {})}
               >
                 {client.name}
-              </Link>
+              </a>
             ) : (
               <span className="text-sm text-muted">{client.name}</span>
             )}

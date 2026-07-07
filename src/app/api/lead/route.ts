@@ -8,10 +8,46 @@ const schema = z.object({
   contact: z.string().min(3, "تلگرام یا موبایل الزامی است"),
   projectType: z.string().min(1, "نوع پروژه الزامی است"),
   message: z.string().min(10, "توضیح باید حداقل ۱۰ کاراکتر باشد"),
+  website: z.string().optional(),
 });
+
+const rateLimit = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 60_000;
+
+function getClientIp(request: Request) {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    request.headers.get("x-real-ip") ??
+    "unknown"
+  );
+}
+
+function isRateLimited(ip: string) {
+  const now = Date.now();
+  const entry = rateLimit.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimit.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+
+  if (entry.count >= RATE_LIMIT) return true;
+
+  entry.count += 1;
+  return false;
+}
 
 export async function POST(request: Request) {
   try {
+    const ip = getClientIp(request);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { success: false, message: "تعداد درخواست زیاد است. کمی بعد دوباره تلاش کنید." },
+        { status: 429 },
+      );
+    }
+
     const body = await request.json();
     const parsed = schema.safeParse(body);
 
@@ -25,7 +61,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const { name, contact, projectType, message } = parsed.data;
+    const { name, contact, projectType, message, website } = parsed.data;
+
+    if (website) {
+      return NextResponse.json({ success: true, message: "دریافت شد." });
+    }
+
     const supabase = getSupabaseAdmin();
 
     if (!supabase) {

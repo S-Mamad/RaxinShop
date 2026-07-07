@@ -59,7 +59,7 @@ export function MobileMenu() {
   }, [open]);
 
   return (
-    <div className="xl:hidden">
+    <div className="lg:hidden">
       <button
         ref={triggerRef}
         type="button"
@@ -95,6 +95,9 @@ export function MobileMenu() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-void/96 backdrop-blur-3xl"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setOpen(false);
+            }}
           >
             <div className="flex h-full flex-col items-center justify-center gap-8 px-6">
               <BrandLogo className="mb-2 text-lg" />
@@ -117,6 +120,25 @@ export function MobileMenu() {
                         ? "text-accent"
                         : "text-foreground",
                     )}
+                  >
+                    {item.label}
+                  </Link>
+                </motion.div>
+              ))}
+              {(data.footerNav ?? []).map((item, i) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 0.05 + (data.nav.length + i) * 0.04,
+                    ease: [0.32, 0.72, 0, 1],
+                  }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="text-lg text-muted transition-colors hover:text-foreground"
                   >
                     {item.label}
                   </Link>

@@ -28,22 +28,22 @@ export function Header() {
     <header className="fixed inset-x-0 top-0 z-40 border-b border-transparent px-4 pt-4 md:px-8">
       <nav
         className={cn(
-          "mx-auto flex h-13 max-w-6xl items-center justify-between gap-4 border px-4 transition-all duration-500 md:px-6",
+          "mx-auto flex h-13 max-w-7xl items-center justify-between gap-4 border px-4 transition-colors duration-300 md:px-6",
           scrolled
-            ? "border-border-bright bg-void/90 backdrop-blur-xl"
-            : "border-border bg-void/60 backdrop-blur-md",
+            ? "border-border bg-void/90 backdrop-blur-xl"
+            : "border-border/60 bg-void/70 backdrop-blur-md",
         )}
         aria-label="ناوبری اصلی"
       >
         <BrandLink className="shrink-0" />
 
-        <ul className="hidden items-center gap-0 xl:flex">
+        <ul className="hidden items-center gap-0 lg:flex">
           {data.nav.map((item) => (
             <li key={item.id}>
               <Link
                 href={item.href}
                 className={cn(
-                  "telemetry px-4 py-3 transition-colors duration-300",
+                  "px-4 py-3 text-sm transition-colors duration-300",
                   activeId === item.id
                     ? "text-accent"
                     : "text-dim hover:text-foreground",
@@ -61,7 +61,7 @@ export function Header() {
             target="_blank"
             rel="noopener noreferrer"
             dir="ltr"
-            className="hidden font-mono text-[11px] text-muted transition-colors hover:text-accent xl:block"
+            className="hidden font-mono text-[11px] text-muted transition-colors hover:text-accent lg:block"
           >
             {telegram.label}
           </a>

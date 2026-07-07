@@ -26,7 +26,7 @@ export function SectionHeading({
       )}
     >
       {(index || eyebrow) && (
-        <p className="telemetry mb-5">
+        <p className="label-mono mb-5 text-muted">
           {index ? `[ ${index} ]` : null}
           {index && eyebrow ? " · " : null}
           {eyebrow}

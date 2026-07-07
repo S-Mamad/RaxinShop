@@ -1,8 +1,7 @@
-"use client";
-
 import projects from "@/data/projects.json";
 import type { ProjectItem } from "@/types";
 import { ProjectCard } from "@/components/ui/ProjectCard";
+import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
@@ -22,13 +21,13 @@ export function Work() {
             index="02"
             eyebrow="کارها"
             title="نمونه‌کار"
-            description="پروژه‌های واقعی. از e-commerce تا SaaS و برند دیجیتال."
+            description="پروژه‌های واقعی. از فروشگاه آنلاین تا SaaS و برند دیجیتال."
           />
         </Reveal>
 
         <div className="grid gap-6 md:grid-cols-2">
           <Reveal delay={0.04} className="md:col-span-2">
-            <ProjectCard project={featured} featured />
+            <ProjectCard project={featured} featured priority />
           </Reveal>
           {others.map((project, index) => (
             <Reveal key={project.id} delay={0.08 + index * 0.04}>
@@ -36,6 +35,12 @@ export function Work() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={0.12} className="mt-12 text-center">
+          <Button href="#contact" size="lg">
+            شروع پروژه
+          </Button>
+        </Reveal>
       </div>
     </section>
   );

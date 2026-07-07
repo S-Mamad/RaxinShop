@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,7 +19,8 @@ const schema = z.object({
   contact: z.string().min(3, "تلگرام یا موبایل الزامی است"),
   projectType: z.string().min(1, "نوع پروژه را انتخاب کنید"),
   message: z.string().min(10, "توضیح باید حداقل ۱۰ کاراکتر باشد"),
-}).refine((data) => data.projectType !== "", {
+  website: z.string().max(0).optional(),
+}).refine((form) => form.projectType !== "", {
   message: "نوع پروژه را انتخاب کنید",
   path: ["projectType"],
 });
@@ -27,9 +29,9 @@ type FormData = z.infer<typeof schema>;
 
 const projectTypes = [
   { value: "", label: "انتخاب کنید" },
-  { value: "mvp", label: "MVP / محصول جدید" },
+  { value: "mvp", label: "محصول جدید" },
   { value: "frontend", label: "فرانت‌اند" },
-  { value: "backend", label: "بک‌اند / API" },
+  { value: "backend", label: "بک‌اند" },
   { value: "ecommerce", label: "فروشگاه آنلاین" },
   { value: "brand", label: "برند دیجیتال" },
   { value: "other", label: "سایر" },
@@ -56,7 +58,9 @@ function openMailto(form: FormData) {
 }
 
 export function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "api" | "fallback" | "error">(
+    "idle",
+  );
   const [statusMessage, setStatusMessage] = useState("");
 
   const {
@@ -71,6 +75,7 @@ export function ContactForm() {
       contact: "",
       projectType: "",
       message: "",
+      website: "",
     },
   });
 
@@ -92,7 +97,7 @@ export function ContactForm() {
       };
 
       if (json.success && !json.fallback) {
-        setStatus("success");
+        setStatus("api");
         setStatusMessage(json.message);
         reset();
         return;
@@ -100,8 +105,8 @@ export function ContactForm() {
 
       if (json.fallback || !res.ok) {
         openMailto(form);
-        setStatus("success");
-        setStatusMessage("در حال باز کردن ایمیل...");
+        setStatus("fallback");
+        setStatusMessage("ارسال مستقیم از طریق ایمیل باز شد.");
         return;
       }
 
@@ -109,13 +114,22 @@ export function ContactForm() {
       setStatusMessage(json.message ?? "خطا در ارسال");
     } catch {
       openMailto(form);
-      setStatus("success");
-      setStatusMessage("در حال باز کردن ایمیل...");
+      setStatus("fallback");
+      setStatusMessage("ارسال مستقیم از طریق ایمیل باز شد.");
     }
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <input
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden
+        className="sr-only"
+        {...register("website")}
+      />
+
       <Input
         label="نام"
         placeholder="نام شما"
@@ -138,7 +152,7 @@ export function ContactForm() {
       />
       <Textarea
         label="توضیح کوتاه"
-        placeholder="پروژه‌ات چیه؟ چه زمانی نیاز داری؟"
+        placeholder="پروژه‌ات چیست؟ چه زمانی نیاز داری؟"
         error={errors.message?.message}
         {...register("message")}
       />
@@ -147,9 +161,22 @@ export function ContactForm() {
         {isSubmitting ? "در حال ارسال..." : "ارسال درخواست"}
       </Button>
 
+      <p className="text-xs leading-relaxed text-dim">
+        اطلاعات شما فقط برای پاسخ‌گویی استفاده می‌شود.{" "}
+        <Link href="/hajiasal/privacy" className="text-muted underline hover:text-accent">
+          حریم خصوصی
+        </Link>
+      </p>
+
       {status !== "idle" ? (
         <p
-          className={`text-sm ${status === "success" ? "text-accent" : "text-signal"}`}
+          className={`text-sm ${
+            status === "api"
+              ? "text-accent"
+              : status === "fallback"
+                ? "text-muted"
+                : "text-signal"
+          }`}
           role="status"
         >
           {statusMessage}

@@ -3,11 +3,11 @@
     "name": "راکسین",
     "suffix": "‌شاپ",
     "slug": "raxinshop",
-    "version": "v3.0",
+    "version": "v3.1",
     "tagline": "استودیو توسعه · تهران",
     "description": "برای استارتاپ‌ها و تیم‌هایی که خروجی‌شان باید سریع، تمیز و قابل توسعه باشد. فرانت، بک‌اند و برند در یک استودیو.",
-    "heroTitle": "محصول دیجیتال که فردا هم scale شود.",
-    "heroHighlight": "از MVP تا production."
+    "heroTitle": "محصول دیجیتالی که فردا هم رشد کند.",
+    "heroHighlight": "از ایده تا اجرا."
   },
   "heroCta": {
     "primary": "شروع پروژه",
@@ -20,16 +20,16 @@
   ],
   "whyPoints": [
     {
-      "pain": "خروجی فریلنسری که فردا scale نمی‌شود",
-      "answer": "معماری production-grade از روز اول. کدی که تیم بعدی هم می‌فهمد."
+      "pain": "خروجی فریلنسری که فردا رشد نمی‌کند",
+      "answer": "معماری حرفه‌ای از روز اول. کدی که تیم بعدی هم می‌فهمد."
     },
     {
       "pain": "جداسازی طراحی و توسعه",
-      "answer": "UI/UX، برند و کد در یک استودیو. یک نقطه تماس، یک خروجی یکپارچه."
+      "answer": "رابط کاربری، برند و کد در یک استودیو. یک نقطه تماس، یک خروجی یکپارچه."
     },
     {
-      "pain": "عدم شفافیت در timeline و تحویل",
-      "answer": "sprintهای کوتاه، demo منظم و milestone مشخص. می‌دانید کجایید."
+      "pain": "عدم شفافیت در زمان‌بندی و تحویل",
+      "answer": "فازهای کوتاه، نمایش منظم پیشرفت و تحویل مرحله‌ای. می‌دانید کجایید."
     }
   ],
   "nav": [
@@ -38,6 +38,11 @@
     { "id": "work", "label": "کارها", "href": "#work" },
     { "id": "about", "label": "تیم", "href": "#about" },
     { "id": "contact", "label": "ارتباط", "href": "#contact" }
+  ],
+  "footerNav": [
+    { "id": "why", "label": "چرا ما", "href": "#why" },
+    { "id": "process", "label": "فرآیند", "href": "#process" },
+    { "id": "faq", "label": "سوالات", "href": "#faq" }
   ],
   "stack": [
     "TypeScript",
@@ -54,25 +59,25 @@
       "id": "frontend",
       "index": "01",
       "title": "فرانت‌اند",
-      "description": "رابط کاربری type-safe، سریع و دقیق. از design system تا انیمیشن. هر جزئیات با معیار production.",
+      "description": "رابط کاربری type-safe، سریع و دقیق. از سیستم طراحی تا انیمیشن. هر جزئیات با معیار تولید.",
       "icon": "Monitor",
-      "tags": ["React", "Next.js", "TypeScript"],
+      "tags": ["React", "Next.js"],
       "proof": "مرهم"
     },
     {
       "id": "product",
       "index": "02",
       "title": "محصول",
-      "description": "از ایده تا لانچ. MVPای که فردا هم قابل scale باشد، نه اسکریپتی که دور انداخته شود.",
+      "description": "از ایده تا لانچ. نسخه اولیه‌ای که فردا هم قابل گسترش باشد، نه اسکریپتی که دور انداخته شود.",
       "icon": "Layers",
-      "tags": ["SaaS", "MVP", "Architecture"],
+      "tags": ["SaaS", "MVP"],
       "proof": "پذیرش ۲۴"
     },
     {
       "id": "backend",
       "index": "03",
       "title": "بک‌اند",
-      "description": "API امن، مستند و پایدار. دیتابیس، auth و integration بدون بدهی فنی.",
+      "description": "API امن، مستند و پایدار. دیتابیس، احراز هویت و یکپارچه‌سازی بدون بدهی فنی.",
       "icon": "Server",
       "tags": ["Node.js", "PostgreSQL"],
       "proof": "حاجی عسل"
@@ -83,7 +88,7 @@
       "title": "برند دیجیتال",
       "description": "لوگو، گرافیک، تلگرام و هویت بصری. کنار کد، نه جدا از آن.",
       "icon": "Component",
-      "tags": ["Branding", "Telegram", "UI"],
+      "tags": ["Branding", "UI"],
       "proof": "همگام"
     }
   ],
@@ -92,10 +97,9 @@
       "id": "mohammad",
       "name": "محمد محمدی",
       "role": "هم‌بنیان‌گذار / فرانت‌اند و محصول",
-      "bio": "مهندس محصول در پذیرش ۲۴. سازنده مرهم و چند پلتفرم production-grade. معماری فرانت، performance و UX دقیق. جایی که کد و تجربه کاربر یکی می‌شوند.",
-      "image": "/team/mohammad.jpg",
+      "bio": "مهندس محصول در پذیرش ۲۴. سازنده مرهم و چند پلتفرم در مقیاس تولید. معماری فرانت، کارایی و تجربه کاربری دقیق.",
+      "image": "/team/mohammad.svg",
       "imagePosition": "center 22%",
-      "featured": true,
       "initials": "م‌م",
       "links": {
         "telegram": "https://t.me/Mamad3"

@@ -18,32 +18,30 @@ export default function OpenGraphImage() {
           padding: "80px",
           background: "#08080c",
           color: "#ececf1",
-          fontFamily: "sans-serif",
+          fontFamily: "Tahoma, sans-serif",
         }}
       >
         <div
           style={{
-            fontSize: 28,
+            fontSize: 24,
             color: "#2dd4bf",
-            letterSpacing: "0.15em",
-            textTransform: "uppercase",
             marginBottom: 24,
           }}
         >
-          raxinshop · v3.0
+          raxinshop · v3.1
         </div>
         <div
           style={{
-            fontSize: 64,
+            fontSize: 56,
             fontWeight: 800,
-            lineHeight: 1.15,
+            lineHeight: 1.2,
             maxWidth: 900,
           }}
         >
-          محصول دیجیتال که فردا هم scale شود.
+          محصول دیجیتالی که فردا هم رشد کند.
         </div>
-        <div style={{ fontSize: 32, color: "#8b8b9a", marginTop: 24 }}>
-          از MVP تا production · تهران
+        <div style={{ fontSize: 28, color: "#8b8b9a", marginTop: 24 }}>
+          از ایده تا اجرا · تهران
         </div>
       </div>
     ),

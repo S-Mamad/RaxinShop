@@ -4,12 +4,13 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const data = site as SiteConfig;
+const persianIndex = ["۰۱", "۰۲", "۰۳"];
 
 export function WhyRaxin() {
   if (!data.whyPoints?.length) return null;
 
   return (
-    <section id="why" className="relative -mt-8 border-b border-border py-32 md:py-40">
+    <section id="why" className="border-b border-border py-32 md:py-40">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <Reveal className="mb-16">
           <SectionHeading
@@ -19,12 +20,12 @@ export function WhyRaxin() {
           />
         </Reveal>
 
-        <div className="grid gap-px border border-border bg-border md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-3">
           {data.whyPoints.map((point, index) => (
-            <Reveal key={point.pain} delay={index * 0.05}>
-              <article className="flex h-full flex-col bg-void p-8 transition-colors duration-500 hover:bg-surface md:p-10">
-                <p className="telemetry mb-4 text-dim">
-                  pain · 0{index + 1}
+            <Reveal key={point.pain} delay={index * 0.04}>
+              <article className="flex h-full flex-col border border-border bg-surface/50 p-8 md:p-10">
+                <p className="label-mono mb-4 text-dim">
+                  {persianIndex[index]} · مشکل
                 </p>
                 <h3 className="font-display text-lg text-foreground md:text-xl">
                   {point.pain}

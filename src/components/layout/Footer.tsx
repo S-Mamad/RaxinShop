@@ -8,6 +8,7 @@ const data = site as SiteConfig;
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const footerNav = data.footerNav ?? [];
 
   return (
     <footer className="border-t border-border">
@@ -23,41 +24,49 @@ export function Footer() {
               شروع پروژه
             </Button>
           </div>
+          <div className="mt-8">
+            <p className="label-mono mb-3 text-dim">فناوری</p>
+            <div className="flex flex-wrap gap-1.5">
+              {data.stack.map((tech) => (
+                <span
+                  key={tech}
+                  dir="ltr"
+                  className="border border-border px-2 py-0.5 font-mono text-[10px] text-dim"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-col gap-8 sm:flex-row sm:gap-16">
           <ul className="flex flex-col gap-3">
-            <li className="telemetry text-dim">ناوبری</li>
+            <li className="label-mono text-dim">ناوبری</li>
             {data.nav.map((item) => (
               <li key={item.id}>
                 <Link
                   href={item.href}
-                  className="text-sm text-muted transition-colors duration-500 hover:text-foreground"
+                  className="text-sm text-muted transition-colors hover:text-foreground"
                 >
                   {item.label}
                 </Link>
               </li>
             ))}
-            <li>
-              <Link
-                href="#faq"
-                className="text-sm text-muted transition-colors duration-500 hover:text-foreground"
-              >
-                سوالات
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#process"
-                className="text-sm text-muted transition-colors duration-500 hover:text-foreground"
-              >
-                فرآیند
-              </Link>
-            </li>
+            {footerNav.map((item) => (
+              <li key={item.id}>
+                <Link
+                  href={item.href}
+                  className="text-sm text-muted transition-colors hover:text-foreground"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
           </ul>
 
           <ul className="flex flex-col gap-3">
-            <li className="telemetry text-dim">ارتباط</li>
+            <li className="label-mono text-dim">ارتباط</li>
             {data.links.map((link) => (
               <li key={link.id}>
                 <a
@@ -65,7 +74,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   dir="ltr"
-                  className="text-sm text-muted transition-colors duration-500 hover:text-accent"
+                  className="text-sm text-muted transition-colors hover:text-accent"
                 >
                   {link.label}
                 </a>

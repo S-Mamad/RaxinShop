@@ -2,25 +2,25 @@
   {
     "id": "discover",
     "title": "کشف",
-    "description": "brief، اهداف و محدودیت‌ها را مشخص می‌کنیم.",
+    "description": "شرح نیاز، اهداف و محدودیت‌ها را مشخص می‌کنیم.",
     "duration": "۱-۲ روز"
   },
   {
     "id": "design",
     "title": "طراحی",
-    "description": "wireframe، UI و تأیید شما قبل از کد.",
+    "description": "طرح اولیه، رابط کاربری و تأیید شما قبل از کدنویسی.",
     "duration": "۳-۷ روز"
   },
   {
     "id": "build",
     "title": "توسعه",
-    "description": "sprintهای کوتاه با demo منظم.",
+    "description": "فازهای کوتاه با نمایش منظم پیشرفت.",
     "duration": "۲-۴ هفته"
   },
   {
     "id": "launch",
     "title": "لانچ",
-    "description": "deploy، تست production و handoff.",
+    "description": "انتشار، تست محیط واقعی و تحویل پروژه.",
     "duration": "۲-۳ روز"
   },
   {

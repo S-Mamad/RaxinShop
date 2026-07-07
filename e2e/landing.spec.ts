@@ -5,7 +5,7 @@ test.describe("Raxin landing page", () => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: /محصول دیجیتال/i }),
+      page.getByRole("heading", { name: /محصول دیجیتالی/i }),
     ).toBeVisible({ timeout: 15_000 });
 
     await page.getByRole("link", { name: "تخصص" }).click();
@@ -16,22 +16,35 @@ test.describe("Raxin landing page", () => {
 
     await expect(page.getByText("حاجی عسل")).toBeVisible();
 
-    await page.locator("#faq").scrollIntoViewIfNeeded();
-    await expect(page.getByText("زمان تحویل MVP چقدر است؟")).toBeVisible();
+    await page.getByRole("link", { name: "سوالات" }).click();
+    await expect(page.locator("#faq")).toBeInViewport();
 
     await page.locator("#contact").scrollIntoViewIfNeeded();
     await expect(page.getByLabel("نام")).toBeVisible();
     await expect(page.getByRole("button", { name: "ارسال درخواست" })).toBeVisible();
+    await expect(page.getByText(/حریم خصوصی/)).toBeVisible();
   });
 
   test("FAQ accordion expands on click", async ({ page }) => {
     await page.goto("/#faq");
 
     const question = page.getByRole("button", {
-      name: "زمان تحویل MVP چقدر است؟",
+      name: "زمان تحویل نسخه اولیه چقدر است؟",
     });
     await question.click();
 
     await expect(page.getByText(/۲ تا ۶ هفته/)).toBeVisible();
+  });
+
+  test("mobile viewport shows hero and menu", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/");
+
+    await expect(
+      page.getByRole("heading", { name: /محصول دیجیتالی/i }),
+    ).toBeVisible();
+
+    await page.getByRole("button", { name: "باز کردن منو" }).click();
+    await expect(page.getByRole("link", { name: "ارتباط" })).toBeVisible();
   });
 });

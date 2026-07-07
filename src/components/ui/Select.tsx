@@ -13,7 +13,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
     return (
       <div className="flex flex-col gap-2">
-        <label htmlFor={selectId} className="telemetry text-dim">
+        <label htmlFor={selectId} className="text-sm text-muted">
           {label}
         </label>
         <select

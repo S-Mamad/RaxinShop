@@ -28,6 +28,7 @@ export interface ProjectItem {
   metrics?: string[];
   featured?: boolean;
   year?: string;
+  comingSoon?: boolean;
 }
 
 export interface TeamMemberLinks {
@@ -94,6 +95,7 @@ export interface SiteConfig {
     heroHighlight: string;
   };
   nav: NavItem[];
+  footerNav?: NavItem[];
   stack: string[];
   services: ServiceItem[];
   team: TeamMember[];

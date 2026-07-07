@@ -12,14 +12,14 @@ const siteName = `${data.brand.name}${data.brand.suffix}`;
 const vazirmatn = Vazirmatn({
   variable: "--font-vazirmatn",
   subsets: ["arabic", "latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "600", "800"],
   display: "swap",
 });
 
 const jetbrains = JetBrains_Mono({
   variable: "--font-jetbrains",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600"],
   display: "swap",
 });
 
@@ -30,6 +30,15 @@ export const metadata: Metadata = {
     template: `%s | ${siteName}`,
   },
   description: data.brand.description,
+  keywords: [
+    "استودیو توسعه",
+    "فرانت‌اند",
+    "Next.js",
+    "React",
+    "طراحی محصول",
+    "راکسین‌شاپ",
+    "تهران",
+  ],
   alternates: {
     canonical: "/",
   },

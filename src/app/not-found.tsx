@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 export default function NotFound() {
   return (
     <div className="flex min-h-[100dvh] flex-col items-center justify-center px-5 text-center">
-      <p className="telemetry mb-6">404 · not found</p>
+      <p className="label-mono mb-6 text-muted">۴۰۴ · صفحه یافت نشد</p>
       <BrandLogo className="mb-4 text-2xl" />
       <h1 className="font-display text-3xl text-foreground md:text-4xl">
         این صفحه وجود ندارد

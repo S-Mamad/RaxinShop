@@ -28,10 +28,10 @@ export function Button({
   disabled,
 }: ButtonProps) {
   const styles = cn(
-    "group inline-flex items-center justify-center gap-2.5 font-medium transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]",
+    "group motion-safe:inline-flex items-center justify-center gap-2.5 font-medium transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] motion-safe:active:scale-[0.98]",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-void",
     variant === "primary" &&
-      "border border-accent/40 bg-accent text-void shadow-[0_0_20px_-5px_var(--accent-glow)] hover:bg-accent-bright",
+      "border border-accent/40 bg-accent text-void hover:bg-accent-bright",
     variant === "ghost" && "text-muted hover:text-foreground",
     variant === "outline" &&
       "border border-border-bright bg-transparent text-foreground hover:border-accent/40 hover:text-accent",
