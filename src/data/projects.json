@@ -4,7 +4,7 @@
     "title": "حاجی عسل",
     "description": "فروشگاه آنلاین عسل طبیعی با تجربه خرید ساده، گالری محصول و هویت بصری گرم و قابل اعتماد.",
     "tag": "Web",
-    "href": "https://hajiasal.ir",
+    "href": "/hajiasal",
     "gradient": ["#451a03", "#b45309"],
     "category": "web",
     "tech": ["Next.js", "Tailwind", "E-commerce"]

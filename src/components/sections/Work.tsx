@@ -29,8 +29,6 @@ export function Work() {
         <Reveal delay={0.08}>
           <Link
             href={project.href}
-            target="_blank"
-            rel="noopener noreferrer"
             className="group relative flex min-h-[320px] flex-col justify-end overflow-hidden rounded-2xl border border-border bg-panel/40 transition-all duration-700 hover:border-border-bright hover:scale-[1.005] md:min-h-[400px]"
           >
             <div
