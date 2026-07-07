@@ -1,5 +1,6 @@
 ﻿import type { CartItem, CheckoutFormData } from "@asal/types";
 import { readJsonFile, writeJsonFile } from "./db";
+import { requireSupabaseInProduction } from "./production";
 import { getSupabaseAdmin, isSupabaseConfigured } from "./supabase";
 
 export type OrderStatus =
@@ -10,7 +11,7 @@ export type OrderStatus =
   | "delivered"
   | "cancelled";
 
-export type PaymentMethod = "cod" | "card_to_card";
+export type PaymentMethod = "cod" | "card_to_card" | "online";
 
 export interface StoredOrder {
   id: string;
@@ -115,6 +116,8 @@ export async function createOrder(input: {
     if (error) throw error;
     return order;
   }
+
+  requireSupabaseInProduction();
 
   const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
   orders.push(order);

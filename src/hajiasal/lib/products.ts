@@ -126,3 +126,15 @@ export function paginateProducts(items: Product[], page: number, perPage = PRODU
 export function getAllSlugs(): string[] {
   return products.map((p) => p.slug);
 }
+
+export function searchProducts(query: string): Product[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return products.filter(
+    (p) =>
+      p.title.toLowerCase().includes(q) ||
+      p.slug.toLowerCase().includes(q) ||
+      p.categoryLabel.toLowerCase().includes(q) ||
+      p.shortDescription.toLowerCase().includes(q),
+  );
+}

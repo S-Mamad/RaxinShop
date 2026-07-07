@@ -170,16 +170,24 @@ export default function AdminProductsPage() {
             ),
           },
           {
-            key: "view",
+            key: "actions",
             header: "",
             render: (row) => (
-              <Link
-                href={hajiasalPath(`/product/${row.slug}`)}
-                className="text-xs text-sky-700 hover:underline"
-                target="_blank"
-              >
-                مشاهده
-              </Link>
+              <div className="flex gap-2">
+                <Link
+                  href={hajiasalPath(`/admin/products/${row.id}`)}
+                  className="text-xs text-sky-700 hover:underline"
+                >
+                  ویرایش
+                </Link>
+                <Link
+                  href={hajiasalPath(`/product/${row.slug}`)}
+                  className="text-xs text-slate-500 hover:underline"
+                  target="_blank"
+                >
+                  مشاهده
+                </Link>
+              </div>
             ),
           },
         ]}

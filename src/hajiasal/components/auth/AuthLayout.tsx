@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import site from "@asal/data/site.json";
-import type { SiteConfig } from "@asal/types";
+import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { ProductImage } from "@asal/components/ui/ProductImage";
 import { hajiasalPath } from "@asal/lib/paths";
 
-const siteData = site as SiteConfig;
 const AUTH_HERO_IMAGE = "/images/hajiasal/about/workshop.webp";
 
 interface AuthLayoutProps {
@@ -20,6 +18,7 @@ export function AuthLayout({
   title = "به حاجی عسل خوش آمدید",
   subtitle = "ورود سریع با موبایل برای خرید امن",
 }: AuthLayoutProps) {
+  const siteData = useSiteSettings();
   return (
     <div className="flex min-h-[100dvh] flex-col lg:flex-row">
       <div className="relative hidden min-h-[100dvh] flex-1 overflow-hidden bg-brown-deep lg:flex">

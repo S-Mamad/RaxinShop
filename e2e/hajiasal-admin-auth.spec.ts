@@ -15,4 +15,15 @@ test.describe("Haji Asal admin auth", () => {
       timeout: 10_000,
     });
   });
+
+  test("login succeeds with ADMIN_PASSWORD env", async ({ page }) => {
+    const password = process.env.ADMIN_PASSWORD;
+    test.skip(!password, "ADMIN_PASSWORD not set");
+
+    await page.goto("/hajiasal/admin");
+    await page.getByLabel(/رمز عبور/i).fill(password!);
+    await page.getByRole("button", { name: /ورود/i }).click();
+    await page.waitForURL(/\/hajiasal\/admin\/dashboard/, { timeout: 15_000 });
+    await expect(page.getByText(/داشبورد|سفارش/i).first()).toBeVisible();
+  });
 });

@@ -18,15 +18,12 @@ import {
 } from "@asal/components/checkout/ShippingMethodSelector";
 import { PaymentMethodSelector } from "@asal/components/checkout/PaymentMethodSelector";
 import { useCartStore } from "@asal/store/cart";
-import site from "@asal/data/site.json";
-import type { SiteConfig } from "@asal/types";
+import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import iranLocations from "@asal/data/iran-locations.json";
 import { cn } from "@asal/lib/utils";
 import { hajiasalPath } from "@asal/lib/paths";
 import type { PaymentMethod } from "@asal/lib/server/orders";
 import { useAuth } from "@asal/hooks/useAuth";
-
-const siteData = site as SiteConfig;
 
 const steps = [
   { id: 1, title: "سبد خرید" },
@@ -52,6 +49,7 @@ export default function CheckoutPage() {
 }
 
 function CheckoutPageInner() {
+  const siteData = useSiteSettings();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading: authLoading } = useAuth();
@@ -235,6 +233,25 @@ function CheckoutPageInner() {
         throw new Error(result.message || "خطا در پردازش سفارش");
       }
 
+      if (paymentMethod === "online") {
+        const payRes = await fetch("/api/checkout/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderId: result.orderId,
+            amount: total,
+            description: `سفارش ${result.orderId}`,
+          }),
+        });
+        const payData = await payRes.json();
+        if (payData.success && payData.redirectUrl) {
+          clearCart();
+          window.location.href = payData.redirectUrl;
+          return;
+        }
+        throw new Error(payData.message ?? "خطا در اتصال به درگاه پرداخت");
+      }
+
       clearCart();
       const params = new URLSearchParams({
         orderId: result.orderId,
@@ -251,7 +268,11 @@ function CheckoutPageInner() {
   const shippingLabel =
     shippingOptions.find((o) => o.id === shippingMethod)?.label ?? shippingMethod;
   const paymentLabel =
-    paymentMethod === "cod" ? "پرداخت در محل" : "کارت به کارت";
+    paymentMethod === "cod"
+      ? "پرداخت در محل"
+      : paymentMethod === "online"
+        ? "پرداخت آنلاین"
+        : "کارت به کارت";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">

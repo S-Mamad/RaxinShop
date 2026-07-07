@@ -4,101 +4,85 @@
 
 | مسیر | وضعیت | توضیح |
 |------|--------|--------|
-| `/hajiasal/admin` | فعال | ورود ادمین؛ در صورت احراز هویت، ریدایرکت به داشبورد |
-| `/hajiasal/admin/dashboard` | فعال | KPIها، سفارش‌های اخیر، پیام‌های اخیر |
-| `/hajiasal/admin/orders` | فعال | لیست سفارش‌ها با فیلتر و جستجو |
-| `/hajiasal/admin/orders/[id]` | فعال | جزئیات سفارش و تغییر وضعیت |
-| `/hajiasal/admin/products` | فعال | لیست محصولات و تغییر موجودی |
-| `/hajiasal/admin/categories` | stub | دسته‌بندی‌ها |
-| `/hajiasal/admin/inventory` | stub | موجودی انبار |
+| `/hajiasal/admin` | فعال | ورود ادمین |
+| `/hajiasal/admin/dashboard` | فعال | KPIها و فعالیت اخیر |
+| `/hajiasal/admin/orders` | فعال | لیست سفارش‌ها |
+| `/hajiasal/admin/orders/[id]` | فعال | جزئیات و تغییر وضعیت |
+| `/hajiasal/admin/products` | فعال | لیست محصولات + لینک ویرایش |
+| `/hajiasal/admin/products/[id]` | فعال | فرم ویرایش محصول |
+| `/hajiasal/admin/categories` | فعال | CRUD دسته‌بندی |
+| `/hajiasal/admin/inventory` | فعال | موجودی و toggle |
+| `/hajiasal/admin/coupons` | فعال | لیست کوپن‌ها |
+| `/hajiasal/admin/settings` | فعال | health env + خروج |
 | `/hajiasal/admin/customers` | stub | مشتریان |
 | `/hajiasal/admin/reviews` | stub | نظرات |
-| `/hajiasal/admin/coupons` | stub | کوپن‌ها |
 | `/hajiasal/admin/messages` | stub | پیام‌های تماس |
 | `/hajiasal/admin/newsletter` | stub | خبرنامه |
 | `/hajiasal/admin/content` | stub | محتوا |
 | `/hajiasal/admin/reports` | stub | گزارش‌ها |
-| `/hajiasal/admin/settings` | stub | تنظیمات |
 
 ## احراز هویت
 
-- **ورود:** `POST /api/admin/auth` با `{ password }`
+- **ورود:** `POST /api/admin/auth` با `{ password }` و `credentials: include`
 - **خروج:** `DELETE /api/admin/auth`
 - **کوکی:** `hajiasal_admin_session`
-- **گارد سرور:** `isAdminAuthenticated()` در layout پنل
-- **گارد API:** `isAdminRequestAuthenticatedAsync(request)` در routeها
+- **گارد:** layout پنل + `isAdminRequestAuthenticatedAsync` در APIها
+- **Production:** نشست ادمین فقط در Supabase (`admin_sessions`) — بدون Supabase ورود fail می‌شود
 
 ## APIهای فعال
 
-### `GET /api/admin/dashboard`
+### محصولات
 
-خروجی:
+- `GET /api/admin/products` — لیست
+- `POST /api/admin/products` — ایجاد
+- `GET /api/admin/products/[id]` — جزئیات
+- `PATCH /api/admin/products/[id]` — ویرایش (عنوان، slug، تصاویر، وزن‌ها، flags)
+- `DELETE /api/admin/products/[id]` — حذف
 
-```json
-{
-  "kpis": {
-    "totalOrders": 0,
-    "pendingOrders": 0,
-    "totalRevenue": 0,
-    "unreadMessages": 0,
-    "totalProducts": 0,
-    "outOfStock": 0
-  },
-  "recentOrders": [],
-  "recentMessages": []
-}
-```
+### دسته‌بندی
 
-### `GET /api/admin/orders`
+- `GET /api/admin/categories` — لیست
+- `POST /api/admin/categories` — upsert
 
-لیست سفارش‌ها و پیام‌های تماس.
+### موجودی
 
-### `PATCH /api/admin/orders`
+- `GET /api/admin/inventory` — لیست + تعداد ناموجود
+- `PATCH /api/admin/inventory` — `{ productId, inStock, reason? }` + `inventory_logs`
 
-بدنه: `{ "orderId": "...", "status": "confirmed" }`
+### کوپن
 
-### `GET /api/admin/orders/[id]`
+- `GET /api/admin/coupons`
+- `POST /api/admin/coupons` — ایجاد/upsert
+- `PATCH /api/admin/coupons` — `{ code, active?, label?, value? }`
+- `DELETE /api/admin/coupons?code=...`
 
-جزئیات یک سفارش.
+### تنظیمات
 
-### `PATCH /api/admin/orders/[id]`
+- `GET /api/admin/settings` — وضعیت env، `supabasePing`، `missing[]`، `productionReady`
 
-بدنه: `{ "status": "shipped" }`
+### سفارش‌ها
 
-### `GET /api/admin/orders/export`
+- `GET /api/admin/orders` · `PATCH` · `GET/PATCH /api/admin/orders/[id]` · `GET export`
 
-خروجی CSV سفارش‌ها.
+## منبع داده (production)
 
-### `GET /api/admin/products`
-
-لیست همه محصولات.
-
-### `GET /api/admin/products/[id]`
-
-جزئیات یک محصول.
-
-### `PATCH /api/admin/products/[id]`
-
-بدنه (اختیاری): `{ "inStock": true, "isBestseller": false, "isNew": false }`
-
-## کامپوننت‌های UI
-
-| فایل | نقش |
-|------|-----|
-| `AdminLayout` | سایدبار + هدر + محتوای اصلی |
-| `AdminSidebar` | ۱۳ آیتم مدیریت + لینک فروشگاه |
-| `AdminHeader` | breadcrumb و عنوان صفحه |
-| `StatCard` | کارت KPI |
-| `StatusBadge` | نشان وضعیت سفارش |
-| `DataTable` | جدول قابل استفاده مجدد |
-| `AdminStubContent` | placeholder بخش‌های در حال توسعه |
+| موجودیت | منبع |
+|---------|------|
+| محصولات | Supabase `products` (+ fallback `products.json` در dev) |
+| کوپن‌ها | Supabase `coupons` |
+| تنظیمات سایت | Supabase `site_settings` + merge با `site.json` |
+| سفارش‌ها | Supabase `orders` |
+| نشست ادمین | Supabase `admin_sessions` |
+| audit | `admin_audit_log` |
 
 ## وضعیت‌های سفارش
 
 `pending_payment` · `confirmed` · `processing` · `shipped` · `delivered` · `cancelled`
 
-## منبع داده
+## Deploy checklist
 
-- سفارش‌ها: Supabase یا `orders.json`
-- پیام‌ها: Supabase یا `contact.json`
-- محصولات: `src/hajiasal/data/products.json`
+1. Vercel env: `NEXT_PUBLIC_SITE_URL`, `SUPABASE_*`, `ADMIN_PASSWORD`, `AUTH_SESSION_SECRET`, `SMS_*`
+2. Migrations: `001` تا `004` در Supabase
+3. Seed: `npm run seed:products` · `seed:coupons` · `seed:site-settings`
+4. `npm run images:hajiasal` (WebP در repo)
+5. Settings پنل: `productionReady === true`

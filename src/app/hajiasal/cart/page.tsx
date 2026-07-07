@@ -22,8 +22,10 @@ export default function CartPage() {
   const amountRemaining = useCartStore((s) => s.getAmountUntilFreeShipping());
   const isFree = useCartStore((s) => s.isFreeShipping());
   const subtotal = useCartStore((s) => s.getSubtotal());
+  const appliedCouponCode = useCartStore((s) => s.appliedCouponCode);
+  const setAppliedCouponCode = useCartStore((s) => s.setAppliedCouponCode);
   const { isLoggedIn } = useAuth();
-  const [couponCode, setCouponCode] = useState("");
+  const [couponCode, setCouponCode] = useState(appliedCouponCode ?? "");
   const [discount, setDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState("");
 
@@ -39,9 +41,11 @@ export default function CartPage() {
       if (data.valid) {
         setDiscount(data.discount);
         setCouponMessage(data.message);
+        setAppliedCouponCode(couponCode.toUpperCase());
       } else {
         setDiscount(0);
         setCouponMessage(data.message);
+        setAppliedCouponCode(null);
       }
     } catch {
       setCouponMessage("خطا در بررسی کد تخفیف");
@@ -120,8 +124,14 @@ export default function CartPage() {
               <Button
                 href={
                   isLoggedIn
-                    ? hajiasalPath("/checkout")
-                    : `${hajiasalPath("/login")}?redirect=${encodeURIComponent(hajiasalPath("/checkout"))}`
+                    ? appliedCouponCode
+                      ? `${hajiasalPath("/checkout")}?coupon=${encodeURIComponent(appliedCouponCode)}`
+                      : hajiasalPath("/checkout")
+                    : `${hajiasalPath("/login")}?redirect=${encodeURIComponent(
+                        appliedCouponCode
+                          ? `${hajiasalPath("/checkout")}?coupon=${encodeURIComponent(appliedCouponCode)}`
+                          : hajiasalPath("/checkout"),
+                      )}`
                 }
                 className="w-full"
               >

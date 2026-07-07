@@ -9,14 +9,11 @@ import {
   Shield,
   Truck,
 } from "@phosphor-icons/react";
-import site from "@asal/data/site.json";
-import type { SiteConfig } from "@asal/types";
+import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { Reveal } from "@asal/components/ui/Reveal";
 import { Icon } from "@asal/components/ui/Icon";
 import { hajiasalPath } from "@asal/lib/paths";
 import { cn } from "@asal/lib/utils";
-
-const siteData = site as SiteConfig;
 
 const icons = {
   authentic: Shield,
@@ -39,9 +36,10 @@ const extraItems = [
   },
 ];
 
-const allItems = [...siteData.trustItems, ...extraItems];
-
 export function TrustBar() {
+  const siteData = useSiteSettings();
+  const allItems = [...siteData.trustItems, ...extraItems];
+
   return (
     <section className="bg-cream py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-4 md:px-6">

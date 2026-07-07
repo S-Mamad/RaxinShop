@@ -1,17 +1,15 @@
 ﻿"use client";
 
 import { ArrowRight, Tag } from "@phosphor-icons/react";
-import site from "@asal/data/site.json";
-import type { SiteConfig } from "@asal/types";
+import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { Reveal } from "@asal/components/ui/Reveal";
 import { Icon } from "@asal/components/ui/Icon";
 import { Button } from "@asal/components/ui/Button";
 import { hajiasalPath } from "@asal/lib/paths";
 import { formatPersianNumber } from "@asal/lib/utils";
 
-const siteData = site as SiteConfig;
-
 export function PromoBanner() {
+  const siteData = useSiteSettings();
   const shopUrl = hajiasalPath("/shop?coupon=HAJI10");
   const { minOrder, percent } = siteData.couponHAJI10;
   const threshold = formatPersianNumber(minOrder);

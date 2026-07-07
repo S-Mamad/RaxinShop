@@ -5,6 +5,7 @@ import {
   buildOrganizationJsonLd,
   buildWebSiteJsonLd,
 } from "@asal/lib/seo";
+import { getSiteSettings } from "@asal/lib/server/site-settings";
 import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
 import { hajiasalAbsoluteUrl } from "@asal/lib/paths";
@@ -67,11 +68,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HajiasalLayout({
+export default async function HajiasalLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const siteData = await getSiteSettings();
   const orgJsonLd = buildOrganizationJsonLd(siteData);
   const webSiteJsonLd = buildWebSiteJsonLd(siteData);
 
@@ -91,7 +93,7 @@ export default function HajiasalLayout({
       >
         پرش به محتوای اصلی
       </a>
-      <StoreChrome>{children}</StoreChrome>
+      <StoreChrome siteSettings={siteData}>{children}</StoreChrome>
     </div>
   );
 }

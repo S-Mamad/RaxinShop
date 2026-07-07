@@ -11,7 +11,11 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:install": "playwright install chromium",
     "check:paths": "node scripts/check-hajiasal-paths.mjs",
-    "optimize:hajiasal-images": "node scripts/optimize-hajiasal-images.mjs"
+    "optimize:hajiasal-images": "node scripts/optimize-hajiasal-images.mjs",
+    "images:hajiasal": "node scripts/svg-to-webp-hajiasal.mjs",
+    "seed:products": "node scripts/seed-products-to-supabase.mjs",
+    "seed:coupons": "node scripts/seed-coupons.mjs",
+    "seed:site-settings": "node scripts/seed-site-settings.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",

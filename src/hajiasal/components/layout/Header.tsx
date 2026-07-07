@@ -11,20 +11,18 @@ import {
 } from "@phosphor-icons/react";
 import { useCartStore } from "@asal/store/cart";
 import { useWishlistStore } from "@asal/store/wishlist";
-import site from "@asal/data/site.json";
-import type { SiteConfig } from "@asal/types";
+import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { cn } from "@asal/lib/utils";
 import { Icon } from "@asal/components/ui/Icon";
 import { UserMenu } from "@asal/components/auth/UserMenu";
 import { MobileMenu } from "./MobileMenu";
 import { SearchModal } from "./SearchModal";
 
-const siteData = site as SiteConfig;
-
 import { extraNav, resolveNavHref } from "@asal/lib/nav";
 import { hajiasalPath } from "@asal/lib/paths";
 
 export function Header() {
+  const siteData = useSiteSettings();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);

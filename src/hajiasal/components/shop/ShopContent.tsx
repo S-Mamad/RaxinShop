@@ -8,8 +8,7 @@ import {
   getPriceRange,
   paginateProducts,
 } from "@asal/lib/products";
-import site from "@asal/data/site.json";
-import type { SiteConfig } from "@asal/types";
+import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { ProductGrid } from "@asal/components/product/ProductGrid";
 import { ProductGridSkeleton } from "@asal/components/ui/ProductGridSkeleton";
 import { ShopEmptyState } from "@asal/components/shop/ShopEmptyState";
@@ -17,8 +16,6 @@ import { SectionHeading } from "@asal/components/ui/SectionHeading";
 import { Button } from "@asal/components/ui/Button";
 import { cn } from "@asal/lib/utils";
 import { hajiasalPath } from "@asal/lib/paths";
-
-const siteData = site as SiteConfig;
 
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: "popular", label: "محبوب‌ترین" },
@@ -46,6 +43,7 @@ interface ShopContentProps {
 }
 
 function ShopContentInner({ initialProducts }: ShopContentProps) {
+  const siteData = useSiteSettings();
   const searchParams = useSearchParams();
   const router = useRouter();
   const priceRange = useMemo(

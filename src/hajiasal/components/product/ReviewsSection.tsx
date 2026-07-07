@@ -66,9 +66,8 @@ export function ReviewsSection({ product, initialReviews }: ReviewsSectionProps)
         setMessage(result.message ?? "خطا در ثبت نظر");
         return;
       }
-      setReviews((prev) => [result.review, ...prev]);
       setStatus("done");
-      setMessage("نظر شما ثبت شد و پس از بررسی نمایش داده می‌شود.");
+      setMessage("نظر شما ثبت شد و پس از تأیید نمایش داده می‌شود.");
       reset({ author: "", rating: 5, comment: "" });
     } catch {
       setStatus("error");

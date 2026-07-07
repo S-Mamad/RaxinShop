@@ -2,13 +2,17 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle, XCircle } from "@phosphor-icons/react";
+import { CheckCircle, XCircle, WarningCircle } from "@phosphor-icons/react";
 import { Button } from "@asal/components/ui/Button";
+import { Input } from "@asal/components/ui/Input";
 import { Icon } from "@asal/components/ui/Icon";
 import { hajiasalPath } from "@asal/lib/paths";
 
 interface EnvStatus {
   supabase: boolean;
+  supabasePing: boolean;
+  sessionWriteOk: boolean;
+  supabaseError?: string | null;
   sms: boolean;
   zarinpal: boolean;
   authSecret: boolean;
@@ -16,8 +20,10 @@ interface EnvStatus {
   siteUrl: boolean;
 }
 
-const LABELS: Record<keyof EnvStatus, string> = {
-  supabase: "Supabase",
+const LABELS: Record<keyof Omit<EnvStatus, "supabaseError">, string> = {
+  supabase: "Supabase (پیکربندی)",
+  supabasePing: "Supabase (اتصال)",
+  sessionWriteOk: "نشست ادمین (نوشتن DB)",
   sms: "پیامک (Kavenegar)",
   zarinpal: "زرین‌پال",
   authSecret: "AUTH_SESSION_SECRET",
@@ -28,6 +34,11 @@ const LABELS: Record<keyof EnvStatus, string> = {
 export default function AdminSettingsPage() {
   const router = useRouter();
   const [env, setEnv] = useState<EnvStatus | null>(null);
+  const [missing, setMissing] = useState<string[]>([]);
+  const [productionReady, setProductionReady] = useState(false);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState("");
+  const [shippingCost, setShippingCost] = useState("");
+  const [savingShipping, setSavingShipping] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [loggingOut, setLoggingOut] = useState(false);
@@ -44,6 +55,12 @@ export default function AdminSettingsPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "خطا در بارگذاری");
       setEnv(data.env);
+      setMissing(data.missing ?? []);
+      setProductionReady(Boolean(data.productionReady));
+      if (data.settings) {
+        setFreeShippingThreshold(String(data.settings.freeShippingThreshold ?? ""));
+        setShippingCost(String(data.settings.shippingCost ?? ""));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "خطای ناشناخته");
     } finally {
@@ -54,6 +71,27 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     void loadSettings();
   }, [loadSettings]);
+
+  const saveShipping = async () => {
+    setSavingShipping(true);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          freeShippingThreshold: Number(freeShippingThreshold),
+          shippingCost: Number(shippingCost),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "خطا در ذخیره");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "خطای ناشناخته");
+    } finally {
+      setSavingShipping(false);
+    }
+  };
 
   const logout = async () => {
     setLoggingOut(true);
@@ -74,12 +112,32 @@ export default function AdminSettingsPage() {
         </Button>
       </div>
 
+      {productionReady ? (
+        <div className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          <Icon icon={CheckCircle} size={20} />
+          آماده production
+        </div>
+      ) : (
+        <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <Icon icon={WarningCircle} size={20} />
+          هنوز برای production آماده نیست — متغیرهای زیر را در Vercel تکمیل کنید
+        </div>
+      )}
+
+      {missing.length > 0 ? (
+        <ul className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          {missing.map((m) => (
+            <li key={m}>• {m}</li>
+          ))}
+        </ul>
+      ) : null}
+
       {error ? <p className="text-sm text-red-500">{error}</p> : null}
       {loading ? <p className="text-sm text-slate-500">در حال بارگذاری...</p> : null}
 
       {env ? (
         <div className="grid gap-3 sm:grid-cols-2">
-          {(Object.keys(LABELS) as Array<keyof EnvStatus>).map((key) => (
+          {(Object.keys(LABELS) as Array<keyof typeof LABELS>).map((key) => (
             <div
               key={key}
               className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3"
@@ -97,6 +155,46 @@ export default function AdminSettingsPage() {
           ))}
         </div>
       ) : null}
+
+      {env?.supabaseError ? (
+        <p className="text-xs text-red-500" dir="ltr">
+          Supabase: {env.supabaseError}
+        </p>
+      ) : null}
+
+      <div className="rounded-xl border border-slate-200 bg-white p-5">
+        <h3 className="mb-3 font-semibold text-slate-900">ارسال</h3>
+        <div className="flex flex-wrap gap-3">
+          <label className="space-y-1 text-sm">
+            <span>آستانه ارسال رایگان (تومان)</span>
+            <Input
+              dir="ltr"
+              type="number"
+              value={freeShippingThreshold}
+              onChange={(e) => setFreeShippingThreshold(e.target.value)}
+              className="max-w-xs"
+            />
+          </label>
+          <label className="space-y-1 text-sm">
+            <span>هزینه ارسال عادی (تومان)</span>
+            <Input
+              dir="ltr"
+              type="number"
+              value={shippingCost}
+              onChange={(e) => setShippingCost(e.target.value)}
+              className="max-w-xs"
+            />
+          </label>
+          <Button
+            type="button"
+            className="self-end"
+            onClick={() => void saveShipping()}
+            disabled={savingShipping}
+          >
+            {savingShipping ? "در حال ذخیره..." : "ذخیره ارسال"}
+          </Button>
+        </div>
+      </div>
 
       <div className="rounded-xl border border-slate-200 bg-white p-5">
         <h3 className="mb-2 font-semibold text-slate-900">خروج از پنل</h3>

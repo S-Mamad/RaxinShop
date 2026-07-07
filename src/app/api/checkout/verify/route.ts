@@ -24,7 +24,7 @@ export async function GET(request: Request) {
   const merchantId = process.env.ZARINPAL_MERCHANT_ID;
   if (!merchantId || merchantId === "your_merchant_id") {
     return NextResponse.redirect(
-      new URL(`/hajiasal/checkout/success?order=${orderId}`, siteUrl),
+      new URL(`/hajiasal/checkout?payment=failed&orderId=${orderId}`, siteUrl),
     );
   }
 
@@ -56,7 +56,7 @@ export async function GET(request: Request) {
       await updateOrderStatus(orderId, "confirmed");
       return NextResponse.redirect(
         new URL(
-          `/hajiasal/checkout/success?order=${orderId}&ref=${verifyData.data.ref_id ?? ""}`,
+          `/hajiasal/checkout/success?orderId=${orderId}&ref=${verifyData.data.ref_id ?? ""}`,
           siteUrl,
         ),
       );

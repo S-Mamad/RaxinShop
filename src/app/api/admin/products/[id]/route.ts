@@ -1,34 +1,41 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isAdminRequestAuthenticatedAsync } from "@asal/lib/server/admin";
-import type { Product } from "@asal/types";
-
-const PRODUCTS_PATH = path.join(
-  process.cwd(),
-  "src",
-  "hajiasal",
-  "data",
-  "products.json",
-);
+import {
+  getProductByIdAsync,
+  updateProductAsync,
+} from "@asal/lib/server/products-store";
+import type { Product, ProductCategory, WeightOption } from "@asal/types";
+import { logAdminAction } from "@asal/lib/server/audit-log";
 
 const patchSchema = z.object({
+  title: z.string().min(1).optional(),
+  slug: z.string().min(1).optional(),
+  shortDescription: z.string().optional(),
+  longDescription: z.string().optional(),
+  category: z.string().optional(),
+  categoryLabel: z.string().optional(),
+  images: z.array(z.string()).optional(),
+  weightOptions: z
+    .array(
+      z.object({
+        label: z.string(),
+        grams: z.number(),
+        price: z.number(),
+      }),
+    )
+    .optional(),
+  discountPrice: z.number().optional(),
   inStock: z.boolean().optional(),
   isBestseller: z.boolean().optional(),
   isNew: z.boolean().optional(),
+  ingredients: z.string().optional(),
+  shippingInfo: z.string().optional(),
+  rating: z.number().optional(),
+  reviewCount: z.number().optional(),
 });
 
 type RouteContext = { params: Promise<{ id: string }> };
-
-async function readProducts(): Promise<Product[]> {
-  const raw = await fs.readFile(PRODUCTS_PATH, "utf-8");
-  return JSON.parse(raw) as Product[];
-}
-
-async function writeProducts(products: Product[]): Promise<void> {
-  await fs.writeFile(PRODUCTS_PATH, JSON.stringify(products, null, 2), "utf-8");
-}
 
 export async function GET(request: Request, context: RouteContext) {
   if (!(await isAdminRequestAuthenticatedAsync(request))) {
@@ -36,8 +43,7 @@ export async function GET(request: Request, context: RouteContext) {
   }
 
   const { id } = await context.params;
-  const products = await readProducts();
-  const product = products.find((p) => p.id === id);
+  const product = await getProductByIdAsync(id);
 
   if (!product) {
     return NextResponse.json({ error: "محصول یافت نشد" }, { status: 404 });
@@ -63,18 +69,47 @@ export async function PATCH(request: Request, context: RouteContext) {
       );
     }
 
-    const products = await readProducts();
-    const index = products.findIndex((p) => p.id === id);
+    const updates: Partial<Product> = {
+      ...parsed.data,
+      category: parsed.data.category as ProductCategory | undefined,
+      weightOptions: parsed.data.weightOptions as WeightOption[] | undefined,
+    };
 
-    if (index === -1) {
+    const product = await updateProductAsync(id, updates);
+    if (!product) {
       return NextResponse.json({ error: "محصول یافت نشد" }, { status: 404 });
     }
 
-    products[index] = { ...products[index], ...parsed.data };
-    await writeProducts(products);
+    await logAdminAction({
+      action: "product.update",
+      entityType: "product",
+      entityId: id,
+      payload: parsed.data,
+    });
 
-    return NextResponse.json({ success: true, product: products[index] });
-  } catch {
-    return NextResponse.json({ error: "خطای سرور" }, { status: 500 });
+    return NextResponse.json({ success: true, product });
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : "خطای سرور";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+export async function DELETE(request: Request, context: RouteContext) {
+  if (!(await isAdminRequestAuthenticatedAsync(request))) {
+    return NextResponse.json({ error: "دسترسی غیرمجاز" }, { status: 401 });
+  }
+
+  const { id } = await context.params;
+  const { deleteProductAsync } = await import("@asal/lib/server/products-store");
+  const ok = await deleteProductAsync(id);
+  if (!ok) {
+    return NextResponse.json({ error: "محصول یافت نشد" }, { status: 404 });
+  }
+  await logAdminAction({
+    action: "product.delete",
+    entityType: "product",
+    entityId: id,
+  });
+  return NextResponse.json({ success: true });
 }

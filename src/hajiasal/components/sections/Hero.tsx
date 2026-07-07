@@ -1,14 +1,11 @@
 ﻿"use client";
 
-import site from "@asal/data/site.json";
-import type { SiteConfig } from "@asal/types";
+import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { Button } from "@asal/components/ui/Button";
 import { Reveal } from "@asal/components/ui/Reveal";
 import { Icon } from "@asal/components/ui/Icon";
 import { hajiasalPath } from "@asal/lib/paths";
 import { ArrowRight, Sparkle } from "@phosphor-icons/react";
-
-const siteData = site as SiteConfig;
 
 const stats = [
   { value: "۳۰+", label: "محصول" },
@@ -23,6 +20,7 @@ function limitWords(text: string, max: number): string {
 }
 
 export function Hero() {
+  const siteData = useSiteSettings();
   const subtitle = limitWords(siteData.hero.subtitle, 20);
 
   return (

@@ -1,7 +1,7 @@
 ﻿import { NextResponse } from "next/server";
 import { checkoutApiSchema } from "@asal/lib/validations/checkout";
 import { createOrder } from "@asal/lib/server/orders";
-import { validateCoupon } from "@asal/lib/server/coupons";
+import { validateCouponAsync } from "@asal/lib/server/coupons";
 import { getSessionFromRequest } from "@asal/lib/auth/session";
 import { normalizePhone } from "@asal/lib/auth/phone";
 
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
     const extra = body as {
       couponCode?: string;
-      paymentMethod?: "cod" | "card_to_card";
+      paymentMethod?: "cod" | "card_to_card" | "online";
       shippingMethod?: string;
     };
     const couponCode = extra.couponCode;
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
 
     let discount = 0;
     if (couponCode) {
-      const couponResult = validateCoupon(couponCode, subtotal);
+      const couponResult = await validateCouponAsync(couponCode, subtotal);
       if (!couponResult.valid) {
         return NextResponse.json(
           { success: false, message: couponResult.message },
@@ -92,7 +92,9 @@ export async function POST(request: Request) {
       message:
         paymentMethod === "cod"
           ? "سفارش ثبت شد. پرداخت هنگام تحویل انجام می‌شود."
-          : "سفارش ثبت شد. اطلاعات کارت‌به‌کارت برای شما ارسال می‌شود.",
+          : paymentMethod === "online"
+            ? "سفارش ثبت شد. در حال انتقال به درگاه پرداخت..."
+            : "سفارش ثبت شد. اطلاعات کارت‌به‌کارت برای شما ارسال می‌شود.",
     });
   } catch {
     return NextResponse.json(

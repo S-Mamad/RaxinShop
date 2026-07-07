@@ -2,12 +2,9 @@
 
 import Link from "next/link";
 import { Phone, Envelope, MapPin, Package, WhatsappLogo, InstagramLogo } from "@phosphor-icons/react";
-import site from "@asal/data/site.json";
-import type { SiteConfig } from "@asal/types";
+import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { Icon } from "@asal/components/ui/Icon";
 import { hajiasalPath } from "@asal/lib/paths";
-
-const siteData = site as SiteConfig;
 
 const footerLinks = [
   { label: "فروشگاه", href: hajiasalPath("/shop") },
@@ -26,6 +23,7 @@ const trustLinks = [
 ];
 
 export function Footer() {
+  const siteData = useSiteSettings();
   const whatsappUrl =
     siteData.social?.whatsapp ??
     (siteData.whatsappNumber

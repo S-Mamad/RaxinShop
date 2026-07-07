@@ -6,14 +6,23 @@ import type { CartItem, WeightOption } from "@asal/types";
 import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
 
-const siteData = site as SiteConfig;
+const defaultSite = site as SiteConfig;
+
+interface ShippingConfig {
+  freeShippingThreshold: number;
+  shippingCost: number;
+}
 
 interface CartStore {
   items: CartItem[];
   isOpen: boolean;
   announcement: string;
+  appliedCouponCode: string | null;
+  shippingConfig: ShippingConfig;
   _hasHydrated: boolean;
   setHasHydrated: (value: boolean) => void;
+  setShippingConfig: (config: ShippingConfig) => void;
+  setAppliedCouponCode: (code: string | null) => void;
   setAnnouncement: (message: string) => void;
   clearAnnouncement: () => void;
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
@@ -42,8 +51,15 @@ export const useCartStore = create<CartStore>()(
       items: [],
       isOpen: false,
       announcement: "",
+      appliedCouponCode: null,
+      shippingConfig: {
+        freeShippingThreshold: defaultSite.freeShippingThreshold,
+        shippingCost: defaultSite.shippingCost,
+      },
       _hasHydrated: false,
       setHasHydrated: (value) => set({ _hasHydrated: value }),
+      setShippingConfig: (config) => set({ shippingConfig: config }),
+      setAppliedCouponCode: (code) => set({ appliedCouponCode: code }),
       setAnnouncement: (message) => set({ announcement: message }),
       clearAnnouncement: () => set({ announcement: "" }),
 
@@ -117,35 +133,44 @@ export const useCartStore = create<CartStore>()(
         get().items.reduce((sum, item) => sum + item.quantity, 0),
 
       getShippingCost: () => {
+        const { shippingConfig } = get();
         const subtotal = get().getSubtotal();
-        if (subtotal >= siteData.freeShippingThreshold || subtotal === 0) {
+        if (
+          subtotal >= shippingConfig.freeShippingThreshold ||
+          subtotal === 0
+        ) {
           return 0;
         }
-        return siteData.shippingCost;
+        return shippingConfig.shippingCost;
       },
 
       getTotal: () => get().getSubtotal() + get().getShippingCost(),
 
       getFreeShippingProgress: () => {
+        const { shippingConfig } = get();
         const subtotal = get().getSubtotal();
-        if (subtotal >= siteData.freeShippingThreshold) return 100;
+        if (subtotal >= shippingConfig.freeShippingThreshold) return 100;
         return Math.min(
           100,
-          (subtotal / siteData.freeShippingThreshold) * 100,
+          (subtotal / shippingConfig.freeShippingThreshold) * 100,
         );
       },
 
       getAmountUntilFreeShipping: () => {
+        const { shippingConfig } = get();
         const subtotal = get().getSubtotal();
-        return Math.max(0, siteData.freeShippingThreshold - subtotal);
+        return Math.max(0, shippingConfig.freeShippingThreshold - subtotal);
       },
 
       isFreeShipping: () =>
-        get().getSubtotal() >= siteData.freeShippingThreshold,
+        get().getSubtotal() >= get().shippingConfig.freeShippingThreshold,
     }),
     {
       name: "haji-asal-cart",
-      partialize: (state) => ({ items: state.items }),
+      partialize: (state) => ({
+        items: state.items,
+        appliedCouponCode: state.appliedCouponCode,
+      }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

@@ -172,6 +172,39 @@ html {
   animation: float 6s ease-in-out infinite;
 }
 
+/* PDP dark exception — product detail only */
+.pdp-dark {
+  --pdp-bg: #1c1714;
+  --pdp-surface: #252019;
+  --pdp-text: #f8f6f3;
+  --pdp-muted: rgba(248, 246, 243, 0.65);
+  --pdp-accent: #c9a227;
+  --pdp-border: rgba(248, 246, 243, 0.1);
+  background: var(--pdp-bg);
+  color: var(--pdp-text);
+  min-height: 100dvh;
+}
+
+.pdp-dark .text-brown {
+  color: var(--pdp-text);
+}
+
+.pdp-dark .text-muted {
+  color: var(--pdp-muted);
+}
+
+.pdp-dark .border-border {
+  border-color: var(--pdp-border);
+}
+
+.pdp-dark .bg-surface {
+  background: var(--pdp-surface);
+}
+
+.pdp-dark .bg-cream-dark {
+  background: rgba(255, 255, 255, 0.05);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-float {
     animation: none;

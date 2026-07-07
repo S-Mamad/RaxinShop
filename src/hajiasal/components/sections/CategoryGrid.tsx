@@ -1,14 +1,13 @@
-﻿import Link from "next/link";
-import site from "@asal/data/site.json";
+﻿"use client";
+
+import Link from "next/link";
 import type { SiteConfig } from "@asal/types";
+import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
 import { Reveal } from "@asal/components/ui/Reveal";
 import { ProductImage } from "@asal/components/ui/ProductImage";
 import { hajiasalPath } from "@asal/lib/paths";
 import { cn } from "@asal/lib/utils";
-
-const siteData = site as SiteConfig;
-const [featured, ...rest] = siteData.categories;
 
 const bentoSpans = [
   "md:col-span-3",
@@ -20,6 +19,9 @@ const bentoSpans = [
 ] as const;
 
 export function CategoryGrid() {
+  const siteData = useSiteSettings();
+  const [featured, ...rest] = siteData.categories;
+
   return (
     <section className="bg-surface py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
@@ -59,7 +61,7 @@ function CategoryCard({
   featured = false,
   wide = false,
 }: {
-  category: (typeof siteData.categories)[number];
+  category: SiteConfig["categories"][number];
   featured?: boolean;
   wide?: boolean;
 }) {

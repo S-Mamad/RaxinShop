@@ -1,5 +1,6 @@
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { readJsonFile, writeJsonFile } from "./db";
+import { canUseFilesystemPersistence } from "./production";
 import { getSupabaseAdmin } from "./supabase";
 
 const SESSIONS_FILE = "admin-sessions.json";
@@ -26,7 +27,7 @@ export function generateAdminToken(): string {
 export async function createAdminSession(meta?: {
   ipAddress?: string;
   userAgent?: string;
-}): Promise<{ sessionId: string; token: string }> {
+}): Promise<{ sessionId: string; token: string } | null> {
   const sessionId = randomUUID();
   const token = generateAdminToken();
   const tokenHash = hashToken(token);
@@ -44,19 +45,27 @@ export async function createAdminSession(meta?: {
 
   const supabase = getSupabaseAdmin();
   if (supabase) {
-    await supabase.from("admin_sessions").insert({
+    const { error } = await supabase.from("admin_sessions").insert({
       id: sessionId,
       token_hash: tokenHash,
       expires_at: expiresAt.toISOString(),
       ip_address: meta?.ipAddress ?? null,
       user_agent: meta?.userAgent ?? null,
     });
-  } else {
-    const sessions = await readJsonFile<AdminSession[]>(SESSIONS_FILE, []);
-    sessions.push(session);
-    await writeJsonFile(SESSIONS_FILE, sessions);
+    if (error) {
+      console.error("[admin-sessions] insert failed:", error.message);
+      return null;
+    }
+    return { sessionId, token };
   }
 
+  if (!canUseFilesystemPersistence()) {
+    return null;
+  }
+
+  const sessions = await readJsonFile<AdminSession[]>(SESSIONS_FILE, []);
+  sessions.push(session);
+  await writeJsonFile(SESSIONS_FILE, sessions);
   return { sessionId, token };
 }
 
@@ -68,17 +77,19 @@ export async function validateAdminSessionToken(
 
   const supabase = getSupabaseAdmin();
   if (supabase) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("admin_sessions")
       .select("*")
       .eq("token_hash", tokenHash)
       .is("revoked_at", null)
       .maybeSingle();
 
-    if (!data) return false;
+    if (error || !data) return false;
     if (new Date(data.expires_at as string).getTime() < Date.now()) return false;
     return true;
   }
+
+  if (!canUseFilesystemPersistence()) return false;
 
   const sessions = await readJsonFile<AdminSession[]>(SESSIONS_FILE, []);
   const session = sessions.find(
@@ -100,6 +111,8 @@ export async function revokeAdminSession(token: string): Promise<void> {
       .eq("token_hash", tokenHash);
     return;
   }
+
+  if (!canUseFilesystemPersistence()) return;
 
   const sessions = await readJsonFile<AdminSession[]>(SESSIONS_FILE, []);
   const updated = sessions.map((s) =>

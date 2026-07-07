@@ -45,12 +45,9 @@ export async function isAdminAuthenticated(): Promise<boolean> {
   return validateAdminSessionToken(token);
 }
 
-export function isAdminRequestAuthenticated(request: Request): boolean {
-  const cookieHeader = request.headers.get("cookie") ?? "";
-  const token = getTokenFromCookieHeader(cookieHeader);
-  if (!token) return false;
-  // Sync validation not available - use async in routes
-  return Boolean(token);
+export function isAdminRequestAuthenticated(_request: Request): boolean {
+  // Deprecated: use isAdminRequestAuthenticatedAsync for real validation.
+  return false;
 }
 
 export async function isAdminRequestAuthenticatedAsync(
@@ -66,8 +63,8 @@ export async function loginAdmin(meta?: {
   ipAddress?: string;
   userAgent?: string;
 }): Promise<string | null> {
-  const { token } = await createAdminSession(meta);
-  return token;
+  const result = await createAdminSession(meta);
+  return result?.token ?? null;
 }
 
 export async function logoutAdmin(request?: Request): Promise<void> {

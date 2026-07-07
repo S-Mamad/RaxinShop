@@ -17,6 +17,10 @@ const DYNAMIC_REVIEWS_FILE = "reviews-submissions.json";
 
 function mapReviewRow(row: Record<string, unknown>): Review {
   const createdAt = row.created_at as string;
+  const verified =
+    (row.verified as boolean) ??
+    (row.approved as boolean) ??
+    false;
   return {
     id: String(row.id),
     productId: row.product_id as string,
@@ -24,7 +28,7 @@ function mapReviewRow(row: Record<string, unknown>): Review {
     rating: row.rating as number,
     comment: row.comment as string,
     date: createdAt.includes("T") ? createdAt.split("T")[0] : createdAt,
-    verified: (row.verified as boolean) ?? false,
+    verified,
   };
 }
 
@@ -67,11 +71,12 @@ export async function getReviewsByProduct(productId: string): Promise<Review[]> 
       .from("product_reviews")
       .select("*")
       .eq("product_id", productId)
+      .eq("verified", true)
       .order("created_at", { ascending: false });
     if (!error && data) {
       const dynamic = data.map(mapReviewRow);
       const staticForProduct = staticReviews.filter(
-        (r) => r.productId === productId,
+        (r) => r.productId === productId && r.verified,
       );
       const staticIds = new Set(staticForProduct.map((r) => r.id));
       return [...staticForProduct, ...dynamic.filter((r) => !staticIds.has(r.id))].sort(
@@ -80,9 +85,10 @@ export async function getReviewsByProduct(productId: string): Promise<Review[]> 
     }
   }
 
-  const all = await getAllReviews();
-  return all
-    .filter((r) => r.productId === productId)
+  const dynamic = await getDynamicReviews();
+  const merged = [...staticReviews, ...dynamic];
+  return merged
+    .filter((r) => r.productId === productId && r.verified)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 

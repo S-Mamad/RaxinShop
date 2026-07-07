@@ -1,8 +1,3 @@
-import couponsData from "@asal/data/coupons.json";
-import type { Coupon } from "./coupons";
+import { getAllCouponsAsync } from "./coupons";
 
-const coupons = couponsData as Coupon[];
-
-export function getAllCoupons(): Coupon[] {
-  return coupons;
-}
+export { getAllCouponsAsync as getAllCoupons };

@@ -5,8 +5,6 @@ import {
   parseSessionTokenEdge,
 } from "@asal/lib/auth/session-edge";
 
-const ADMIN_COOKIE = "hajiasal_admin_session";
-
 const PROTECTED_PREFIXES = [
   "/hajiasal/checkout",
   "/hajiasal/account",
@@ -18,18 +16,10 @@ function isProtected(pathname: string): boolean {
   );
 }
 
-function hasAdminCookie(request: NextRequest): boolean {
-  return Boolean(request.cookies.get(ADMIN_COOKIE)?.value);
-}
-
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/hajiasal/admin")) {
-    const isLoginPage = pathname === "/hajiasal/admin";
-    if (!isLoginPage && !hasAdminCookie(request)) {
-      return NextResponse.redirect(new URL("/hajiasal/admin", request.url));
-    }
     return NextResponse.next();
   }
 

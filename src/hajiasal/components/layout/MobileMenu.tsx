@@ -4,11 +4,8 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "@phosphor-icons/react";
-import site from "@asal/data/site.json";
-import type { SiteConfig } from "@asal/types";
+import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { extraNav, resolveNavHref } from "@asal/lib/nav";
-
-const siteData = site as SiteConfig;
 
 interface MobileMenuProps {
   open: boolean;
@@ -16,6 +13,7 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const siteData = useSiteSettings();
   const navItems = [...siteData.nav, ...extraNav];
 
   useEffect(() => {

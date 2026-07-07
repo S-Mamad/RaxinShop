@@ -1,6 +1,7 @@
 "use client";
 
-import { Money, CreditCard } from "@phosphor-icons/react";
+import { useEffect, useState } from "react";
+import { Money, CreditCard, Wallet } from "@phosphor-icons/react";
 import { cn } from "@asal/lib/utils";
 import type { PaymentMethod } from "@asal/lib/server/orders";
 
@@ -15,7 +16,7 @@ interface PaymentMethodSelectorProps {
   onChange: (method: PaymentMethod) => void;
 }
 
-const options: PaymentOption[] = [
+const baseOptions: PaymentOption[] = [
   {
     id: "cod",
     label: "پرداخت در محل",
@@ -28,15 +29,33 @@ const options: PaymentOption[] = [
   },
 ];
 
+const onlineOption: PaymentOption = {
+  id: "online",
+  label: "پرداخت آنلاین (زرین‌پال)",
+  description: "پرداخت امن با کارت بانکی",
+};
+
 const icons: Record<PaymentMethod, typeof Money> = {
   cod: Money,
   card_to_card: CreditCard,
+  online: Wallet,
 };
 
 export function PaymentMethodSelector({
   value,
   onChange,
 }: PaymentMethodSelectorProps) {
+  const [showOnline, setShowOnline] = useState(false);
+
+  useEffect(() => {
+    void fetch("/api/checkout/availability")
+      .then((r) => r.json())
+      .then((d) => setShowOnline(Boolean(d.zarinpal)))
+      .catch(() => setShowOnline(false));
+  }, []);
+
+  const options = showOnline ? [...baseOptions, onlineOption] : baseOptions;
+
   return (
     <div className="flex flex-col gap-3">
       <p className="text-sm font-medium text-brown">روش پرداخت</p>

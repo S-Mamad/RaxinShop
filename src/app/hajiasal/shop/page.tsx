@@ -1,7 +1,9 @@
 ﻿import type { Metadata } from "next";
 import { ShopContent } from "@asal/components/shop/ShopContent";
-import { getAllProducts } from "@asal/lib/products";
+import { getAllProductsAsync } from "@asal/lib/server/products-store";
 import { hajiasalCanonical } from "@asal/lib/paths";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "فروشگاه",
@@ -10,8 +12,8 @@ export const metadata: Metadata = {
   alternates: { canonical: hajiasalCanonical("/shop") },
 };
 
-export default function ShopPage() {
-  const initialProducts = getAllProducts();
+export default async function ShopPage() {
+  const initialProducts = await getAllProductsAsync();
 
   return <ShopContent initialProducts={initialProducts} />;
 }

@@ -1,6 +1,6 @@
 ﻿import { NextResponse } from "next/server";
 import { z } from "zod";
-import { validateCoupon, getActiveCoupons } from "@asal/lib/server/coupons";
+import { validateCouponAsync, getActiveCouponsAsync } from "@asal/lib/server/coupons";
 
 const couponSchema = z.object({
   code: z.string().min(1),
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = validateCoupon(parsed.data.code, parsed.data.subtotal);
+    const result = await validateCouponAsync(parsed.data.code, parsed.data.subtotal);
     return NextResponse.json(result);
   } catch {
     return NextResponse.json(
@@ -30,10 +30,12 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const coupons = getActiveCoupons().map((c) => ({
-    code: c.code,
-    label: c.label,
-    minOrder: c.minOrder,
-  }));
-  return NextResponse.json({ coupons });
+  const coupons = await getActiveCouponsAsync();
+  return NextResponse.json({
+    coupons: coupons.map((c) => ({
+      code: c.code,
+      label: c.label,
+      minOrder: c.minOrder,
+    })),
+  });
 }

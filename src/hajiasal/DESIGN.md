@@ -39,3 +39,21 @@
 - پس‌زمینه: `#f4f5f7`
 - متن: `#111827`
 - حس ابزار کاری neutral/cool
+
+## PDP Dark Exception
+
+**فقط** مسیر `/hajiasal/product/[slug]` از تم روشن خارج می‌شود.
+
+| Token | Value |
+|---|---|
+| `--pdp-bg` | `#1c1714` |
+| `--pdp-surface` | `#252019` |
+| `--pdp-text` | `#f8f6f3` |
+| `--pdp-muted` | `rgba(248,246,243,0.65)` |
+| `--pdp-accent` | `#c9a227` |
+
+- Wrapper: کلاس `pdp-dark` روی section اصلی PDP
+- Layout دسکتاپ: گالری (thumbnails عمودی) + جزئیات + sticky add-to-cart
+- Trust badges: ۳ دایره (طبیعی، بدون افزودنی، تأییدیه)
+- Related products: کاروسل افقی
+- موبایل: thumbnails افقی زیر تصویر؛ sticky CTA حفظ شود

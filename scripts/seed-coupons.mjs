@@ -32,6 +32,7 @@ const rows = coupons.map((c) => ({
   value: c.value,
   min_order: c.minOrder,
   max_discount: c.maxDiscount ?? null,
+  label: c.label,
   active: c.active,
   used_count: 0,
 }));
