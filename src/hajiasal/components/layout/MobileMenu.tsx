@@ -1,10 +1,12 @@
 ﻿"use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
+import { extraNav } from "@asal/lib/nav";
 
 const siteData = site as SiteConfig;
 
@@ -14,6 +16,17 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const navItems = [...siteData.nav, ...extraNav];
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, onClose]);
+
   return (
     <AnimatePresence>
       {open ? (
@@ -31,6 +44,9 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
             className="fixed end-0 top-0 z-50 flex h-full w-72 flex-col bg-surface p-6 shadow-2xl md:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label="منوی موبایل"
           >
             <div className="mb-8 flex items-center justify-between">
               <span className="font-bold text-brown">{siteData.brand.name}</span>
@@ -44,7 +60,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
               </button>
             </div>
             <ul className="flex flex-col gap-4">
-              {siteData.nav.map((item) => (
+              {navItems.map((item) => (
                 <li key={item.id}>
                   <Link
                     href={item.href}

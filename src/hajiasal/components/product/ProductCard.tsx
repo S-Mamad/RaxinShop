@@ -2,24 +2,42 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Heart } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
 import type { Product } from "@asal/types";
 import { getMinPrice } from "@asal/lib/products";
+import { hajiasalPath } from "@asal/lib/paths";
 import { Badge } from "@asal/components/ui/Badge";
 import { PriceDisplay } from "@asal/components/ui/PriceDisplay";
 import { RatingStars } from "@asal/components/ui/RatingStars";
 import { ProductImage } from "@asal/components/ui/ProductImage";
 import { useWishlistStore } from "@asal/store/wishlist";
+import { useCartStore } from "@asal/store/cart";
 import { cn } from "@asal/lib/utils";
 
 interface ProductCardProps {
   product: Product;
+  quickAdd?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, quickAdd = false }: ProductCardProps) {
   const minPrice = getMinPrice(product);
+  const defaultWeight = product.weightOptions[0];
   const toggleWishlist = useWishlistStore((s) => s.toggle);
   const isWishlisted = useWishlistStore((s) => s.has(product.id));
+  const addItem = useCartStore((s) => s.addItem);
+
+  const handleQuickAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!product.inStock || !defaultWeight) return;
+    addItem({
+      productId: product.id,
+      slug: product.slug,
+      title: product.title,
+      image: product.images[0],
+      weight: defaultWeight,
+    });
+  };
 
   return (
     <motion.article
@@ -32,7 +50,7 @@ export function ProductCard({ product }: ProductCardProps) {
     >
       <div className="bezel-outer transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.02]">
         <div className="bezel-inner bg-surface">
-          <Link href={`/hajiasal/product/${product.slug}`} className="block">
+          <Link href={hajiasalPath(`/product/${product.slug}`)} className="block">
             <div className="relative aspect-square overflow-hidden bg-cream-dark">
               <ProductImage
                 src={product.images[0]}
@@ -70,10 +88,21 @@ export function ProductCard({ product }: ProductCardProps) {
                   className={isWishlisted ? "fill-current" : ""}
                 />
               </button>
+              {quickAdd && product.inStock ? (
+                <button
+                  type="button"
+                  onClick={handleQuickAdd}
+                  className="absolute inset-x-3 bottom-3 flex items-center justify-center gap-2 rounded-full bg-brown/90 py-2.5 text-xs font-medium text-white opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 md:translate-y-1 md:group-hover:translate-y-0"
+                  aria-label={`افزودن ${product.title} به سبد`}
+                >
+                  <ShoppingBag size={14} strokeWidth={1.5} />
+                  افزودن سریع
+                </button>
+              ) : null}
             </div>
             <div className="p-4">
               <p className="mb-1 text-xs text-muted">{product.categoryLabel}</p>
-              <h3 className="mb-2 text-sm font-semibold text-brown line-clamp-1">
+              <h3 className="mb-2 line-clamp-1 text-sm font-semibold text-brown">
                 {product.title}
               </h3>
               <RatingStars
@@ -88,6 +117,18 @@ export function ProductCard({ product }: ProductCardProps) {
               />
             </div>
           </Link>
+          {quickAdd && product.inStock ? (
+            <div className="px-4 pb-4 md:hidden">
+              <button
+                type="button"
+                onClick={handleQuickAdd}
+                className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-cream py-2.5 text-xs font-medium text-brown transition-colors hover:border-amber hover:text-amber"
+              >
+                <ShoppingBag size={14} strokeWidth={1.5} />
+                افزودن به سبد
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
     </motion.article>

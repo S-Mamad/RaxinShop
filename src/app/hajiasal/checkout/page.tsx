@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,14 +11,30 @@ import { Button } from "@asal/components/ui/Button";
 import { CartSummary } from "@asal/components/cart/CartSummary";
 import { CartItemRow } from "@asal/components/cart/CartItem";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
+import {
+  ShippingMethodSelector,
+  type ShippingMethod,
+  type ShippingOption,
+} from "@asal/components/checkout/ShippingMethodSelector";
+import { PaymentMethodSelector } from "@asal/components/checkout/PaymentMethodSelector";
 import { useCartStore } from "@asal/store/cart";
+import site from "@asal/data/site.json";
+import type { SiteConfig } from "@asal/types";
+import iranLocations from "@asal/data/iran-locations.json";
 import { cn } from "@asal/lib/utils";
+import { hajiasalPath } from "@asal/lib/paths";
+import type { PaymentMethod } from "@asal/lib/server/orders";
+
+const siteData = site as SiteConfig;
 
 const steps = [
-  { id: 1, title: "اطلاعات تماس" },
-  { id: 2, title: "آدرس ارسال" },
-  { id: 3, title: "بررسی و پرداخت" },
+  { id: 1, title: "سبد خرید" },
+  { id: 2, title: "اطلاعات و آدرس" },
+  { id: 3, title: "ارسال و پرداخت" },
+  { id: 4, title: "بررسی نهایی" },
 ];
+
+type LocationEntry = { province: string; cities: string[] };
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -28,18 +44,52 @@ export default function CheckoutPage() {
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
+  const [shippingMethod, setShippingMethod] = useState<ShippingMethod>("standard");
 
   const items = useCartStore((s) => s.items);
   const subtotal = useCartStore((s) => s.getSubtotal());
-  const shipping = useCartStore((s) => s.getShippingCost());
-  const total = subtotal + shipping - discount;
+  const isFreeShipping = useCartStore((s) => s.isFreeShipping());
   const clearCart = useCartStore((s) => s.clearCart);
+
+  const shippingOptions: ShippingOption[] = useMemo(
+    () => [
+      {
+        id: "standard",
+        label: "پست پیشتاز",
+        description: "ارسال استاندارد با بسته‌بندی ایمن",
+        cost: isFreeShipping ? 0 : siteData.shippingCost,
+        eta: "۲ تا ۴ روز کاری",
+      },
+      {
+        id: "express",
+        label: "ارسال فوری",
+        description: "تحویل سریع در شهرهای اصلی",
+        cost: isFreeShipping ? 35000 : siteData.shippingCost + 40000,
+        eta: "۱ تا ۲ روز کاری",
+      },
+      {
+        id: "pickup",
+        label: "تحویل حضوری",
+        description: "دریافت از فروشگاه حاجی عسل",
+        cost: 0,
+        eta: "هماهنگی تلفنی",
+      },
+    ],
+    [isFreeShipping],
+  );
+
+  const shipping =
+    shippingOptions.find((o) => o.id === shippingMethod)?.cost ?? siteData.shippingCost;
+  const total = subtotal + shipping - discount;
 
   const {
     register,
     handleSubmit,
     trigger,
     getValues,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<CheckoutSchemaType>({
     resolver: zodResolver(checkoutSchema),
@@ -54,22 +104,42 @@ export default function CheckoutPage() {
     },
   });
 
+  const selectedProvince = watch("province");
+  const cities = useMemo(() => {
+    const entry = (iranLocations as LocationEntry[]).find(
+      (l) => l.province === selectedProvince,
+    );
+    return entry?.cities ?? [];
+  }, [selectedProvince]);
+
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-lg px-4 py-20 text-center">
         <p className="mb-6 text-muted">سبد خرید شما خالی است.</p>
-        <Button href="/hajiasal/shop">رفتن به فروشگاه</Button>
+        <Button href={hajiasalPath("/shop")}>رفتن به فروشگاه</Button>
       </div>
     );
   }
 
   const nextStep = async () => {
     if (step === 1) {
-      const valid = await trigger(["fullName", "phone"]);
-      if (valid) setStep(2);
-    } else if (step === 2) {
-      const valid = await trigger(["province", "city", "address", "postalCode"]);
+      setStep(2);
+      return;
+    }
+    if (step === 2) {
+      const valid = await trigger([
+        "fullName",
+        "phone",
+        "province",
+        "city",
+        "address",
+        "postalCode",
+      ]);
       if (valid) setStep(3);
+      return;
+    }
+    if (step === 3) {
+      setStep(4);
     }
   };
 
@@ -109,6 +179,8 @@ export default function CheckoutPage() {
           shipping,
           total,
           couponCode: discount > 0 ? couponCode : undefined,
+          paymentMethod,
+          shippingMethod,
         }),
       });
 
@@ -123,13 +195,18 @@ export default function CheckoutPage() {
         orderId: result.orderId,
         tracking: result.trackingCode ?? "",
       });
-      router.push(`/checkout/success?${params.toString()}`);
+      router.push(`${hajiasalPath("/checkout/success")}?${params.toString()}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "خطای ناشناخته");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const shippingLabel =
+    shippingOptions.find((o) => o.id === shippingMethod)?.label ?? shippingMethod;
+  const paymentLabel =
+    paymentMethod === "cod" ? "پرداخت در محل" : "کارت به کارت";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
@@ -174,6 +251,30 @@ export default function CheckoutPage() {
         className="rounded-2xl border border-border bg-surface p-5 md:p-8"
       >
         {step === 1 ? (
+          <div className="flex flex-col gap-6">
+            <CartItemRow />
+            <div className="flex gap-2">
+              <Input
+                placeholder="کد تخفیف"
+                dir="ltr"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                className="flex-1"
+              />
+              <Button type="button" variant="outline" onClick={applyCoupon}>
+                اعمال
+              </Button>
+            </div>
+            {couponMessage ? (
+              <p className={`text-xs ${discount > 0 ? "text-amber" : "text-muted"}`}>
+                {couponMessage}
+              </p>
+            ) : null}
+            <CartSummary shippingOverride={shipping} discount={discount} />
+          </div>
+        ) : null}
+
+        {step === 2 ? (
           <div className="flex flex-col gap-4">
             <Input
               label="نام و نام خانوادگی"
@@ -187,21 +288,51 @@ export default function CheckoutPage() {
               {...register("phone")}
               error={errors.phone?.message}
             />
-          </div>
-        ) : null}
-
-        {step === 2 ? (
-          <div className="flex flex-col gap-4">
-            <Input
-              label="استان"
-              {...register("province")}
-              error={errors.province?.message}
-            />
-            <Input
-              label="شهر"
-              {...register("city")}
-              error={errors.city?.message}
-            />
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="checkout-province" className="text-sm font-medium text-brown">
+                استان
+              </label>
+              <select
+                id="checkout-province"
+                {...register("province")}
+                onChange={(e) => {
+                  setValue("province", e.target.value);
+                  setValue("city", "");
+                }}
+                className="w-full rounded-xl border border-border bg-cream px-4 py-3 text-sm focus:border-amber focus:outline-none"
+              >
+                <option value="">انتخاب استان</option>
+                {(iranLocations as LocationEntry[]).map((loc) => (
+                  <option key={loc.province} value={loc.province}>
+                    {loc.province}
+                  </option>
+                ))}
+              </select>
+              {errors.province ? (
+                <p className="text-xs text-red-500">{errors.province.message}</p>
+              ) : null}
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="checkout-city" className="text-sm font-medium text-brown">
+                شهر
+              </label>
+              <select
+                id="checkout-city"
+                {...register("city")}
+                disabled={!selectedProvince}
+                className="w-full rounded-xl border border-border bg-cream px-4 py-3 text-sm focus:border-amber focus:outline-none disabled:opacity-50"
+              >
+                <option value="">انتخاب شهر</option>
+                {cities.map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
+              {errors.city ? (
+                <p className="text-xs text-red-500">{errors.city.message}</p>
+              ) : null}
+            </div>
             <Input
               label="آدرس کامل"
               {...register("address")}
@@ -224,6 +355,20 @@ export default function CheckoutPage() {
 
         {step === 3 ? (
           <div className="flex flex-col gap-6">
+            <ShippingMethodSelector
+              options={shippingOptions}
+              value={shippingMethod}
+              onChange={setShippingMethod}
+            />
+            <PaymentMethodSelector
+              value={paymentMethod}
+              onChange={setPaymentMethod}
+            />
+          </div>
+        ) : null}
+
+        {step === 4 ? (
+          <div className="flex flex-col gap-6">
             <div className="rounded-xl bg-cream p-4 text-sm">
               <p>
                 <span className="text-muted">نام: </span>
@@ -235,32 +380,22 @@ export default function CheckoutPage() {
               </p>
               <p>
                 <span className="text-muted">آدرس: </span>
-                {getValues("province")}، {getValues("city")} —{" "}
-                {getValues("address")}
+                {getValues("province")}، {getValues("city")}، {getValues("address")}
+              </p>
+              <p>
+                <span className="text-muted">ارسال: </span>
+                {shippingLabel}
+              </p>
+              <p>
+                <span className="text-muted">پرداخت: </span>
+                {paymentLabel}
               </p>
             </div>
             <CartItemRow />
-            <div className="flex gap-2">
-              <Input
-                placeholder="کد تخفیف"
-                dir="ltr"
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                className="flex-1"
-              />
-              <Button type="button" variant="outline" onClick={applyCoupon}>
-                اعمال
-              </Button>
-            </div>
-            {couponMessage ? (
-              <p className={`text-xs ${discount > 0 ? "text-amber" : "text-muted"}`}>
-                {couponMessage}
-              </p>
-            ) : null}
-            <CartSummary />
+            <CartSummary shippingOverride={shipping} discount={discount} />
             {discount > 0 ? (
               <p className="text-sm text-amber">
-                تخفیف: {discount.toLocaleString("fa-IR")} تومان — مجموع:{" "}
+                تخفیف: {discount.toLocaleString("fa-IR")} تومان، مجموع:{" "}
                 {total.toLocaleString("fa-IR")} تومان
               </p>
             ) : null}
@@ -280,7 +415,7 @@ export default function CheckoutPage() {
               قبلی
             </Button>
           ) : null}
-          {step < 3 ? (
+          {step < 4 ? (
             <Button type="button" onClick={nextStep} className="flex-1">
               بعدی
             </Button>
@@ -290,7 +425,11 @@ export default function CheckoutPage() {
               disabled={isSubmitting}
               className="flex-1"
             >
-              {isSubmitting ? "در حال پردازش..." : "پرداخت و ثبت سفارش"}
+              {isSubmitting
+                ? "در حال ثبت..."
+                : paymentMethod === "cod"
+                  ? "ثبت سفارش (پرداخت در محل)"
+                  : "ثبت سفارش (کارت به کارت)"}
             </Button>
           )}
         </div>

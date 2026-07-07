@@ -13,6 +13,8 @@ interface ProductImageProps {
   className?: string;
 }
 
+const PLACEHOLDER_IMAGE = "/images/hajiasal/placeholder.webp";
+
 export function ProductImage({
   src,
   alt,
@@ -22,6 +24,7 @@ export function ProductImage({
   className,
 }: ProductImageProps) {
   const [imgSrc, setImgSrc] = useState(src);
+  const [usedFallback, setUsedFallback] = useState(false);
 
   return (
     <Image
@@ -31,7 +34,12 @@ export function ProductImage({
       sizes={sizes}
       priority={priority}
       className={cn(className)}
-      onError={() => setImgSrc("/images/placeholder.svg")}
+      onError={() => {
+        if (!usedFallback) {
+          setUsedFallback(true);
+          setImgSrc(PLACEHOLDER_IMAGE);
+        }
+      }}
     />
   );
 }

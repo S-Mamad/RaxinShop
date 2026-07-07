@@ -40,8 +40,9 @@ export function getAllCategories(): ProductCategory[] {
   return Array.from(cats);
 }
 
-export function getPriceRange(): { min: number; max: number } {
-  const prices = products.flatMap((p) => p.weightOptions.map((w) => w.price));
+export function getPriceRange(catalog?: Product[]): { min: number; max: number } {
+  const source = catalog ?? products;
+  const prices = source.flatMap((p) => p.weightOptions.map((w) => w.price));
   return { min: Math.min(...prices), max: Math.max(...prices) };
 }
 
@@ -53,15 +54,22 @@ function sortProducts(items: Product[], sort: SortOption): Product[] {
     case "price-desc":
       return sorted.sort((a, b) => getMinPrice(b) - getMinPrice(a));
     case "newest":
-      return sorted.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+      return sorted.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
     case "popular":
     default:
       return sorted.sort((a, b) => b.reviewCount - a.reviewCount);
   }
 }
 
-export function filterProducts(filters: ProductFilters): Product[] {
-  let result = [...products];
+export function filterProducts(
+  filters: ProductFilters,
+  catalog?: Product[],
+): Product[] {
+  let result = [...(catalog ?? products)];
 
   if (filters.category) {
     result = result.filter((p) => p.category === filters.category);
@@ -79,7 +87,40 @@ export function filterProducts(filters: ProductFilters): Product[] {
     result = result.filter((p) => getMinPrice(p) <= filters.maxPrice!);
   }
 
+  if (filters.minRating !== undefined && filters.minRating > 0) {
+    result = result.filter((p) => p.rating >= filters.minRating!);
+  }
+
+  if (filters.weightGrams !== undefined && filters.weightGrams > 0) {
+    result = result.filter((p) =>
+      p.weightOptions.some((w) => w.grams === filters.weightGrams),
+    );
+  }
+
   return sortProducts(result, filters.sort ?? "popular");
+}
+
+export function getRelatedProducts(
+  product: Product,
+  limit = 4,
+): Product[] {
+  return products
+    .filter((p) => p.category === product.category && p.id !== product.id && p.inStock)
+    .slice(0, limit);
+}
+
+export const PRODUCTS_PER_PAGE = 12;
+
+export function paginateProducts(items: Product[], page: number, perPage = PRODUCTS_PER_PAGE) {
+  const totalPages = Math.max(1, Math.ceil(items.length / perPage));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const start = (safePage - 1) * perPage;
+  return {
+    items: items.slice(start, start + perPage),
+    page: safePage,
+    totalPages,
+    total: items.length,
+  };
 }
 
 export function getAllSlugs(): string[] {

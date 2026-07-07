@@ -1,4 +1,6 @@
 ﻿import reviewsData from "@asal/data/reviews.json";
+import { readJsonFile, appendToJsonArray } from "./db";
+import { getSupabaseAdmin } from "./supabase";
 
 export interface Review {
   id: string;
@@ -10,12 +12,117 @@ export interface Review {
   verified: boolean;
 }
 
-const reviews = reviewsData as Review[];
+const staticReviews = reviewsData as Review[];
+const DYNAMIC_REVIEWS_FILE = "reviews-submissions.json";
 
-export function getReviewsByProduct(productId: string): Review[] {
-  return reviews.filter((r) => r.productId === productId);
+function mapReviewRow(row: Record<string, unknown>): Review {
+  const createdAt = row.created_at as string;
+  return {
+    id: String(row.id),
+    productId: row.product_id as string,
+    author: row.author as string,
+    rating: row.rating as number,
+    comment: row.comment as string,
+    date: createdAt.includes("T") ? createdAt.split("T")[0] : createdAt,
+    verified: (row.verified as boolean) ?? false,
+  };
+}
+
+async function getDynamicReviews(): Promise<Review[]> {
+  return readJsonFile<Review[]>(DYNAMIC_REVIEWS_FILE, []);
+}
+
+export function getAllStaticReviews(): Review[] {
+  return staticReviews;
+}
+
+export async function getAllReviews(): Promise<Review[]> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("product_reviews")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error && data) {
+      const dynamic = data.map(mapReviewRow);
+      const staticIds = new Set(staticReviews.map((r) => r.id));
+      const merged = [
+        ...staticReviews,
+        ...dynamic.filter((r) => !staticIds.has(r.id)),
+      ];
+      return merged.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
+    }
+  }
+
+  const dynamic = await getDynamicReviews();
+  return [...staticReviews, ...dynamic];
+}
+
+export async function getReviewsByProduct(productId: string): Promise<Review[]> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("product_reviews")
+      .select("*")
+      .eq("product_id", productId)
+      .order("created_at", { ascending: false });
+    if (!error && data) {
+      const dynamic = data.map(mapReviewRow);
+      const staticForProduct = staticReviews.filter(
+        (r) => r.productId === productId,
+      );
+      const staticIds = new Set(staticForProduct.map((r) => r.id));
+      return [...staticForProduct, ...dynamic.filter((r) => !staticIds.has(r.id))].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
+    }
+  }
+
+  const all = await getAllReviews();
+  return all
+    .filter((r) => r.productId === productId)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 export function getFeaturedReviews(limit = 6): Review[] {
-  return reviews.filter((r) => r.rating >= 4).slice(0, limit);
+  return staticReviews.filter((r) => r.rating >= 4).slice(0, limit);
+}
+
+export async function createReview(input: {
+  productId: string;
+  author: string;
+  rating: number;
+  comment: string;
+}): Promise<Review> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("product_reviews")
+      .insert({
+        product_id: input.productId,
+        author: input.author,
+        rating: input.rating,
+        comment: input.comment,
+        verified: false,
+      })
+      .select("*")
+      .single();
+    if (error) throw error;
+    return mapReviewRow(data);
+  }
+
+  const review: Review = {
+    id: `r-${Date.now().toString(36)}`,
+    productId: input.productId,
+    author: input.author,
+    rating: input.rating,
+    comment: input.comment,
+    date: new Date().toISOString().split("T")[0],
+    verified: false,
+  };
+
+  await appendToJsonArray(DYNAMIC_REVIEWS_FILE, review);
+  return review;
 }

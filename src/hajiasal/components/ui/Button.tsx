@@ -8,6 +8,8 @@ import { useMagneticHover } from "@asal/hooks/useMagneticHover";
 
 interface ButtonProps {
   href?: string;
+  target?: string;
+  rel?: string;
   variant?: "primary" | "ghost" | "outline";
   size?: "default" | "lg" | "sm";
   magnetic?: boolean;
@@ -20,6 +22,8 @@ interface ButtonProps {
 
 export function Button({
   href,
+  target,
+  rel,
   variant = "primary",
   size = "default",
   magnetic = false,
@@ -59,6 +63,7 @@ export function Button({
   );
 
   if (href) {
+    const linkProps = { className: styles, target, rel };
     if (magnetic) {
       return (
         <div
@@ -67,14 +72,14 @@ export function Button({
           onMouseLeave={onMouseLeave}
           className="inline-block"
         >
-          <Link href={href} className={styles}>
+          <Link href={href} {...linkProps}>
             {content}
           </Link>
         </div>
       );
     }
     return (
-      <Link href={href} className={styles}>
+      <Link href={href} {...linkProps}>
         {content}
       </Link>
     );

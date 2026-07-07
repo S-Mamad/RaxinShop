@@ -2,19 +2,23 @@
 
 import { useMemo, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import type { ProductCategory, SortOption } from "@asal/types";
+import type { Product, ProductCategory, SortOption } from "@asal/types";
 import {
   filterProducts,
   getPriceRange,
+  paginateProducts,
 } from "@asal/lib/products";
 import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
 import { ProductGrid } from "@asal/components/product/ProductGrid";
+import { ProductGridSkeleton } from "@asal/components/ui/ProductGridSkeleton";
+import { ShopEmptyState } from "@asal/components/shop/ShopEmptyState";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
+import { Button } from "@asal/components/ui/Button";
 import { cn } from "@asal/lib/utils";
+import { hajiasalPath } from "@asal/lib/paths";
 
 const siteData = site as SiteConfig;
-const priceRange = getPriceRange();
 
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: "popular", label: "محبوب‌ترین" },
@@ -23,15 +27,40 @@ const sortOptions: { value: SortOption; label: string }[] = [
   { value: "newest", label: "جدیدترین" },
 ];
 
-function ShopContentInner() {
+const ratingOptions = [
+  { value: "", label: "همه امتیازها" },
+  { value: "3", label: "۳ ستاره به بالا" },
+  { value: "4", label: "۴ ستاره به بالا" },
+  { value: "4.5", label: "۴.۵ ستاره به بالا" },
+];
+
+const weightOptions = [
+  { value: "", label: "همه وزن‌ها" },
+  { value: "300", label: "۳۰۰ گرم" },
+  { value: "500", label: "۵۰۰ گرم" },
+  { value: "1000", label: "۱ کیلوگرم" },
+];
+
+interface ShopContentProps {
+  initialProducts: Product[];
+}
+
+function ShopContentInner({ initialProducts }: ShopContentProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const priceRange = useMemo(
+    () => getPriceRange(initialProducts),
+    [initialProducts],
+  );
 
   const category = (searchParams.get("category") as ProductCategory) || null;
   const sort = (searchParams.get("sort") as SortOption) || "popular";
   const minPrice = Number(searchParams.get("minPrice") || priceRange.min);
   const maxPrice = Number(searchParams.get("maxPrice") || priceRange.max);
+  const minRating = Number(searchParams.get("minRating") || 0);
+  const weightGrams = Number(searchParams.get("weight") || 0);
   const inStockOnly = searchParams.get("inStock") === "1";
+  const page = Number(searchParams.get("page") || 1);
 
   const updateParams = useCallback(
     (updates: Record<string, string | null>) => {
@@ -43,28 +72,50 @@ function ShopContentInner() {
           params.set(key, value);
         }
       });
-      router.push(`/shop?${params.toString()}`, { scroll: false });
+      if (!("page" in updates) && Object.keys(updates).some((k) => k !== "page")) {
+        params.delete("page");
+      }
+      router.push(`${hajiasalPath("/shop")}?${params.toString()}`, { scroll: false });
     },
     [searchParams, router],
   );
 
   const filtered = useMemo(
     () =>
-      filterProducts({
-        category,
-        minPrice,
-        maxPrice,
-        sort,
-        inStockOnly,
-      }),
-    [category, minPrice, maxPrice, sort, inStockOnly],
+      filterProducts(
+        {
+          category,
+          minPrice,
+          maxPrice,
+          minRating: minRating || undefined,
+          weightGrams: weightGrams || undefined,
+          sort,
+          inStockOnly,
+        },
+        initialProducts,
+      ),
+    [
+      category,
+      minPrice,
+      maxPrice,
+      minRating,
+      weightGrams,
+      sort,
+      inStockOnly,
+      initialProducts,
+    ],
+  );
+
+  const { items, page: currentPage, totalPages, total } = useMemo(
+    () => paginateProducts(filtered, page),
+    [filtered, page],
   );
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
       <SectionHeading
         title="فروشگاه"
-        subtitle={`${filtered.length.toLocaleString("fa-IR")} محصول`}
+        subtitle={`${total.toLocaleString("fa-IR")} محصول`}
         className="mb-8"
       />
 
@@ -112,6 +163,24 @@ function ShopContentInner() {
                 محدوده قیمت (تومان)
               </h3>
               <div className="flex flex-col gap-3">
+                <label className="text-xs text-muted">
+                  از {minPrice.toLocaleString("fa-IR")} تومان
+                </label>
+                <input
+                  type="range"
+                  min={priceRange.min}
+                  max={priceRange.max}
+                  step={50000}
+                  value={minPrice}
+                  onChange={(e) =>
+                    updateParams({ minPrice: e.target.value })
+                  }
+                  aria-label="حداقل قیمت"
+                  className="w-full accent-amber"
+                />
+                <label className="text-xs text-muted">
+                  تا {maxPrice.toLocaleString("fa-IR")} تومان
+                </label>
                 <input
                   type="range"
                   min={priceRange.min}
@@ -121,12 +190,44 @@ function ShopContentInner() {
                   onChange={(e) =>
                     updateParams({ maxPrice: e.target.value })
                   }
+                  aria-label="حداکثر قیمت"
                   className="w-full accent-amber"
                 />
-                <p className="text-xs text-muted">
-                  تا {maxPrice.toLocaleString("fa-IR")} تومان
-                </p>
               </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-brown">امتیاز</h3>
+              <select
+                value={minRating ? String(minRating) : ""}
+                onChange={(e) =>
+                  updateParams({ minRating: e.target.value || null })
+                }
+                className="w-full rounded-xl border border-border bg-cream px-3 py-2 text-sm text-brown focus:border-amber focus:outline-none"
+              >
+                {ratingOptions.map((opt) => (
+                  <option key={opt.value || "all"} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-brown">وزن</h3>
+              <select
+                value={weightGrams ? String(weightGrams) : ""}
+                onChange={(e) =>
+                  updateParams({ weight: e.target.value || null })
+                }
+                className="w-full rounded-xl border border-border bg-cream px-3 py-2 text-sm text-brown focus:border-amber focus:outline-none"
+              >
+                {weightOptions.map((opt) => (
+                  <option key={opt.value || "all"} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
@@ -159,29 +260,55 @@ function ShopContentInner() {
         </aside>
 
         <div className="flex-1">
-          {filtered.length > 0 ? (
-            <ProductGrid products={filtered} />
+          {items.length > 0 ? (
+            <>
+              <ProductGrid products={items} />
+              {totalPages > 1 ? (
+                <nav
+                  className="mt-10 flex items-center justify-center gap-2"
+                  aria-label="صفحه‌بندی"
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage <= 1}
+                    onClick={() =>
+                      updateParams({ page: String(currentPage - 1) })
+                    }
+                  >
+                    قبلی
+                  </Button>
+                  <span className="px-3 text-sm text-muted">
+                    صفحه {currentPage.toLocaleString("fa-IR")} از{" "}
+                    {totalPages.toLocaleString("fa-IR")}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage >= totalPages}
+                    onClick={() =>
+                      updateParams({ page: String(currentPage + 1) })
+                    }
+                  >
+                    بعدی
+                  </Button>
+                </nav>
+              ) : null}
+            </>
           ) : (
-            <p className="py-20 text-center text-muted">
-              محصولی با این فیلترها یافت نشد.
-            </p>
+            <ShopEmptyState />
           )}
         </div>
       </div>
+
     </div>
   );
 }
 
-export function ShopContent() {
+export function ShopContent({ initialProducts }: ShopContentProps) {
   return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-[50vh] items-center justify-center text-muted">
-          در حال بارگذاری...
-        </div>
-      }
-    >
-      <ShopContentInner />
+    <Suspense fallback={<ProductGridSkeleton count={6} />}>
+      <ShopContentInner initialProducts={initialProducts} />
     </Suspense>
   );
 }

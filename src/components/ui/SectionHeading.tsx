@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 
 interface SectionHeadingProps {
+  index?: string;
   eyebrow?: string;
   title: string;
   description?: string;
@@ -9,6 +10,7 @@ interface SectionHeadingProps {
 }
 
 export function SectionHeading({
+  index,
   eyebrow,
   title,
   description,
@@ -23,22 +25,18 @@ export function SectionHeading({
         className,
       )}
     >
-      {eyebrow ? (
-        <div
-          className={cn(
-            "mb-5 flex items-center gap-3",
-            align === "center" && "justify-center",
-          )}
-        >
-          <span className="h-px w-8 bg-accent/50" />
-          <span className="text-sm font-medium text-accent">{eyebrow}</span>
-        </div>
-      ) : null}
-      <h2 className="font-display text-[1.75rem] text-foreground md:text-[2.5rem]">
+      {(index || eyebrow) && (
+        <p className="telemetry mb-5">
+          {index ? `[ ${index} ]` : null}
+          {index && eyebrow ? " · " : null}
+          {eyebrow}
+        </p>
+      )}
+      <h2 className="font-display text-[2rem] text-foreground md:text-[2.75rem]">
         {title}
       </h2>
       {description ? (
-        <p className="mt-4 text-[15px] leading-[1.9] text-muted md:text-base">
+        <p className="mt-5 max-w-xl text-[15px] leading-[1.85] text-muted md:text-base">
           {description}
         </p>
       ) : null}

@@ -1,9 +1,10 @@
 ﻿import type { Metadata } from "next";
+import { hajiasalCanonical } from "@asal/lib/paths";
 
 export const metadata: Metadata = {
   title: "سبد خرید",
   description: "بررسی و مدیریت سبد خرید حاجی عسل",
-  alternates: { canonical: "/cart" },
+  alternates: { canonical: hajiasalCanonical("/cart") },
 };
 
 export default function CartLayout({

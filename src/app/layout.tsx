@@ -17,9 +17,9 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "راکسین‌شاپ | استودیو ساخت محصول دیجیتال",
+  title: "راکسین‌شاپ | استودیو توسعه",
   description:
-    "طراحی و توسعه محصولات دیجیتال با استاندارد حرفه‌ای. فرانت‌اند، بک‌اند و تجربه کاربری.",
+    "کد تمیز، محصول واقعی. فرانت‌اند، بک‌اند و UI در سطح production.",
   openGraph: {
     title: "راکسین شاپ",
     description: "استودیو ساخت محصولات دیجیتال",

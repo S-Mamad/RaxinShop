@@ -2,12 +2,13 @@
 
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X } from "lucide-react";
+import { X } from "@phosphor-icons/react";
 import { useCartStore } from "@asal/store/cart";
 import { Button } from "@asal/components/ui/Button";
 import { CartItemRow } from "./CartItem";
 import { CartSummary } from "./CartSummary";
 import { FreeShippingBar } from "./FreeShippingBar";
+import { hajiasalPath } from "@asal/lib/paths";
 
 export function CartDrawer() {
   const isOpen = useCartStore((s) => s.isOpen);
@@ -70,7 +71,7 @@ export function CartDrawer() {
                 className="flex h-9 w-9 items-center justify-center rounded-full text-muted hover:bg-cream-dark hover:text-brown"
                 aria-label="بستن"
               >
-                <X size={20} strokeWidth={1.5} />
+                <X size={20} weight="light" />
               </button>
             </div>
 
@@ -89,11 +90,11 @@ export function CartDrawer() {
                 </div>
                 <CartSummary />
                 <div className="mt-4 flex flex-col gap-2">
-                  <Button href="/hajiasal/checkout" onClick={closeCart} className="w-full">
+                  <Button href={hajiasalPath("/checkout")} onClick={closeCart} className="w-full">
                     تکمیل خرید
                   </Button>
                   <Button
-                    href="/hajiasal/cart"
+                    href={hajiasalPath("/cart")}
                     variant="outline"
                     onClick={closeCart}
                     className="w-full"

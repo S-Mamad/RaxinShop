@@ -43,6 +43,8 @@ export const checkoutApiSchema = z.object({
   subtotal: z.number().min(0),
   shipping: z.number().min(0),
   total: z.number().min(0),
+  paymentMethod: z.enum(["cod", "card_to_card"]).optional(),
+  shippingMethod: z.string().optional(),
 });
 
 export type CheckoutSchemaType = z.infer<typeof checkoutSchema>;

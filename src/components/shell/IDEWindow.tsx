@@ -96,8 +96,9 @@ export function IDEWindow() {
   return (
     <div
       dir="ltr"
-      className="overflow-hidden rounded-2xl border border-border bg-panel text-left shadow-[0_0_80px_-20px_var(--accent-glow),0_40px_100px_-40px_rgba(0,0,0,0.9)]"
+      className="bezel overflow-hidden shadow-[0_0_60px_-15px_var(--accent-glow)]"
     >
+      <div className="bezel-inner overflow-hidden text-left">
       <div className="flex items-center gap-2 border-b border-border px-4 py-3">
         <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
@@ -163,6 +164,7 @@ export function IDEWindow() {
         <span className="text-muted">npm run build</span>
         <span className="mx-2 text-dim">·</span>
         <span className="text-[var(--string)]">✓ compiled successfully</span>
+      </div>
       </div>
     </div>
   );

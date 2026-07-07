@@ -3,12 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft } from "lucide-react";
 import site from "@/data/site.json";
 import type { SiteConfig } from "@/types";
 import { cn } from "@/lib/utils";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { Button } from "@/components/ui/Button";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 
 const data = site as SiteConfig;
@@ -49,15 +47,15 @@ export function MobileMenu() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-void/96 backdrop-blur-3xl"
           >
-            <div className="flex h-full flex-col items-center justify-center gap-7 px-6">
-              <BrandLogo className="mb-4 text-lg" />
+            <div className="flex h-full flex-col items-center justify-center gap-8 px-6">
+              <BrandLogo className="mb-2 text-lg" />
               {data.nav.map((item, i) => (
                 <motion.div
                   key={item.id}
-                  initial={{ opacity: 0, y: 28 }}
+                  initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
-                    delay: 0.06 + i * 0.05,
+                    delay: 0.05 + i * 0.04,
                     ease: [0.32, 0.72, 0, 1],
                   }}
                 >
@@ -76,20 +74,24 @@ export function MobileMenu() {
                 </motion.div>
               ))}
               <motion.div
-                initial={{ opacity: 0, y: 28 }}
+                initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mt-4"
+                transition={{ delay: 0.35 }}
+                className="mt-4 flex gap-6"
               >
-                <Button
-                  href="#contact"
-                  onClick={() => setOpen(false)}
-                  trailingIcon={
-                    <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-                  }
-                >
-                  تماس با ما
-                </Button>
+                {data.links.map((link) => (
+                  <a
+                    key={link.id}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    dir="ltr"
+                    onClick={() => setOpen(false)}
+                    className="font-mono text-sm text-muted transition-colors hover:text-accent"
+                  >
+                    {link.label}
+                  </a>
+                ))}
               </motion.div>
             </div>
           </motion.div>

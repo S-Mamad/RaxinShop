@@ -12,3 +12,14 @@ export function formatPrice(price: number): string {
 export function formatPersianNumber(num: number): string {
   return num.toLocaleString("fa-IR");
 }
+
+export function formatJalaliDate(isoDate: string): string {
+  const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) return isoDate;
+  return new Intl.DateTimeFormat("fa-IR", {
+    calendar: "persian",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+}

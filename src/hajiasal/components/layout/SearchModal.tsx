@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Search, X, ArrowLeft } from "lucide-react";
 import type { Product } from "@asal/types";
 import { ProductImage } from "@asal/components/ui/ProductImage";
-import { formatPrice } from "@asal/lib/utils";
+import { hajiasalPath } from "@asal/lib/paths";
 
 interface SearchModalProps {
   open: boolean;
@@ -17,6 +17,12 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setQuery("");
+    setResults([]);
+    onClose();
+  }, [onClose]);
 
   const search = useCallback(async (q: string) => {
     if (q.length < 2) {
@@ -45,13 +51,20 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
-      setQuery("");
-      setResults([]);
     }
     return () => {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, handleClose]);
 
   return (
     <AnimatePresence>
@@ -62,13 +75,16 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-brown-deep/50 backdrop-blur-md"
-            onClick={onClose}
+            onClick={handleClose}
           />
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="جستجوی محصول"
             className="fixed inset-x-4 top-20 z-50 mx-auto max-w-2xl rounded-2xl border border-border bg-surface p-4 shadow-2xl md:inset-x-auto"
           >
             <div className="flex items-center gap-3 border-b border-border pb-3">
@@ -83,7 +99,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               />
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="text-muted hover:text-brown"
                 aria-label="بستن"
               >
@@ -98,8 +114,8 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                   {results.map((product) => (
                     <li key={product.id}>
                       <Link
-                        href={`/hajiasal/product/${product.slug}`}
-                        onClick={onClose}
+                        href={hajiasalPath(`/product/${product.slug}`)}
+                        onClick={handleClose}
                         className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-cream-dark"
                       >
                         <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">

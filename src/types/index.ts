@@ -4,13 +4,9 @@ export interface NavItem {
   href: string;
 }
 
-export interface StatItem {
-  value: string;
-  label: string;
-}
-
 export interface ServiceItem {
   id: string;
+  index?: string;
   title: string;
   description: string;
   icon: string;
@@ -29,18 +25,13 @@ export interface ProjectItem {
   tech: string[];
 }
 
-export interface ProcessStep {
-  step: string;
-  title: string;
-  description: string;
-}
-
 export interface TeamMember {
   id: string;
   name: string;
   role: string;
   bio: string;
   image: string;
+  imagePosition?: string;
   featured?: boolean;
 }
 
@@ -48,19 +39,6 @@ export interface LinkItem {
   id: string;
   label: string;
   href: string;
-}
-
-export interface StackCategory {
-  id: string;
-  title: string;
-  items: string[];
-}
-
-export interface LabItem {
-  id: string;
-  title: string;
-  description: string;
-  index: string;
 }
 
 export interface SiteConfig {
@@ -75,11 +53,8 @@ export interface SiteConfig {
     heroHighlight: string;
   };
   nav: NavItem[];
-  stats: StatItem[];
+  stack: string[];
   services: ServiceItem[];
-  process: ProcessStep[];
-  stackCategories: StackCategory[];
-  lab: LabItem[];
   team: TeamMember[];
   links: LinkItem[];
 }

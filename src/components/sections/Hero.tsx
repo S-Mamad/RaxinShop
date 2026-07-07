@@ -9,10 +9,12 @@ import { Reveal } from "@/components/ui/Reveal";
 const data = site as SiteConfig;
 
 export function Hero() {
+  const telegram = data.links.find((l) => l.id === "telegram");
+
   return (
     <section
       id="home"
-      className="relative flex min-h-[100dvh] items-center overflow-hidden pt-28 pb-20"
+      className="relative flex min-h-[100dvh] items-center overflow-hidden border-b border-border pt-28 pb-24"
     >
       <MeshBackground />
 
@@ -20,20 +22,22 @@ export function Hero() {
         <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-12">
           <div>
             <Reveal>
-              <p className="mb-6 text-sm font-medium text-accent">
-                {data.brand.tagline}
+              <p className="telemetry mb-8">
+                {data.brand.slug} · {data.brand.version} · {data.brand.tagline}
               </p>
-              <h1 className="font-display text-[clamp(2rem,5.5vw,3.5rem)] text-foreground">
+
+              <h1 className="font-display text-[clamp(2.75rem,7vw,4.5rem)] text-foreground">
                 {data.brand.heroTitle}
-                <span className="mt-2 block text-muted">
+                <span className="mt-1 block text-accent">
                   {data.brand.heroHighlight}
                 </span>
               </h1>
-              <p className="mt-6 max-w-lg text-[15px] leading-[1.9] text-muted md:text-base">
+
+              <p className="mt-8 max-w-md text-[15px] leading-[1.85] text-muted md:text-base">
                 {data.brand.description}
               </p>
 
-              <div className="mt-10 flex flex-wrap gap-3">
+              <div className="mt-10 flex flex-wrap items-center gap-3">
                 <Button
                   href="#work"
                   size="lg"
@@ -41,24 +45,28 @@ export function Hero() {
                     <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
                   }
                 >
-                  مشاهده نمونه‌کارها
+                  نمونه‌کارها
                 </Button>
-                <Button href="#contact" variant="outline" size="lg">
-                  درخواست همکاری
-                </Button>
+                {telegram ? (
+                  <Button href={telegram.href} external variant="outline" size="lg">
+                    @Mamad3
+                  </Button>
+                ) : null}
               </div>
 
-              <div className="mt-14 grid grid-cols-2 gap-3 border-t border-border pt-10 sm:grid-cols-4">
-                {data.stats.map((stat) => (
-                  <div key={stat.label}>
-                    <p className="font-display text-2xl text-foreground md:text-3xl">
-                      {stat.value}
-                    </p>
-                    <p className="mt-1 text-xs leading-relaxed text-muted">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
+              <div className="mt-14 border-t border-border pt-8">
+                <p className="telemetry mb-4 text-dim">stack</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {data.stack.map((tech) => (
+                    <span
+                      key={tech}
+                      dir="ltr"
+                      className="border border-border bg-elevated px-2.5 py-1 font-mono text-[10px] text-muted"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
               </div>
             </Reveal>
           </div>

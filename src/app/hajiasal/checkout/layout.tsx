@@ -1,9 +1,10 @@
 ﻿import type { Metadata } from "next";
+import { hajiasalCanonical } from "@asal/lib/paths";
 
 export const metadata: Metadata = {
   title: "تکمیل خرید",
   description: "ثبت سفارش و پرداخت امن در فروشگاه حاجی عسل",
-  alternates: { canonical: "/checkout" },
+  alternates: { canonical: hajiasalCanonical("/checkout") },
 };
 
 export default function CheckoutLayout({

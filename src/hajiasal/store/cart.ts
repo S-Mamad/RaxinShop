@@ -11,8 +11,11 @@ const siteData = site as SiteConfig;
 interface CartStore {
   items: CartItem[];
   isOpen: boolean;
+  announcement: string;
   _hasHydrated: boolean;
   setHasHydrated: (value: boolean) => void;
+  setAnnouncement: (message: string) => void;
+  clearAnnouncement: () => void;
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
   removeItem: (productId: string, weightGrams: number) => void;
   updateQuantity: (
@@ -38,8 +41,11 @@ export const useCartStore = create<CartStore>()(
     (set, get) => ({
       items: [],
       isOpen: false,
+      announcement: "",
       _hasHydrated: false,
       setHasHydrated: (value) => set({ _hasHydrated: value }),
+      setAnnouncement: (message) => set({ announcement: message }),
+      clearAnnouncement: () => set({ announcement: "" }),
 
       addItem: (item, quantity = 1) => {
         set((state) => {
@@ -48,6 +54,9 @@ export const useCartStore = create<CartStore>()(
               i.productId === item.productId &&
               i.weight.grams === item.weight.grams,
           );
+          const announcement = existing
+            ? `تعداد ${item.title} در سبد به‌روزرسانی شد`
+            : `${item.title} به سبد خرید اضافه شد`;
           if (existing) {
             return {
               items: state.items.map((i) =>
@@ -57,11 +66,13 @@ export const useCartStore = create<CartStore>()(
                   : i,
               ),
               isOpen: true,
+              announcement,
             };
           }
           return {
             items: [...state.items, { ...item, quantity }],
             isOpen: true,
+            announcement,
           };
         });
       },

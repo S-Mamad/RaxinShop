@@ -31,6 +31,7 @@ export interface Product {
   isNew?: boolean;
   ingredients?: string;
   shippingInfo?: string;
+  createdAt?: string;
 }
 
 export interface CartItem {
@@ -55,12 +56,47 @@ export interface CategoryItem {
   image: string;
 }
 
+export interface TeamMember {
+  name: string;
+  role: string;
+  bio: string;
+  image?: string;
+}
+
+export interface BrandValue {
+  title: string;
+  description: string;
+}
+
+export interface GalleryImage {
+  src: string;
+  alt: string;
+}
+
+export interface TrustPageSection {
+  heading: string;
+  body: string;
+}
+
+export interface TrustPageContent {
+  title: string;
+  intro: string;
+  sections: TrustPageSection[];
+}
+
+export interface SocialLinks {
+  instagram?: string;
+  whatsapp?: string;
+}
+
 export interface SiteConfig {
   brand: {
     name: string;
     tagline: string;
     description: string;
   };
+  whatsappNumber?: string;
+  social?: SocialLinks;
   nav: NavItem[];
   hero: {
     title: string;
@@ -69,8 +105,17 @@ export interface SiteConfig {
     ctaHref: string;
     image: string;
   };
+  couponHAJI10: {
+    minOrder: number;
+    percent: number;
+  };
   freeShippingThreshold: number;
   shippingCost: number;
+  milestones: Array<{
+    year: string;
+    title: string;
+    description: string;
+  }>;
   trustItems: Array<{
     id: string;
     title: string;
@@ -79,6 +124,15 @@ export interface SiteConfig {
   brandStory: {
     title: string;
     paragraphs: string[];
+  };
+  team?: TeamMember[];
+  values?: BrandValue[];
+  gallery?: GalleryImage[];
+  trustPages?: {
+    authenticity: TrustPageContent;
+    privacy: TrustPageContent;
+    terms: TrustPageContent;
+    shipping: TrustPageContent;
   };
   footer: {
     phone: string;
@@ -98,6 +152,8 @@ export interface ProductFilters {
   category?: ProductCategory | null;
   minPrice?: number;
   maxPrice?: number;
+  minRating?: number;
+  weightGrams?: number;
   sort?: SortOption;
   inStockOnly?: boolean;
 }

@@ -1,56 +1,43 @@
-import { ArrowLeft } from "lucide-react";
 import site from "@/data/site.json";
 import type { SiteConfig } from "@/types";
-import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const data = site as SiteConfig;
 
 export function Contact() {
-  const primaryLink =
-    data.links.find((l) => l.id === "telegram") ?? data.links[0];
-
   return (
     <section id="contact" className="py-28 md:py-36">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <Reveal>
-          <div className="overflow-hidden rounded-2xl border border-border bg-panel">
-            <div className="grid gap-10 p-8 md:grid-cols-2 md:items-center md:gap-16 md:p-14">
-              <div>
-                <SectionHeading
-                  eyebrow="تماس"
-                  title="برای پروژه بعدی آماده‌ایم"
-                  description="از طریق کانال‌های زیر با ما در ارتباط باشید. معمولاً در همان روز پاسخ می‌دهیم."
-                />
-              </div>
+          <div className="grid gap-12 md:grid-cols-2 md:gap-16">
+            <SectionHeading
+              index="04"
+              eyebrow="ارتباط"
+              title="شروع گفتگو"
+              description="مستقیم پیام بده. معمولاً همان روز جواب می‌دهیم."
+            />
 
-              <div className="flex flex-col gap-3">
-                {data.links.map((link) => (
-                  <a
-                    key={link.id}
-                    href={link.href}
-                    className="group flex items-center justify-between rounded-xl border border-border bg-elevated/40 px-5 py-4 transition-all duration-500 hover:border-accent/25 hover:bg-elevated"
-                  >
-                    <span className="text-sm text-muted">{link.label}</span>
-                    <ArrowLeft
-                      className="h-4 w-4 text-dim transition-all duration-300 group-hover:-translate-x-0.5 group-hover:text-accent"
-                      strokeWidth={1.5}
-                    />
-                  </a>
-                ))}
-
-                <Button
-                  href={primaryLink?.href ?? "#contact"}
-                  size="lg"
-                  className="mt-3 w-full sm:w-auto"
-                  trailingIcon={
-                    <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-                  }
+            <div className="flex flex-col gap-px border border-border bg-border">
+              {data.links.map((link) => (
+                <a
+                  key={link.id}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-between bg-void px-6 py-5 transition-colors duration-300 hover:bg-surface"
                 >
-                  شروع گفتگو
-                </Button>
-              </div>
+                  <span
+                    dir="ltr"
+                    className="font-mono text-sm text-foreground transition-colors group-hover:text-accent"
+                  >
+                    {link.label}
+                  </span>
+                  <span className="telemetry text-dim">
+                    {link.id === "email" ? "mail" : "tg"}
+                  </span>
+                </a>
+              ))}
             </div>
           </div>
         </Reveal>

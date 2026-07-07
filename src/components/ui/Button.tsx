@@ -6,7 +6,7 @@ interface ButtonProps {
   href?: string;
   external?: boolean;
   variant?: "primary" | "ghost" | "outline";
-  size?: "default" | "lg";
+  size?: "default" | "lg" | "sm";
   trailingIcon?: ReactNode;
   children: ReactNode;
   className?: string;
@@ -24,26 +24,29 @@ export function Button({
   onClick,
 }: ButtonProps) {
   const styles = cn(
-    "group inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-void",
+    "group inline-flex items-center justify-center gap-2.5 font-medium transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-void",
     variant === "primary" &&
-      "bg-accent text-void hover:bg-accent-bright",
-    variant === "ghost" && "text-foreground hover:bg-white/5",
+      "border border-accent/40 bg-accent text-void shadow-[0_0_20px_-5px_var(--accent-glow)] hover:bg-accent-bright",
+    variant === "ghost" && "text-muted hover:text-foreground",
     variant === "outline" &&
-      "border border-border text-foreground hover:border-border-bright hover:bg-white/[0.04]",
+      "border border-border-bright bg-transparent text-foreground hover:border-accent/40 hover:text-accent",
+    size === "sm" && "h-9 px-4 text-xs",
     size === "default" && "h-11 px-5 text-sm",
-    size === "lg" && "h-12 px-7 text-[15px]",
+    size === "lg" && "h-12 px-6 text-sm",
     className,
   );
 
+  const iconWrap = trailingIcon ? (
+    <span className="flex h-6 w-6 shrink-0 items-center justify-center border border-void/20 bg-void/10 transition-transform duration-500 group-hover:-translate-x-0.5">
+      {trailingIcon}
+    </span>
+  ) : null;
+
   const content = (
     <>
+      {iconWrap}
       <span>{children}</span>
-      {trailingIcon ? (
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-black/10 transition-transform duration-500 group-hover:-translate-x-0.5 group-hover:-translate-y-px group-hover:scale-105 dark:bg-white/10">
-          {trailingIcon}
-        </span>
-      ) : null}
     </>
   );
 

@@ -3,21 +3,25 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingBag, Menu, Search, Heart } from "lucide-react";
+import {
+  ShoppingBag,
+  List,
+  MagnifyingGlass,
+  Heart,
+} from "@phosphor-icons/react";
 import { useCartStore } from "@asal/store/cart";
 import { useWishlistStore } from "@asal/store/wishlist";
 import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
 import { cn } from "@asal/lib/utils";
+import { Icon } from "@asal/components/ui/Icon";
 import { MobileMenu } from "./MobileMenu";
 import { SearchModal } from "./SearchModal";
 
 const siteData = site as SiteConfig;
 
-const extraNav = [
-  { id: "faq", label: "سوالات", href: "/hajiasal/faq" },
-  { id: "contact", label: "تماس", href: "/hajiasal/contact" },
-];
+import { extraNav } from "@asal/lib/nav";
+import { hajiasalPath } from "@asal/lib/paths";
 
 export function Header() {
   const pathname = usePathname();
@@ -44,12 +48,12 @@ export function Header() {
           className={cn(
             "pointer-events-auto flex w-full max-w-5xl items-center justify-between rounded-full px-4 py-2.5 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] md:px-6",
             scrolled || !isHome
-              ? "border border-border-bright bg-glass shadow-[0_8px_32px_-8px_rgba(61,43,31,0.15)] backdrop-blur-xl"
+              ? "border border-border-bright bg-glass shadow-glass backdrop-blur-xl"
               : "border border-white/20 bg-brown-deep/30 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.3)] backdrop-blur-xl",
           )}
         >
           <Link
-            href="/hajiasal"
+            href={hajiasalPath()}
             className={cn(
               "text-base font-bold tracking-tight md:text-lg",
               scrolled || !isHome ? "text-brown" : "text-white",
@@ -91,10 +95,10 @@ export function Header() {
               )}
               aria-label="جستجو"
             >
-              <Search size={18} strokeWidth={1.5} />
+              <Icon icon={MagnifyingGlass} size={18} />
             </button>
             <Link
-              href="/hajiasal/wishlist"
+              href={hajiasalPath("/wishlist")}
               className={cn(
                 "relative flex h-9 w-9 items-center justify-center rounded-full transition-colors",
                 scrolled || !isHome
@@ -103,7 +107,7 @@ export function Header() {
               )}
               aria-label="علاقه‌مندی‌ها"
             >
-              <Heart size={18} strokeWidth={1.5} />
+              <Icon icon={Heart} size={18} />
               {wishlistCount > 0 ? (
                 <span className="absolute -top-0.5 -end-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-amber text-[9px] font-bold text-white">
                   {wishlistCount}
@@ -121,7 +125,7 @@ export function Header() {
               )}
               aria-label="سبد خرید"
             >
-              <ShoppingBag size={18} strokeWidth={1.5} />
+              <Icon icon={ShoppingBag} size={18} />
               {hasHydrated && itemCount > 0 ? (
                 <span className="absolute -top-0.5 -end-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-amber text-[9px] font-bold text-white">
                   {itemCount > 9 ? "۹+" : itemCount}
@@ -139,7 +143,7 @@ export function Header() {
               )}
               aria-label="منو"
             >
-              <Menu size={18} strokeWidth={1.5} />
+              <Icon icon={List} size={18} />
             </button>
           </div>
         </header>

@@ -1,5 +1,4 @@
 ﻿import { NextResponse } from "next/server";
-import { z } from "zod";
 import { checkoutApiSchema } from "@asal/lib/validations/checkout";
 import { createOrder } from "@asal/lib/server/orders";
 import { validateCoupon } from "@asal/lib/server/coupons";
@@ -21,7 +20,14 @@ export async function POST(request: Request) {
     }
 
     const { customer, items, subtotal, shipping, total } = parsed.data;
-    const couponCode = (body as { couponCode?: string }).couponCode;
+    const extra = body as {
+      couponCode?: string;
+      paymentMethod?: "cod" | "card_to_card";
+      shippingMethod?: string;
+    };
+    const couponCode = extra.couponCode;
+    const paymentMethod = extra.paymentMethod ?? "cod";
+    const shippingMethod = extra.shippingMethod;
 
     let discount = 0;
     if (couponCode) {
@@ -43,11 +49,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // TODO: INTEGRATE ZARRINPAL/ZIBAL HERE
-    // const gatewayKey = process.env.PAYMENT_GATEWAY_KEY;
+    // Future: Zarinpal integration — POST /api/checkout/create → redirect → verify
+    // const merchantId = process.env.ZARINPAL_MERCHANT_ID;
     // Never log or expose payment credentials
-
-    await new Promise((resolve) => setTimeout(resolve, 600));
 
     const order = await createOrder({
       customer,
@@ -56,13 +60,19 @@ export async function POST(request: Request) {
       shipping,
       discount,
       couponCode,
+      paymentMethod,
+      shippingMethod,
     });
 
     return NextResponse.json({
       success: true,
       orderId: order.id,
       trackingCode: order.trackingCode,
-      message: "سفارش با موفقیت ثبت شد",
+      status: order.status,
+      message:
+        paymentMethod === "cod"
+          ? "سفارش ثبت شد. پرداخت هنگام تحویل انجام می‌شود."
+          : "سفارش ثبت شد. اطلاعات کارت‌به‌کارت برای شما ارسال می‌شود.",
     });
   } catch {
     return NextResponse.json(
@@ -76,6 +86,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const orderId = searchParams.get("id");
   const tracking = searchParams.get("tracking");
+  const phone = searchParams.get("phone");
 
   if (!orderId && !tracking) {
     return NextResponse.json(
@@ -84,13 +95,20 @@ export async function GET(request: Request) {
     );
   }
 
-  const { getOrderById, getOrderByTracking } = await import(
-    "@asal/lib/server/orders"
-  );
+  const {
+    getOrderById,
+    getOrderByTracking,
+    getOrderByPhoneAndTracking,
+  } = await import("@asal/lib/server/orders");
 
-  const order = orderId
-    ? await getOrderById(orderId)
-    : await getOrderByTracking(tracking!);
+  let order = null;
+  if (orderId) {
+    order = await getOrderById(orderId);
+  } else if (tracking && phone) {
+    order = await getOrderByPhoneAndTracking(phone, tracking);
+  } else if (tracking) {
+    order = await getOrderByTracking(tracking);
+  }
 
   if (!order) {
     return NextResponse.json({ error: "سفارش یافت نشد" }, { status: 404 });
@@ -100,9 +118,11 @@ export async function GET(request: Request) {
     order: {
       id: order.id,
       status: order.status,
+      paymentMethod: order.paymentMethod,
       trackingCode: order.trackingCode,
       total: order.total,
       createdAt: order.createdAt,
+      shippingMethod: order.shippingMethod,
       items: order.items.map((i) => ({
         title: i.title,
         quantity: i.quantity,

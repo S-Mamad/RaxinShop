@@ -1,4 +1,5 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source "../../hajiasal/**/*.{js,ts,jsx,tsx}";
 
 :root {
   --cream: #faf7f2;
@@ -20,6 +21,13 @@
   --border-bright: rgba(61, 43, 31, 0.2);
   --glass: rgba(255, 253, 249, 0.82);
   --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+  --shadow-xs: 0 1px 2px rgba(61, 43, 31, 0.05);
+  --shadow-sm: 0 4px 12px -2px rgba(61, 43, 31, 0.08);
+  --shadow-md: 0 8px 24px -4px rgba(61, 43, 31, 0.1);
+  --shadow-lg: 0 16px 48px -8px rgba(61, 43, 31, 0.12);
+  --shadow-glass: 0 8px 32px -8px rgba(61, 43, 31, 0.14);
+  --shadow-amber: 0 4px 24px -4px var(--amber-glow);
+  --shadow-elevated: 0 16px 48px -16px rgba(61, 43, 31, 0.12);
 }
 
 @theme inline {
@@ -41,6 +49,19 @@
   --color-border-bright: var(--border-bright);
   --color-glass: var(--glass);
   --font-sans: var(--font-vazirmatn);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-glass: var(--shadow-glass);
+  --shadow-amber: var(--shadow-amber);
+  --shadow-elevated: var(--shadow-elevated);
+}
+
+.hajiasal-root h1,
+.hajiasal-root h2 {
+  font-family: var(--font-display), var(--font-vazirmatn), system-ui, sans-serif;
+  text-wrap: balance;
 }
 
 html {
