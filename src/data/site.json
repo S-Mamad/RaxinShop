@@ -3,12 +3,35 @@
     "name": "راکسین",
     "suffix": "‌شاپ",
     "slug": "raxinshop",
-    "version": "v2.2",
+    "version": "v3.0",
     "tagline": "استودیو توسعه · تهران",
-    "description": "ما برای استارتاپ‌ها و تیم‌هایی کار می‌کنیم که خروجی‌شان باید روی production بایستد — سریع، تمیز و قابل توسعه.",
-    "heroTitle": "کد تمیز.",
-    "heroHighlight": "محصول واقعی."
+    "description": "برای استارتاپ‌ها و تیم‌هایی که خروجی‌شان باید سریع، تمیز و قابل توسعه باشد. فرانت، بک‌اند و برند در یک استودیو.",
+    "heroTitle": "محصول دیجیتال که فردا هم scale شود.",
+    "heroHighlight": "از MVP تا production."
   },
+  "heroCta": {
+    "primary": "شروع پروژه",
+    "secondary": "نمونه‌کارها"
+  },
+  "clients": [
+    { "name": "مرهم", "href": "https://paziresh24.com" },
+    { "name": "پذیرش ۲۴", "href": "https://paziresh24.com" },
+    { "name": "حاجی عسل", "href": "/hajiasal" }
+  ],
+  "whyPoints": [
+    {
+      "pain": "خروجی فریلنسری که فردا scale نمی‌شود",
+      "answer": "معماری production-grade از روز اول. کدی که تیم بعدی هم می‌فهمد."
+    },
+    {
+      "pain": "جداسازی طراحی و توسعه",
+      "answer": "UI/UX، برند و کد در یک استودیو. یک نقطه تماس، یک خروجی یکپارچه."
+    },
+    {
+      "pain": "عدم شفافیت در timeline و تحویل",
+      "answer": "sprintهای کوتاه، demo منظم و milestone مشخص. می‌دانید کجایید."
+    }
+  ],
   "nav": [
     { "id": "home", "label": "خانه", "href": "#home" },
     { "id": "expertise", "label": "تخصص", "href": "#expertise" },
@@ -31,9 +54,10 @@
       "id": "frontend",
       "index": "01",
       "title": "فرانت‌اند",
-      "description": "رابط کاربری type-safe، سریع و دقیق. از design system تا انیمیشن — هر جزئیات با معیار production.",
+      "description": "رابط کاربری type-safe، سریع و دقیق. از design system تا انیمیشن. هر جزئیات با معیار production.",
       "icon": "Monitor",
-      "tags": ["React", "Next.js", "TypeScript"]
+      "tags": ["React", "Next.js", "TypeScript"],
+      "proof": "مرهم"
     },
     {
       "id": "product",
@@ -41,7 +65,8 @@
       "title": "محصول",
       "description": "از ایده تا لانچ. MVPای که فردا هم قابل scale باشد، نه اسکریپتی که دور انداخته شود.",
       "icon": "Layers",
-      "tags": ["SaaS", "MVP", "Architecture"]
+      "tags": ["SaaS", "MVP", "Architecture"],
+      "proof": "پذیرش ۲۴"
     },
     {
       "id": "backend",
@@ -49,15 +74,17 @@
       "title": "بک‌اند",
       "description": "API امن، مستند و پایدار. دیتابیس، auth و integration بدون بدهی فنی.",
       "icon": "Server",
-      "tags": ["Node.js", "PostgreSQL"]
+      "tags": ["Node.js", "PostgreSQL"],
+      "proof": "حاجی عسل"
     },
     {
       "id": "brand",
       "index": "04",
       "title": "برند دیجیتال",
-      "description": "لوگو، گرافیک، تلگرام و هویت بصری — کنار کد، نه جدا از آن.",
+      "description": "لوگو، گرافیک، تلگرام و هویت بصری. کنار کد، نه جدا از آن.",
       "icon": "Component",
-      "tags": ["Branding", "Telegram", "UI"]
+      "tags": ["Branding", "Telegram", "UI"],
+      "proof": "همگام"
     }
   ],
   "team": [
@@ -65,18 +92,26 @@
       "id": "mohammad",
       "name": "محمد محمدی",
       "role": "هم‌بنیان‌گذار / فرانت‌اند و محصول",
-      "bio": "مهندس محصول در پذیرش ۲۴. سازنده مرهم و چند پلتفرم production-grade. معماری فرانت، performance و UX دقیق — جایی که کد و تجربه کاربر یکی می‌شوند.",
+      "bio": "مهندس محصول در پذیرش ۲۴. سازنده مرهم و چند پلتفرم production-grade. معماری فرانت، performance و UX دقیق. جایی که کد و تجربه کاربر یکی می‌شوند.",
       "image": "/team/mohammad.jpg",
       "imagePosition": "center 22%",
-      "featured": true
+      "featured": true,
+      "initials": "م‌م",
+      "links": {
+        "telegram": "https://t.me/Mamad3"
+      }
     },
     {
       "id": "amir",
       "name": "امیر حاجی عابدی",
       "role": "هم‌بنیان‌گذار / برندینگ و دیجیتال",
-      "bio": "هویت بصری و خروجی دیجیتال راکسین‌شاپ. از لوگو و بنر تا پکیج کامل تلگرام — هر چیزی که مشتری ببیند، حرفه‌ای و آماده تحویل باشد.",
+      "bio": "هویت بصری و خروجی دیجیتال راکسین‌شاپ. از لوگو و بنر تا پکیج کامل تلگرام. هر چیزی که مشتری ببیند، حرفه‌ای و آماده تحویل باشد.",
       "image": "/team/amir.svg",
-      "imagePosition": "center top"
+      "imagePosition": "center top",
+      "initials": "ا‌ح",
+      "links": {
+        "telegram": "https://t.me/RaxinShop"
+      }
     }
   ],
   "links": [

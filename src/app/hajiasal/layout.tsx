@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Lalezar } from "next/font/google";
-import { Header } from "@asal/components/layout/Header";
-import { Footer } from "@asal/components/layout/Footer";
-import { CartDrawer } from "@asal/components/cart/CartDrawer";
-import { CartLiveRegion } from "@asal/components/cart/CartLiveRegion";
+import { StoreChrome } from "@asal/components/layout/StoreChrome";
 import {
   buildOrganizationJsonLd,
   buildWebSiteJsonLd,
@@ -94,13 +91,7 @@ export default function HajiasalLayout({
       >
         پرش به محتوای اصلی
       </a>
-      <Header />
-      <main id="main-content" className="flex-1">
-        {children}
-      </main>
-      <Footer />
-      <CartDrawer />
-      <CartLiveRegion />
+      <StoreChrome>{children}</StoreChrome>
     </div>
   );
 }

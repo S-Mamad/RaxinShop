@@ -1,10 +1,10 @@
 ﻿"use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check } from "lucide-react";
+import { Check } from "@phosphor-icons/react";
 import { checkoutSchema, type CheckoutSchemaType } from "@asal/lib/validations/checkout";
 import { Input } from "@asal/components/ui/Input";
 import { Button } from "@asal/components/ui/Button";
@@ -24,6 +24,7 @@ import iranLocations from "@asal/data/iran-locations.json";
 import { cn } from "@asal/lib/utils";
 import { hajiasalPath } from "@asal/lib/paths";
 import type { PaymentMethod } from "@asal/lib/server/orders";
+import { useAuth } from "@asal/hooks/useAuth";
 
 const siteData = site as SiteConfig;
 
@@ -37,7 +38,23 @@ const steps = [
 type LocationEntry = { province: string; cities: string[] };
 
 export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[50vh] items-center justify-center text-muted">
+          در حال بارگذاری...
+        </div>
+      }
+    >
+      <CheckoutPageInner />
+    </Suspense>
+  );
+}
+
+function CheckoutPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { user, loading: authLoading } = useAuth();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -112,6 +129,55 @@ export default function CheckoutPage() {
     return entry?.cities ?? [];
   }, [selectedProvince]);
 
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    try {
+      const res = await fetch("/api/coupons", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: couponCode, subtotal }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setDiscount(data.discount);
+        setCouponMessage(data.message);
+      } else {
+        setDiscount(0);
+        setCouponMessage(data.message);
+      }
+    } catch {
+      setCouponMessage("خطا در بررسی کد تخفیف");
+    }
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    if (user.fullName) setValue("fullName", user.fullName);
+    setValue("phone", user.phone);
+  }, [user, setValue]);
+
+  useEffect(() => {
+    const coupon = searchParams.get("coupon");
+    if (coupon && !couponCode) {
+      setCouponCode(coupon.toUpperCase());
+    }
+  }, [searchParams, couponCode]);
+
+  useEffect(() => {
+    if (couponCode && subtotal > 0 && discount === 0) {
+      void applyCoupon();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [couponCode, subtotal]);
+
+  if (authLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center text-muted">
+        در حال بارگذاری...
+      </div>
+    );
+  }
+
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-lg px-4 py-20 text-center">
@@ -140,27 +206,6 @@ export default function CheckoutPage() {
     }
     if (step === 3) {
       setStep(4);
-    }
-  };
-
-  const applyCoupon = async () => {
-    if (!couponCode.trim()) return;
-    try {
-      const res = await fetch("/api/coupons", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: couponCode, subtotal }),
-      });
-      const data = await res.json();
-      if (data.valid) {
-        setDiscount(data.discount);
-        setCouponMessage(data.message);
-      } else {
-        setDiscount(0);
-        setCouponMessage(data.message);
-      }
-    } catch {
-      setCouponMessage("خطا در بررسی کد تخفیف");
     }
   };
 
@@ -225,7 +270,7 @@ export default function CheckoutPage() {
                 )}
               >
                 {step > s.id ? (
-                  <Check size={16} strokeWidth={2} />
+                  <Check size={16} weight="bold" />
                 ) : (
                   s.id.toLocaleString("fa-IR")
                 )}
@@ -285,6 +330,7 @@ export default function CheckoutPage() {
               label="شماره موبایل"
               placeholder="09123456789"
               dir="ltr"
+              disabled={Boolean(user)}
               {...register("phone")}
               error={errors.phone?.message}
             />

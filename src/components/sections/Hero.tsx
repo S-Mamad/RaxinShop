@@ -1,15 +1,17 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import site from "@/data/site.json";
 import type { SiteConfig } from "@/types";
 import { MeshBackground } from "@/components/shell/MeshBackground";
 import { IDEWindow } from "@/components/shell/IDEWindow";
+import { SocialProof } from "@/components/sections/SocialProof";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 
 const data = site as SiteConfig;
 
 export function Hero() {
-  const telegram = data.links.find((l) => l.id === "telegram");
+  const primaryCta = data.heroCta?.primary ?? "شروع پروژه";
+  const secondaryCta = data.heroCta?.secondary ?? "نمونه‌کارها";
 
   return (
     <section
@@ -26,33 +28,33 @@ export function Hero() {
                 {data.brand.slug} · {data.brand.version} · {data.brand.tagline}
               </p>
 
-              <h1 className="font-display text-[clamp(2.75rem,7vw,4.5rem)] text-foreground">
+              <h1 className="font-display text-[clamp(2.75rem,7.5vw,5rem)] text-foreground">
                 {data.brand.heroTitle}
                 <span className="mt-1 block text-accent">
                   {data.brand.heroHighlight}
                 </span>
               </h1>
 
-              <p className="mt-8 max-w-md text-[15px] leading-[1.85] text-muted md:text-base">
+              <p className="mt-8 max-w-prose text-[15px] leading-[1.85] text-muted md:text-base">
                 {data.brand.description}
               </p>
 
               <div className="mt-10 flex flex-wrap items-center gap-3">
                 <Button
-                  href="#work"
+                  href="#contact"
                   size="lg"
                   trailingIcon={
-                    <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
+                    <ArrowLeft className="h-4 w-4" weight="bold" />
                   }
                 >
-                  نمونه‌کارها
+                  {primaryCta}
                 </Button>
-                {telegram ? (
-                  <Button href={telegram.href} external variant="outline" size="lg">
-                    @Mamad3
-                  </Button>
-                ) : null}
+                <Button href="#work" variant="outline" size="lg">
+                  {secondaryCta}
+                </Button>
               </div>
+
+              <SocialProof />
 
               <div className="mt-14 border-t border-border pt-8">
                 <p className="telemetry mb-4 text-dim">stack</p>

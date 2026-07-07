@@ -15,6 +15,7 @@ import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
 import { cn } from "@asal/lib/utils";
 import { Icon } from "@asal/components/ui/Icon";
+import { UserMenu } from "@asal/components/auth/UserMenu";
 import { MobileMenu } from "./MobileMenu";
 import { SearchModal } from "./SearchModal";
 
@@ -114,6 +115,7 @@ export function Header() {
                 </span>
               ) : null}
             </Link>
+            <UserMenu scrolled={scrolled || !isHome} isHome={isHome} />
             <button
               type="button"
               onClick={openCart}

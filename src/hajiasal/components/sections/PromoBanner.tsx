@@ -1,8 +1,11 @@
-﻿import Link from "next/link";
-import { ArrowLeft, Tag } from "lucide-react";
+﻿"use client";
+
+import Link from "next/link";
+import { ArrowLeft, Tag } from "@phosphor-icons/react";
 import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
 import { Reveal } from "@asal/components/ui/Reveal";
+import { Icon } from "@asal/components/ui/Icon";
 import { hajiasalPath } from "@asal/lib/paths";
 import { formatPersianNumber } from "@asal/lib/utils";
 
@@ -26,7 +29,7 @@ export function PromoBanner() {
             <div className="relative flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
               <div>
                 <span className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white">
-                  <Tag size={12} strokeWidth={1.5} aria-hidden />
+                  <Icon icon={Tag} size={12} aria-hidden />
                   کد تخفیف: HAJI10
                 </span>
                 <h2 className="text-2xl font-bold text-white md:text-3xl">
@@ -38,7 +41,7 @@ export function PromoBanner() {
               </div>
               <span className="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 bg-white/10 px-8 py-3 text-base font-medium text-white transition-colors group-hover:bg-white/20">
                 خرید با کد تخفیف
-                <ArrowLeft size={18} strokeWidth={1.5} aria-hidden />
+                <Icon icon={ArrowLeft} size={18} aria-hidden />
               </span>
             </div>
           </Link>

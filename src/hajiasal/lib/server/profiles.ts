@@ -1,0 +1,310 @@
+import { randomUUID } from "crypto";
+import type { CustomerUser, UserAddress } from "@asal/types/auth";
+import { readJsonFile, writeJsonFile } from "./db";
+import { getSupabaseAdmin } from "./supabase";
+
+const PROFILES_FILE = "profiles.json";
+const ADDRESSES_FILE = "user-addresses.json";
+const WISHLISTS_FILE = "user-wishlists.json";
+
+function mapProfileRow(row: Record<string, unknown>): CustomerUser {
+  return {
+    id: row.id as string,
+    phone: row.phone as string,
+    fullName: (row.full_name as string) ?? null,
+    email: (row.email as string) ?? null,
+    newsletterOptIn: (row.newsletter_opt_in as boolean) ?? false,
+    createdAt: row.created_at as string,
+    updatedAt: row.updated_at as string,
+  };
+}
+
+export async function findProfileByPhone(
+  phone: string,
+): Promise<CustomerUser | null> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("phone", phone)
+      .maybeSingle();
+    if (error || !data) return null;
+    return mapProfileRow(data);
+  }
+
+  const profiles = await readJsonFile<CustomerUser[]>(PROFILES_FILE, []);
+  return profiles.find((p) => p.phone === phone) ?? null;
+}
+
+export async function findProfileById(
+  id: string,
+): Promise<CustomerUser | null> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    if (error || !data) return null;
+    return mapProfileRow(data);
+  }
+
+  const profiles = await readJsonFile<CustomerUser[]>(PROFILES_FILE, []);
+  return profiles.find((p) => p.id === id) ?? null;
+}
+
+export async function createProfile(input: {
+  phone: string;
+  fullName?: string | null;
+  email?: string | null;
+  newsletterOptIn?: boolean;
+}): Promise<CustomerUser> {
+  const now = new Date().toISOString();
+  const id = randomUUID();
+
+  const profile: CustomerUser = {
+    id,
+    phone: input.phone,
+    fullName: input.fullName ?? null,
+    email: input.email ?? null,
+    newsletterOptIn: input.newsletterOptIn ?? false,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { error } = await supabase.from("profiles").insert({
+      id: profile.id,
+      phone: profile.phone,
+      full_name: profile.fullName,
+      email: profile.email,
+      newsletter_opt_in: profile.newsletterOptIn,
+      created_at: profile.createdAt,
+      updated_at: profile.updatedAt,
+    });
+    if (error) throw error;
+    return profile;
+  }
+
+  const profiles = await readJsonFile<CustomerUser[]>(PROFILES_FILE, []);
+  profiles.push(profile);
+  await writeJsonFile(PROFILES_FILE, profiles);
+  return profile;
+}
+
+export async function findOrCreateProfileByPhone(
+  phone: string,
+): Promise<CustomerUser> {
+  const existing = await findProfileByPhone(phone);
+  if (existing) return existing;
+  return createProfile({ phone });
+}
+
+export async function updateProfile(
+  id: string,
+  updates: Partial<
+    Pick<CustomerUser, "fullName" | "email" | "newsletterOptIn">
+  >,
+): Promise<CustomerUser | null> {
+  const now = new Date().toISOString();
+  const supabase = getSupabaseAdmin();
+
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({
+        full_name: updates.fullName,
+        email: updates.email,
+        newsletter_opt_in: updates.newsletterOptIn,
+        updated_at: now,
+      })
+      .eq("id", id)
+      .select("*")
+      .maybeSingle();
+    if (error || !data) return null;
+    return mapProfileRow(data);
+  }
+
+  const profiles = await readJsonFile<CustomerUser[]>(PROFILES_FILE, []);
+  const idx = profiles.findIndex((p) => p.id === id);
+  if (idx === -1) return null;
+  profiles[idx] = {
+    ...profiles[idx],
+    ...updates,
+    updatedAt: now,
+  };
+  await writeJsonFile(PROFILES_FILE, profiles);
+  return profiles[idx];
+}
+
+// Addresses
+export async function getAddressesByUserId(
+  userId: string,
+): Promise<UserAddress[]> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("user_addresses")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+    if (error || !data) return [];
+    return data.map((row) => ({
+      id: row.id as string,
+      userId: row.user_id as string,
+      label: (row.label as string) ?? null,
+      province: row.province as string,
+      city: row.city as string,
+      address: row.address as string,
+      postalCode: row.postal_code as string,
+      isDefault: (row.is_default as boolean) ?? false,
+      createdAt: row.created_at as string,
+    }));
+  }
+
+  const all = await readJsonFile<UserAddress[]>(ADDRESSES_FILE, []);
+  return all.filter((a) => a.userId === userId);
+}
+
+export async function createAddress(
+  userId: string,
+  input: Omit<UserAddress, "id" | "userId" | "createdAt">,
+): Promise<UserAddress> {
+  const address: UserAddress = {
+    id: randomUUID(),
+    userId,
+    ...input,
+    createdAt: new Date().toISOString(),
+  };
+
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    if (input.isDefault) {
+      await supabase
+        .from("user_addresses")
+        .update({ is_default: false })
+        .eq("user_id", userId);
+    }
+    const { error } = await supabase.from("user_addresses").insert({
+      id: address.id,
+      user_id: userId,
+      label: input.label,
+      province: input.province,
+      city: input.city,
+      address: input.address,
+      postal_code: input.postalCode,
+      is_default: input.isDefault,
+      created_at: address.createdAt,
+    });
+    if (error) throw error;
+    return address;
+  }
+
+  const all = await readJsonFile<UserAddress[]>(ADDRESSES_FILE, []);
+  if (input.isDefault) {
+    for (const a of all) {
+      if (a.userId === userId) a.isDefault = false;
+    }
+  }
+  all.push(address);
+  await writeJsonFile(ADDRESSES_FILE, all);
+  return address;
+}
+
+export async function deleteAddress(
+  userId: string,
+  addressId: string,
+): Promise<boolean> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { error } = await supabase
+      .from("user_addresses")
+      .delete()
+      .eq("id", addressId)
+      .eq("user_id", userId);
+    return !error;
+  }
+
+  const all = await readJsonFile<UserAddress[]>(ADDRESSES_FILE, []);
+  const next = all.filter((a) => !(a.id === addressId && a.userId === userId));
+  if (next.length === all.length) return false;
+  await writeJsonFile(ADDRESSES_FILE, next);
+  return true;
+}
+
+// Wishlist
+export async function getWishlistProductIds(userId: string): Promise<string[]> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("user_wishlists")
+      .select("product_id")
+      .eq("user_id", userId);
+    if (error || !data) return [];
+    return data.map((r) => r.product_id as string);
+  }
+
+  const all = await readJsonFile<
+    Array<{ userId: string; productId: string }>
+  >(WISHLISTS_FILE, []);
+  return all.filter((w) => w.userId === userId).map((w) => w.productId);
+}
+
+export async function mergeWishlist(
+  userId: string,
+  productIds: string[],
+): Promise<string[]> {
+  const existing = new Set(await getWishlistProductIds(userId));
+  for (const id of productIds) existing.add(id);
+  const merged = [...existing];
+
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    for (const productId of productIds) {
+      if (!existing.has(productId)) continue;
+      await supabase.from("user_wishlists").upsert({
+        user_id: userId,
+        product_id: productId,
+      });
+    }
+    return merged;
+  }
+
+  const all = await readJsonFile<
+    Array<{ userId: string; productId: string }>
+  >(WISHLISTS_FILE, []);
+  const without = all.filter((w) => w.userId !== userId);
+  for (const productId of merged) {
+    without.push({ userId, productId });
+  }
+  await writeJsonFile(WISHLISTS_FILE, without);
+  return merged;
+}
+
+export async function setWishlist(
+  userId: string,
+  productIds: string[],
+): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    await supabase.from("user_wishlists").delete().eq("user_id", userId);
+    if (productIds.length > 0) {
+      await supabase.from("user_wishlists").insert(
+        productIds.map((product_id) => ({ user_id: userId, product_id })),
+      );
+    }
+    return;
+  }
+
+  const all = await readJsonFile<
+    Array<{ userId: string; productId: string }>
+  >(WISHLISTS_FILE, []);
+  const without = all.filter((w) => w.userId !== userId);
+  for (const productId of productIds) {
+    without.push({ userId, productId });
+  }
+  await writeJsonFile(WISHLISTS_FILE, without);
+}

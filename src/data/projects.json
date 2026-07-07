@@ -2,11 +2,43 @@
   {
     "id": "hajiagh-honey",
     "title": "حاجی عسل",
-    "description": "فروشگاه آنلاین عسل طبیعی — طراحی و توسعه کامل با Next.js. تجربه خرید ساده، گالری محصول و هویت بصری گرم.",
+    "description": "فروشگاه آنلاین عسل طبیعی. طراحی و توسعه کامل با Next.js. تجربه خرید ساده، گالری محصول و هویت بصری گرم.",
     "tag": "Web",
     "href": "/hajiasal",
     "gradient": ["#451a03", "#b45309"],
     "category": "web",
-    "tech": ["Next.js", "Tailwind", "E-commerce"]
+    "tech": ["Next.js", "Tailwind", "E-commerce"],
+    "image": "/portfolio/honey.svg",
+    "metrics": ["۳۰+ محصول", "checkout کامل"],
+    "featured": true,
+    "year": "2025"
+  },
+  {
+    "id": "marham",
+    "title": "مرهم",
+    "description": "پلتفرم سلامت دیجیتال در پذیرش ۲۴. معماری فرانت، performance و UX دقیق برای محیط production.",
+    "tag": "SaaS",
+    "href": "https://paziresh24.com",
+    "gradient": ["#1a1a2e", "#0f3460"],
+    "category": "saas",
+    "tech": ["React", "TypeScript", "Product"],
+    "image": "/portfolio/marham.svg",
+    "metrics": ["production-grade", "پذیرش ۲۴"],
+    "featured": false,
+    "year": "2024"
+  },
+  {
+    "id": "hamgam",
+    "title": "همگام",
+    "description": "هویت بصری و پکیج دیجیتال کامل. از لوگو و بنر تا خروجی آماده تحویل برای برند.",
+    "tag": "Brand",
+    "href": "#work",
+    "gradient": ["#0e0e14", "#134e4a"],
+    "category": "web",
+    "tech": ["Branding", "UI", "Telegram"],
+    "image": "/portfolio/hamgam.svg",
+    "metrics": ["brand pack", "digital assets"],
+    "featured": false,
+    "year": "2025"
   }
 ]

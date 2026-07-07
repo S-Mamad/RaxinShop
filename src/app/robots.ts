@@ -7,7 +7,14 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/hajiasal/admin", "/api/"],
+      disallow: [
+        "/hajiasal/admin",
+        "/hajiasal/login",
+        "/hajiasal/register",
+        "/hajiasal/account",
+        "/hajiasal/checkout",
+        "/api/",
+      ],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
   };

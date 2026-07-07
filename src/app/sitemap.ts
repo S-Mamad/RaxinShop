@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { getAllSlugs } from "@asal/lib/products";
 import { hajiasalAbsoluteUrl } from "@asal/lib/paths";
+import { getSiteUrl } from "@/lib/seo";
 
-const staticRoutes = [
+const hajiasalRoutes = [
   "",
   "/shop",
   "/about",
@@ -20,20 +21,31 @@ const staticRoutes = [
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  const siteUrl = getSiteUrl();
 
-  const staticEntries: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
+  const landingEntry: MetadataRoute.Sitemap = [
+    {
+      url: `${siteUrl}/`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 1,
+    },
+  ];
+
+  const hajiasalEntries: MetadataRoute.Sitemap = hajiasalRoutes.map((route) => ({
     url: hajiasalAbsoluteUrl(route),
     lastModified: now,
-    changeFrequency: route === "" || route === "/shop" ? "daily" : "weekly",
-    priority: route === "" ? 1 : route === "/shop" ? 0.9 : 0.7,
+    changeFrequency:
+      route === "" || route === "/shop" ? "daily" : ("weekly" as const),
+    priority: route === "" ? 0.9 : route === "/shop" ? 0.85 : 0.7,
   }));
 
   const productEntries: MetadataRoute.Sitemap = getAllSlugs().map((slug) => ({
     url: hajiasalAbsoluteUrl(`/product/${slug}`),
     lastModified: now,
-    changeFrequency: "weekly",
+    changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
 
-  return [...staticEntries, ...productEntries];
+  return [...landingEntry, ...hajiasalEntries, ...productEntries];
 }

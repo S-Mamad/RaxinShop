@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import site from "@/data/site.json";
@@ -15,13 +15,57 @@ const sectionIds = data.nav.map((n) => n.id);
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const activeId = useScrollSpy(sectionIds);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const focusable = panel.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    first?.focus();
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+        return;
+      }
+
+      if (e.key !== "Tab" || focusable.length === 0) return;
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last?.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first?.focus();
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   return (
     <div className="xl:hidden">
       <button
+        ref={triggerRef}
         type="button"
         aria-label={open ? "بستن منو" : "باز کردن منو"}
         aria-expanded={open}
+        aria-controls="mobile-menu-panel"
         onClick={() => setOpen((v) => !v)}
         className="relative z-[60] flex h-10 w-10 items-center justify-center rounded-full border border-border bg-elevated/50"
       >
@@ -42,6 +86,11 @@ export function MobileMenu() {
       <AnimatePresence>
         {open ? (
           <motion.div
+            ref={panelRef}
+            id="mobile-menu-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-label="منوی موبایل"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

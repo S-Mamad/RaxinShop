@@ -12,6 +12,7 @@ export interface ServiceItem {
   icon: string;
   span?: "wide" | "tall" | "default";
   tags?: string[];
+  proof?: string;
 }
 
 export interface ProjectItem {
@@ -23,6 +24,16 @@ export interface ProjectItem {
   gradient: [string, string];
   category: "web" | "saas" | "api" | "oss";
   tech: string[];
+  image?: string;
+  metrics?: string[];
+  featured?: boolean;
+  year?: string;
+}
+
+export interface TeamMemberLinks {
+  github?: string;
+  linkedin?: string;
+  telegram?: string;
 }
 
 export interface TeamMember {
@@ -33,12 +44,42 @@ export interface TeamMember {
   image: string;
   imagePosition?: string;
   featured?: boolean;
+  links?: TeamMemberLinks;
+  initials?: string;
 }
 
 export interface LinkItem {
   id: string;
   label: string;
   href: string;
+}
+
+export interface ClientItem {
+  name: string;
+  href?: string;
+}
+
+export interface WhyPoint {
+  pain: string;
+  answer: string;
+}
+
+export interface HeroCta {
+  primary: string;
+  secondary: string;
+}
+
+export interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface ProcessStep {
+  id: string;
+  title: string;
+  description: string;
+  duration?: string;
 }
 
 export interface SiteConfig {
@@ -57,4 +98,7 @@ export interface SiteConfig {
   services: ServiceItem[];
   team: TeamMember[];
   links: LinkItem[];
+  heroCta?: HeroCta;
+  clients?: ClientItem[];
+  whyPoints?: WhyPoint[];
 }

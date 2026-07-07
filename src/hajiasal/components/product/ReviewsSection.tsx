@@ -21,11 +21,12 @@ type FormData = z.infer<typeof schema>;
 
 interface ReviewsSectionProps {
   product: Product;
+  initialReviews?: Review[];
 }
 
-export function ReviewsSection({ product }: ReviewsSectionProps) {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
+export function ReviewsSection({ product, initialReviews }: ReviewsSectionProps) {
+  const [reviews, setReviews] = useState<Review[]>(initialReviews ?? []);
+  const [loading, setLoading] = useState(initialReviews === undefined);
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -44,11 +45,12 @@ export function ReviewsSection({ product }: ReviewsSectionProps) {
   const selectedRating = watch("rating");
 
   useEffect(() => {
+    if (initialReviews !== undefined) return;
     fetch(`/api/reviews?productId=${product.id}`)
       .then((res) => res.json())
       .then((data) => setReviews(data.reviews ?? []))
       .finally(() => setLoading(false));
-  }, [product.id]);
+  }, [product.id, initialReviews]);
 
   const onSubmit = async (data: FormData) => {
     setStatus("loading");

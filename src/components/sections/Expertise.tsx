@@ -1,12 +1,11 @@
 "use client";
 
 import {
-  Component,
-  Layers,
   Monitor,
-  Server,
-  type LucideIcon,
-} from "lucide-react";
+  Stack,
+  HardDrives,
+  PuzzlePiece,
+} from "@phosphor-icons/react";
 import site from "@/data/site.json";
 import type { ServiceItem, SiteConfig } from "@/types";
 import { Reveal } from "@/components/ui/Reveal";
@@ -14,16 +13,16 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const data = site as SiteConfig;
 
-const iconMap: Record<string, LucideIcon> = {
+const iconMap = {
   Monitor,
-  Server,
-  Layers,
-  Component,
-};
+  Server: HardDrives,
+  Layers: Stack,
+  Component: PuzzlePiece,
+} as const;
 
 export function Expertise() {
   return (
-    <section id="expertise" className="py-28 md:py-36">
+    <section id="expertise" className="py-32 md:py-40">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <Reveal className="mb-16">
           <SectionHeading
@@ -36,7 +35,8 @@ export function Expertise() {
 
         <div className="grid gap-px border border-border bg-border md:grid-cols-2">
           {data.services.map((service: ServiceItem, index) => {
-            const Icon = iconMap[service.icon] ?? Layers;
+            const IconComponent =
+              iconMap[service.icon as keyof typeof iconMap] ?? Stack;
 
             return (
               <Reveal key={service.id} delay={index * 0.05}>
@@ -45,9 +45,9 @@ export function Expertise() {
                     <span className="telemetry text-dim">
                       {service.index ?? `0${index + 1}`}
                     </span>
-                    <Icon
+                    <IconComponent
                       className="h-5 w-5 text-accent opacity-70"
-                      strokeWidth={1.25}
+                      weight="duotone"
                     />
                   </div>
                   <h3 className="font-display text-xl text-foreground md:text-2xl">
@@ -56,19 +56,22 @@ export function Expertise() {
                   <p className="mt-4 flex-1 text-sm leading-[1.9] text-muted md:text-[15px]">
                     {service.description}
                   </p>
-                  {service.tags ? (
-                    <div className="mt-6 flex flex-wrap gap-1.5">
-                      {service.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          dir="ltr"
-                          className="border border-border px-2 py-0.5 font-mono text-[10px] text-dim"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
+                  <div className="mt-6 flex flex-wrap items-center gap-2">
+                    {service.proof ? (
+                      <span className="telemetry text-accent/80">
+                        case · {service.proof}
+                      </span>
+                    ) : null}
+                    {service.tags?.map((tag) => (
+                      <span
+                        key={tag}
+                        dir="ltr"
+                        className="border border-border px-2 py-0.5 font-mono text-[10px] text-dim"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </article>
               </Reveal>
             );

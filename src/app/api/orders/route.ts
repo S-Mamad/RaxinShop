@@ -2,9 +2,19 @@
 import { checkoutApiSchema } from "@asal/lib/validations/checkout";
 import { createOrder } from "@asal/lib/server/orders";
 import { validateCoupon } from "@asal/lib/server/coupons";
+import { getSessionFromRequest } from "@asal/lib/auth/session";
+import { normalizePhone } from "@asal/lib/auth/phone";
 
 export async function POST(request: Request) {
   try {
+    const session = getSessionFromRequest(request);
+    if (!session) {
+      return NextResponse.json(
+        { success: false, message: "برای ثبت سفارش باید وارد شوید" },
+        { status: 401 },
+      );
+    }
+
     const body = await request.json();
     const parsed = checkoutApiSchema.safeParse(body);
 
@@ -20,6 +30,15 @@ export async function POST(request: Request) {
     }
 
     const { customer, items, subtotal, shipping, total } = parsed.data;
+
+    const customerPhone = normalizePhone(customer.phone);
+    if (!customerPhone || customerPhone !== session.phone) {
+      return NextResponse.json(
+        { success: false, message: "شماره موبایل باید با حساب کاربری یکسان باشد" },
+        { status: 400 },
+      );
+    }
+
     const extra = body as {
       couponCode?: string;
       paymentMethod?: "cod" | "card_to_card";
@@ -62,6 +81,7 @@ export async function POST(request: Request) {
       couponCode,
       paymentMethod,
       shippingMethod,
+      userId: session.userId,
     });
 
     return NextResponse.json({

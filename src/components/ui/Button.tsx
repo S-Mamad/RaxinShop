@@ -11,6 +11,8 @@ interface ButtonProps {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 export function Button({
@@ -22,6 +24,8 @@ export function Button({
   children,
   className,
   onClick,
+  type = "button",
+  disabled,
 }: ButtonProps) {
   const styles = cn(
     "group inline-flex items-center justify-center gap-2.5 font-medium transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]",
@@ -72,7 +76,12 @@ export function Button({
   }
 
   return (
-    <button type="button" className={styles} onClick={onClick}>
+    <button
+      type={type}
+      disabled={disabled}
+      className={cn(styles, disabled && "pointer-events-none opacity-60")}
+      onClick={onClick}
+    >
       {content}
     </button>
   );

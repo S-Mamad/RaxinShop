@@ -16,6 +16,7 @@ export interface StoredOrder {
   id: string;
   status: OrderStatus;
   paymentMethod: PaymentMethod;
+  userId?: string;
   customer: CheckoutFormData;
   items: CartItem[];
   subtotal: number;
@@ -57,6 +58,7 @@ function mapRowToOrder(row: Record<string, unknown>): StoredOrder {
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
     trackingCode: row.tracking_code as string | undefined,
+    userId: row.user_id as string | undefined,
   };
 }
 
@@ -69,6 +71,7 @@ export async function createOrder(input: {
   couponCode?: string;
   paymentMethod?: PaymentMethod;
   shippingMethod?: string;
+  userId?: string;
 }): Promise<StoredOrder> {
   const discount = input.discount ?? 0;
   const now = new Date().toISOString();
@@ -87,6 +90,7 @@ export async function createOrder(input: {
     createdAt: now,
     updatedAt: now,
     trackingCode: generateTrackingCode(),
+    userId: input.userId,
   };
 
   const supabase = getSupabaseAdmin();
@@ -95,6 +99,7 @@ export async function createOrder(input: {
       id: order.id,
       status: order.status,
       payment_method: order.paymentMethod,
+      user_id: order.userId ?? null,
       customer: order.customer,
       items: order.items,
       subtotal: order.subtotal,
@@ -176,6 +181,22 @@ export async function getAllOrders(): Promise<StoredOrder[]> {
     return data.map(mapRowToOrder);
   }
   return readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
+}
+
+export async function getOrdersByUserId(userId: string): Promise<StoredOrder[]> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+    if (error || !data) return [];
+    return data.map(mapRowToOrder);
+  }
+
+  const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
+  return orders.filter((o) => o.userId === userId);
 }
 
 export async function updateOrderStatus(

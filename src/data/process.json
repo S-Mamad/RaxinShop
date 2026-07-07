@@ -1,0 +1,32 @@
+[
+  {
+    "id": "discover",
+    "title": "کشف",
+    "description": "brief، اهداف و محدودیت‌ها را مشخص می‌کنیم.",
+    "duration": "۱-۲ روز"
+  },
+  {
+    "id": "design",
+    "title": "طراحی",
+    "description": "wireframe، UI و تأیید شما قبل از کد.",
+    "duration": "۳-۷ روز"
+  },
+  {
+    "id": "build",
+    "title": "توسعه",
+    "description": "sprintهای کوتاه با demo منظم.",
+    "duration": "۲-۴ هفته"
+  },
+  {
+    "id": "launch",
+    "title": "لانچ",
+    "description": "deploy، تست production و handoff.",
+    "duration": "۲-۳ روز"
+  },
+  {
+    "id": "grow",
+    "title": "رشد",
+    "description": "پشتیبانی، بهینه‌سازی و فاز بعدی.",
+    "duration": "مداوم"
+  }
+]

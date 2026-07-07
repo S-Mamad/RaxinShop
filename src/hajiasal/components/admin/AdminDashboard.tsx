@@ -10,6 +10,7 @@ import type { ContactMessage } from "@asal/lib/server/newsletter";
 interface AdminOrder {
   id: string;
   status: OrderStatus;
+  userId?: string;
   customer: { fullName: string; phone: string; city: string };
   total: number;
   createdAt: string;
@@ -53,8 +54,35 @@ export function AdminDashboard() {
   }, [router]);
 
   useEffect(() => {
-    void loadData();
-  }, [loadData]);
+    let active = true;
+
+    void (async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const res = await fetch("/api/admin/orders");
+        if (!active) return;
+        if (res.status === 401) {
+          router.refresh();
+          return;
+        }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message ?? "خطا در بارگذاری");
+        setOrders(data.orders ?? []);
+        setMessages(data.messages ?? []);
+      } catch (err) {
+        if (active) {
+          setError(err instanceof Error ? err.message : "خطای ناشناخته");
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [router]);
 
   const updateStatus = async (orderId: string, status: OrderStatus) => {
     try {
@@ -106,6 +134,7 @@ export function AdminDashboard() {
               <tr>
                 <th className="px-4 py-3 font-medium">شناسه</th>
                 <th className="px-4 py-3 font-medium">مشتری</th>
+                <th className="px-4 py-3 font-medium">کاربر</th>
                 <th className="px-4 py-3 font-medium">مبلغ</th>
                 <th className="px-4 py-3 font-medium">تاریخ</th>
                 <th className="px-4 py-3 font-medium">وضعیت</th>
@@ -114,7 +143,7 @@ export function AdminDashboard() {
             <tbody>
               {orders.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-muted">
+                  <td colSpan={6} className="px-4 py-8 text-center text-muted">
                     سفارشی ثبت نشده است
                   </td>
                 </tr>
@@ -129,6 +158,15 @@ export function AdminDashboard() {
                       <p className="text-xs text-muted" dir="ltr">
                         {order.customer.phone}
                       </p>
+                    </td>
+                    <td className="px-4 py-3">
+                      {order.userId ? (
+                        <p className="font-mono text-xs text-muted" dir="ltr" title={order.userId}>
+                          {order.userId.slice(0, 8)}…
+                        </p>
+                      ) : (
+                        <span className="text-xs text-muted">مهمان</span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {order.total.toLocaleString("fa-IR")} تومان

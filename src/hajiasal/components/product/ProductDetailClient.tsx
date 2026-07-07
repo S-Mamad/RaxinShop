@@ -11,6 +11,7 @@ import { WeightSelector } from "@asal/components/product/WeightSelector";
 import { ProductAccordion } from "@asal/components/product/ProductAccordion";
 import { StickyAddToCart } from "@asal/components/product/StickyAddToCart";
 import { ReviewsSection } from "@asal/components/product/ReviewsSection";
+import type { Review } from "@asal/lib/server/reviews";
 import { RelatedProducts } from "@asal/components/product/RelatedProducts";
 import { Button } from "@asal/components/ui/Button";
 import { Badge } from "@asal/components/ui/Badge";
@@ -23,9 +24,13 @@ const siteData = site as SiteConfig;
 
 interface ProductDetailClientProps {
   product: Product;
+  initialReviews?: Review[];
 }
 
-export function ProductDetailClient({ product }: ProductDetailClientProps) {
+export function ProductDetailClient({
+  product,
+  initialReviews,
+}: ProductDetailClientProps) {
   const addItem = useCartStore((s) => s.addItem);
   const [selectedWeight, setSelectedWeight] = useState<WeightOption>(
     product.weightOptions[0],
@@ -207,7 +212,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
         <ProductAccordion items={accordionItems} />
       </div>
 
-      <ReviewsSection product={product} />
+      <ReviewsSection product={product} initialReviews={initialReviews} />
       <RelatedProducts product={product} />
 
       <StickyAddToCart

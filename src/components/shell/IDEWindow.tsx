@@ -19,10 +19,16 @@ const codeBlocks: Record<string, ReactNode> = {
       <Line n={2}>{"  "}<Kw>return</Kw> (</Line>
       <Line n={3}>{"    "}<Tag>&lt;main&gt;</Tag></Line>
       <Line n={4}>{"      "}<Tag>&lt;Hero /&gt;</Tag></Line>
-      <Line n={5}>{"      "}<Tag>&lt;Work /&gt;</Tag></Line>
-      <Line n={6}>{"    "}<Tag>&lt;/main&gt;</Tag></Line>
-      <Line n={7}>{"  "});</Line>
-      <Line n={8}>{"}"}</Line>
+      <Line n={5}>{"      "}<Tag>&lt;WhyRaxin /&gt;</Tag></Line>
+      <Line n={6}>{"      "}<Tag>&lt;Expertise /&gt;</Tag></Line>
+      <Line n={7}>{"      "}<Tag>&lt;Work /&gt;</Tag></Line>
+      <Line n={8}>{"      "}<Tag>&lt;Process /&gt;</Tag></Line>
+      <Line n={9}>{"      "}<Tag>&lt;About /&gt;</Tag></Line>
+      <Line n={10}>{"      "}<Tag>&lt;Faq /&gt;</Tag></Line>
+      <Line n={11}>{"      "}<Tag>&lt;Contact /&gt;</Tag></Line>
+      <Line n={12}>{"    "}<Tag>&lt;/main&gt;</Tag></Line>
+      <Line n={13}>{"  "});</Line>
+      <Line n={14}>{"}"}</Line>
     </>
   ),
   layout: (
@@ -43,11 +49,11 @@ const codeBlocks: Record<string, ReactNode> = {
   api: (
     <>
       <Line n={1}>
-        <Kw>export async function</Kw> <Fn>GET</Fn>() {"{"}
+        <Kw>export async function</Kw> <Fn>POST</Fn>() {"{"}
       </Line>
       <Line n={2}>{"  "}<Kw>return</Kw> Response.<Fn>json</Fn>({"{"}</Line>
       <Line n={3}>{"    "}status: <Str>&quot;ok&quot;</Str>,</Line>
-      <Line n={4}>{"    "}version: <Str>&quot;2.0.0&quot;</Str>,</Line>
+      <Line n={4}>{"    "}version: <Str>&quot;3.0.0&quot;</Str>,</Line>
       <Line n={5}>{"  "}{"}"});</Line>
       <Line n={6}>{"}"}</Line>
     </>
@@ -57,7 +63,7 @@ const codeBlocks: Record<string, ReactNode> = {
       <Line n={1}>{"{"}</Line>
       <Line n={2}>{"  "}<Str>&quot;brand&quot;</Str>: {"{"}</Line>
       <Line n={3}>{"    "}<Str>&quot;name&quot;</Str>: <Str>&quot;\u0631\u0627\u06a9\u0633\u06cc\u0646&quot;</Str>,</Line>
-      <Line n={4}>{"    "}<Str>&quot;slug&quot;</Str>: <Str>&quot;raxinshop&quot;</Str></Line>
+      <Line n={4}>{"    "}<Str>&quot;version&quot;</Str>: <Str>&quot;v3.0&quot;</Str></Line>
       <Line n={5}>{"  "}{"}"}</Line>
       <Line n={6}>{"}"}</Line>
     </>
@@ -99,48 +105,26 @@ export function IDEWindow() {
       className="bezel overflow-hidden shadow-[0_0_60px_-15px_var(--accent-glow)]"
     >
       <div className="bezel-inner overflow-hidden text-left">
-      <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-        <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-        <span className="ms-auto font-mono text-[10px] text-dim">
-          raxinshop — VS Code
-        </span>
-      </div>
+        <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+          <span className="ms-auto font-mono text-[10px] text-dim">
+            raxinshop · VS Code
+          </span>
+        </div>
 
-      <div className="flex overflow-x-auto border-b border-border">
-        {files.map((f) => (
-          <button
-            key={f.id}
-            type="button"
-            onClick={() => setActive(f.id)}
-            className={cn(
-              "shrink-0 border-r border-border px-4 py-2 font-mono text-[11px] transition-colors",
-              active === f.id
-                ? "bg-elevated text-accent"
-                : "text-muted hover:bg-elevated/50 hover:text-foreground",
-            )}
-          >
-            {f.name}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid md:grid-cols-[130px_1fr]">
-        <div className="hidden border-r border-border bg-surface/80 p-3 md:block">
-          <p className="mb-2 font-mono text-[9px] tracking-widest text-dim uppercase">
-            Explorer
-          </p>
+        <div className="flex overflow-x-auto border-b border-border">
           {files.map((f) => (
             <button
               key={f.id}
               type="button"
               onClick={() => setActive(f.id)}
               className={cn(
-                "mb-0.5 block w-full truncate rounded px-2 py-1 text-left font-mono text-[11px] transition-colors",
+                "shrink-0 border-r border-border px-4 py-2 font-mono text-[11px] transition-colors",
                 active === f.id
-                  ? "bg-accent-dim text-accent"
-                  : "text-muted hover:text-foreground",
+                  ? "bg-elevated text-accent"
+                  : "text-muted hover:bg-elevated/50 hover:text-foreground",
               )}
             >
               {f.name}
@@ -148,23 +132,45 @@ export function IDEWindow() {
           ))}
         </div>
 
-        <div className="min-w-0">
-          <div className="border-b border-border bg-elevated/40 px-4 py-1.5 font-mono text-[10px] text-dim">
-            src/app/{activeFile.name}
+        <div className="grid md:grid-cols-[130px_1fr]">
+          <div className="hidden border-r border-border bg-surface/80 p-3 md:block">
+            <p className="mb-2 font-mono text-[9px] tracking-widest text-dim uppercase">
+              Explorer
+            </p>
+            {files.map((f) => (
+              <button
+                key={f.id}
+                type="button"
+                onClick={() => setActive(f.id)}
+                className={cn(
+                  "mb-0.5 block w-full truncate rounded px-2 py-1 text-left font-mono text-[11px] transition-colors",
+                  active === f.id
+                    ? "bg-accent-dim text-accent"
+                    : "text-muted hover:text-foreground",
+                )}
+              >
+                {f.name}
+              </button>
+            ))}
           </div>
-          <pre className="overflow-x-auto p-4 font-mono text-[11px] leading-[1.85] sm:text-[12px] md:p-5 md:text-[13px]">
-            {codeBlocks[active]}
-            <span className="mt-1 inline-block h-[1.1em] w-[7px] animate-blink bg-accent align-middle" />
-          </pre>
-        </div>
-      </div>
 
-      <div className="border-t border-border bg-void/90 px-4 py-2.5 font-mono text-[11px]">
-        <span className="text-accent">$</span>{" "}
-        <span className="text-muted">npm run build</span>
-        <span className="mx-2 text-dim">·</span>
-        <span className="text-[var(--string)]">✓ compiled successfully</span>
-      </div>
+          <div className="min-w-0">
+            <div className="border-b border-border bg-elevated/40 px-4 py-1.5 font-mono text-[10px] text-dim">
+              src/app/{activeFile.name}
+            </div>
+            <pre className="overflow-x-auto p-4 font-mono text-[11px] leading-[1.85] sm:text-[12px] md:p-5 md:text-[13px]">
+              {codeBlocks[active]}
+              <span className="mt-1 inline-block h-[1.1em] w-[7px] animate-blink bg-accent align-middle" />
+            </pre>
+          </div>
+        </div>
+
+        <div className="border-t border-border bg-void/90 px-4 py-2.5 font-mono text-[11px]">
+          <span className="text-accent">$</span>{" "}
+          <span className="text-muted">npm run build</span>
+          <span className="mx-2 text-dim">·</span>
+          <span className="text-[var(--string)]">✓ compiled successfully</span>
+        </div>
       </div>
     </div>
   );

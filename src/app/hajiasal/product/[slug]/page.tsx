@@ -9,6 +9,7 @@ import {
   buildBreadcrumbJsonLd,
 } from "@asal/lib/seo";
 import { ProductDetailClient } from "@asal/components/product/ProductDetailClient";
+import { getReviewsByProduct } from "@asal/lib/server/reviews";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -48,6 +49,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     { name: "فروشگاه", href: "/hajiasal/shop" },
     { name: product.title, href: `/hajiasal/product/${slug}` },
   ]);
+  const initialReviews = await getReviewsByProduct(product.id);
 
   return (
     <>
@@ -59,7 +61,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <ProductDetailClient product={product} />
+      <ProductDetailClient product={product} initialReviews={initialReviews} />
     </>
   );
 }
