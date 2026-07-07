@@ -1,0 +1,62 @@
+---
+description: Always use Taste Skills and Cursor built-in skills — read SKILL.md before relevant work
+alwaysApply: true
+---
+
+# Taste + Cursor Skills (Permanent)
+
+This project has two skill libraries. **Before any matching task, read the relevant `SKILL.md` and follow it completely.** Do not improvise design or workflow when a skill exists.
+
+## Library 1 — Taste Skills (design / frontend)
+
+**Path:** `.agents/skills/`  
+**Source:** `Leonxlnx/taste-skill` (see `skills-lock.json`)
+
+| Skill | Use when |
+|---|---|
+| `design-taste-frontend` | Landing pages, portfolios, redesigns, anti-slop UI (default) |
+| `design-taste-frontend-v1` | Backward-compatible v1 behavior only |
+| `gpt-taste` | GSAP, AIDA, bento grids, scroll motion |
+| `image-to-code` | Visual work: generate image(s) first, analyze, then code |
+| `imagegen-frontend-web` | Web mockups — **one horizontal image per section** |
+| `imagegen-frontend-mobile` | Mobile app screen mockups (images only) |
+| `brandkit` | Brand identity boards, logo systems |
+| `minimalist-ui` | Warm monochrome editorial minimal UI |
+| `industrial-brutalist-ui` | Brutalist / Swiss print / terminal UI |
+| `high-end-visual-design` | Awwwards-tier motion and components |
+| `redesign-existing-projects` | Upgrade existing sites without breaking behavior |
+| `stitch-design-taste` | Generate `DESIGN.md` for Google Stitch |
+| `full-output-enforcement` | Full files, no `// ...` or placeholders |
+
+**Taste defaults to enforce:** no Inter-by-default, no AI-purple gradients, no em-dash (`—`), hero ≤2–3 lines, `min-h-[100dvh]`, generous spacing, Phosphor/HugeIcons over Lucide, image-first when visual quality matters.
+
+## Library 2 — Cursor Built-in Skills
+
+**Path:** `~/.cursor/skills-cursor/` (read-only; do not write here)
+
+| Skill | Use when |
+|---|---|
+| `automate` | User asks for **Cursor Automation** (not generic CI/scripts) |
+| `babysit` | Keep a PR merge-ready (comments, conflicts, CI) |
+| `canvas` | Standalone analysis — charts, tables, audits → `.canvas.tsx` |
+| `create-hook` | `.cursor/hooks.json` and hook scripts |
+| `create-rule` | `.cursor/rules/` project rules |
+| `create-skill` | Author new `SKILL.md` files |
+| `loop` | `/loop [interval] <prompt>` recurring tasks |
+| `review-bugbot` | `/review-bugbot` — launch bugbot subagent |
+| `review-security` | Security review subagent |
+| `sdk` | `@cursor/sdk` / `cursor-sdk` programmatic agents |
+| `split-to-prs` | Split work into small reviewable PRs |
+| `statusline` | CLI status line in `cli-config.json` |
+| `update-cursor-settings` | Cursor/VS Code `settings.json` |
+
+## Routing (quick)
+
+- **New premium website / UI** → `design-taste-frontend` (+ `image-to-code` or `imagegen-frontend-web` if visuals first)
+- **Redesign existing site** → `redesign-existing-projects` + `design-taste-frontend`
+- **Mobile app visuals** → `imagegen-frontend-mobile`
+- **Brand deck** → `brandkit`
+- **Complete code output** → `full-output-enforcement`
+- **PR / review / automation / hooks / SDK** → matching Cursor skill from Library 2
+
+Respond to the user in **Persian** unless they write in another language.

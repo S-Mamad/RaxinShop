@@ -1,0 +1,107 @@
+{
+  "brand": {
+    "name": "حاجی عسل",
+    "tagline": "طعم اصیل طبیعت، از کندو تا سفره شما",
+    "description": "حاجی عسل با بیش از سه دهه تجربه در تولید و بسته‌بندی عسل طبیعی، محصولاتی اصل و باکیفیت از بهترین مناطق عسل‌گیری ایران ارائه می‌دهد."
+  },
+  "nav": [
+    {
+      "id": "home",
+      "label": "خانه",
+      "href": "/"
+    },
+    {
+      "id": "shop",
+      "label": "فروشگاه",
+      "href": "/shop"
+    },
+    {
+      "id": "about",
+      "label": "درباره ما",
+      "href": "/#about"
+    }
+  ],
+  "hero": {
+    "title": "عسل طبیعی، اصیل و درجه یک",
+    "subtitle": "از دل کوهستان تا خانه شما — با ضمانت اصالت و ارسال سریع",
+    "cta": "مشاهده محصولات",
+    "ctaHref": "/shop",
+    "image": "/images/hero.svg"
+  },
+  "freeShippingThreshold": 500000,
+  "shippingCost": 45000,
+  "trustItems": [
+    {
+      "id": "authentic",
+      "title": "ضمانت اصالت",
+      "description": "آزمایشگاهی و قابل ردیابی"
+    },
+    {
+      "id": "shipping",
+      "title": "ارسال سریع",
+      "description": "بسته‌بندی ایمن در سراسر کشور"
+    },
+    {
+      "id": "support",
+      "title": "پشتیبانی ۲۴/۷",
+      "description": "مشاوره خرید و پیگیری سفارش"
+    }
+  ],
+  "brandStory": {
+    "title": "چرا حاجی عسل؟",
+    "paragraphs": [
+      "حاجی عسل از سال ۱۳۶۵ با عشق به طبیعت و احترام به زنبور عسل، سفر خود را آغاز کرد. امروز با شبکه‌ای از زنبورداران بومی در مناطق کوهستانی، محصولاتی ارائه می‌دهیم که هر قطره‌اش داستان دارد.",
+      "ما معتقدیم عسل واقعی نیاز به میان‌بُر ندارد. از برداشت تا بسته‌بندی، هر مرحله با استانداردهای سخت‌گیرانه کنترل می‌شود تا شما با خیال راحت از اصالت و کیفیت لذت ببرید.",
+      "انتخاب حاجی عسل یعنی انتخاب سلامتی، طعم اصیل و اعتماد — همان چیزی که نسل‌ها در خاطر دارند."
+    ]
+  },
+  "footer": {
+    "phone": "۰۲۱-۸۸۷۷۶۶۵۵",
+    "email": "info@hajiasal.ir",
+    "address": "تهران، خیابان ولیعصر، پلاک ۱۲۳۴"
+  },
+  "categories": [
+    {
+      "id": "mountain",
+      "label": "عسل کوهستان",
+      "description": "از ارتفاعات البرز و زاگرس",
+      "image": "/images/categories/mountain.svg"
+    },
+    {
+      "id": "thyme",
+      "label": "عسل آویشن",
+      "description": "عطر و طعم منحصربه‌فرد",
+      "image": "/images/categories/thyme.svg"
+    },
+    {
+      "id": "multifloral",
+      "label": "عسل چهل‌گیاه",
+      "description": "ترکیب گل‌های وحشی",
+      "image": "/images/categories/multifloral.svg"
+    },
+    {
+      "id": "royal-jelly",
+      "label": "ژل رویال",
+      "description": "سرشار از انرژی و مواد مغذی",
+      "image": "/images/categories/royal-jelly.svg"
+    },
+    {
+      "id": "honeycomb",
+      "label": "شهد با موم",
+      "description": "طبیعی و بدون فرآوری",
+      "image": "/images/categories/honeycomb.svg"
+    },
+    {
+      "id": "specialty",
+      "label": "عسل‌های خاص",
+      "description": "سدر، گون، بربط و بیشتر",
+      "image": "/images/categories/specialty.svg"
+    },
+    {
+      "id": "gift-set",
+      "label": "ست هدیه",
+      "description": "بسته‌های لوکس و آزمایشی",
+      "image": "/images/categories/gift-set.svg"
+    }
+  ]
+}
