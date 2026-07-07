@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isAdminRequestAuthenticated } from "@asal/lib/server/admin";
+import { isAdminRequestAuthenticatedAsync } from "@asal/lib/server/admin";
 import { getAllOrders } from "@asal/lib/server/orders";
 
 function escapeCsv(value: string): string {
@@ -10,7 +10,7 @@ function escapeCsv(value: string): string {
 }
 
 export async function GET(request: Request) {
-  if (!isAdminRequestAuthenticated(request)) {
+  if (!(await isAdminRequestAuthenticatedAsync(request))) {
     return NextResponse.json(
       { success: false, message: "دسترسی غیرمجاز" },
       { status: 401 },

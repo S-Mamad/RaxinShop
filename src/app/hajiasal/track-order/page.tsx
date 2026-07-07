@@ -4,13 +4,13 @@ import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Package,
-  Search,
-  CheckCircle2,
+  MagnifyingGlass,
+  CheckCircle,
   Clock,
   Truck,
-  Home,
+  House,
   XCircle,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import { Input } from "@asal/components/ui/Input";
 import { Button } from "@asal/components/ui/Button";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
@@ -44,10 +44,10 @@ const timelineSteps: {
   icon: typeof Package;
 }[] = [
   { status: "pending_payment", label: "ثبت سفارش", icon: Clock },
-  { status: "confirmed", label: "تأیید سفارش", icon: CheckCircle2 },
+  { status: "confirmed", label: "تأیید سفارش", icon: CheckCircle },
   { status: "processing", label: "آماده‌سازی", icon: Package },
   { status: "shipped", label: "ارسال", icon: Truck },
-  { status: "delivered", label: "تحویل", icon: Home },
+  { status: "delivered", label: "تحویل", icon: House },
 ];
 
 const statusOrder: OrderStatus[] = [
@@ -67,7 +67,7 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
   if (status === "cancelled") {
     return (
       <div className="mb-6 flex items-center gap-3 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
-        <XCircle size={18} strokeWidth={1.5} />
+        <XCircle size={18} weight="light" />
         <span>این سفارش لغو شده است.</span>
       </div>
     );
@@ -105,7 +105,7 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
                 isCurrent && "ring-2 ring-amber/30",
               )}
             >
-              <Icon size={18} strokeWidth={1.5} />
+              <Icon size={18} weight="light" />
             </div>
             <span
               className={cn(
@@ -198,7 +198,7 @@ function TrackOrderForm({ initialTracking = "" }: { initialTracking?: string }) 
           className="flex-1"
         />
         <Button type="submit" disabled={loading}>
-          <Search size={16} strokeWidth={1.5} />
+          <MagnifyingGlass size={16} weight="light" />
           پیگیری
         </Button>
       </form>
@@ -209,7 +209,7 @@ function TrackOrderForm({ initialTracking = "" }: { initialTracking?: string }) 
 
           <div className="mb-4 flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold-dim">
-              <Package size={18} className="text-amber" strokeWidth={1.5} />
+              <Package size={18} weight="light" className="text-amber" />
             </div>
             <div>
               <p className="font-medium text-brown" dir="ltr">

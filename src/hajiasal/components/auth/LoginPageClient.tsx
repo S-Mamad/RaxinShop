@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { AuthLayout } from "@asal/components/auth/AuthLayout";
@@ -15,17 +15,26 @@ type Step = "auth" | "complete-profile";
 
 function LoginPageContent() {
   const searchParams = useSearchParams();
-  const initialTab = (searchParams.get("tab") as Tab) ?? "login";
-  const [tab, setTab] = useState<Tab>(
-    initialTab === "register" ? "register" : "login",
-  );
+  const tabParam = searchParams.get("tab");
+  const showEmailTab = tabParam === "email";
+  const initialTab: Tab =
+    tabParam === "register" ? "register" : tabParam === "email" ? "email" : "login";
+
+  const [tab, setTab] = useState<Tab>(initialTab);
   const [step, setStep] = useState<Step>("auth");
   const [phone, setPhone] = useState("");
+
+  useEffect(() => {
+    if (tabParam === "register") setTab("register");
+    if (tabParam === "email") setTab("email");
+  }, [tabParam]);
 
   const handleNeedsRegister = (p: string) => {
     setPhone(p);
     setStep("complete-profile");
   };
+
+  const authStep = step === "complete-profile" ? 2 : 1;
 
   return (
     <AuthLayout
@@ -40,12 +49,18 @@ function LoginPageContent() {
         <RegisterForm phone={phone} />
       ) : (
         <>
+          {authStep === 1 ? (
+            <p className="mb-4 text-center text-xs text-muted">مرحله ۱ از ۲</p>
+          ) : null}
+
           <div className="mb-6 flex gap-1 rounded-full bg-cream-dark p-1">
             {(
               [
                 { id: "login" as const, label: "ورود" },
                 { id: "register" as const, label: "ثبت‌نام" },
-                { id: "email" as const, label: "ایمیل" },
+                ...(showEmailTab
+                  ? [{ id: "email" as const, label: "ایمیل" }]
+                  : []),
               ] as const
             ).map((item) => (
               <button
@@ -60,6 +75,9 @@ function LoginPageContent() {
                 )}
               >
                 {item.label}
+                {item.id === "email" ? (
+                  <span className="ms-1 text-[10px] text-amber">به‌زودی</span>
+                ) : null}
               </button>
             ))}
           </div>

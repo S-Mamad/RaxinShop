@@ -1,50 +1,33 @@
-# DESIGN-DECISIONS.md — سردسازی بصری v3.1
+# DESIGN-DECISIONS.md — redesign v4.0
 
-## هدف
-تبدیل لندینگ از حس «ترمینال شلوغ» به استودیوی dev آرام، مطمئن و قابل اعتماد.
+## Design Read
+استودیوی dev پریمیوم برای بنیان‌گذاران استارتاپ ایرانی؛ زبان editorial + asymmetric + image-led proof. نه ترمینال شلوغ v2، نه minimal خالی v3.1.
 
-## چه حذف شد
+**Dials:** VARIANCE 7 · MOTION 5 · DENSITY 4
 
-| المان | دلیل |
-|--------|------|
-| Scanlines (`body::before`) | بافت CRT حس hacker می‌داد |
-| Noise (`body::after`) | لایه بصری اضافی روی کل صفحه |
-| `MeshBackground` | blur teal روی Hero |
-| `IDEWindow` | سنگین‌ترین المان terminal aesthetic |
-| Stack tags در Hero | شلوغی بالای fold |
-| Glow shadow دکمه‌ها | حس neon |
-| `.bezel` سنگین | double border + inset روی همه کارت‌ها |
-| `CursorGlow`, `Marquee`, `FloatingGlyphs` | dead code |
-| `founder · active` telemetry | زبان انگلیسی غیرضروری |
+## چه عوض شد
 
-## چه ساده شد
+| قبل (v3.1) | بعد (v4.0) |
+|---|---|
+| Hero centered خالی | Hero نامتقارن: متن + showcase تصویر |
+| فقط gradient ملایم | Grid subtle + glow نقطه‌ای accent |
+| کارت‌های portfolio با SVG | تصاویر mockup واقعی + BrowserFrame |
+| کارت‌های تیم افقی بلند | کارت عمودی با overlay نام |
+| Social proof متن ساده | pill badges برای مشتریان |
+| Why/Expertise flat | آیکون Phosphor + hover accent |
 
-- **Hero:** تک‌ستون، centered، یک radial gradient 6% opacity
-- **Reveal:** فقط opacity + 12px، 450ms (بدون blur)
-- **ScrollProgress:** خط solid accent، مخفی در reduced-motion
-- **Process:** grid 2×3 به‌جای 5 ستون فشرده
-- **Typography:** `.label-mono` با رنگ muted به‌جای accent uppercase
-- **Nav:** 5 آیتم header + why/process/faq در footer
+## حفظ شده
+- RTL، Vazirmatn + JetBrains Mono، Phosphor
+- فرم تماس + API + honeypot
+- FAQ، Process، JSON-LD
+- `/hajiasal` بدون تغییر
+- Nav ۵ آیتم header + footer links
 
-## چه اضافه شد
+## تصاویر
+- `public/portfolio/hero-showcase.png` — Hero + پروژه حاجی عسل
+- `public/portfolio/marham-showcase.png` — مرهم
+- `public/portfolio/brand-showcase.png` — همگام
 
-- `scroll-margin-top` برای anchorها
-- عکس یکدست تیم (`mohammad.svg`)
-- privacy note زیر فرم تماس
-- honeypot + rate limit در `/api/lead`
-- تفکیک success API (سبز) vs mailto fallback (خاکستری)
-- `comingSoon` برای پروژه همگام
-
-## Dials نهایی
-
-- DESIGN_VARIANCE: 6
-- MOTION_INTENSITY: 3-4
-- VISUAL_DENSITY: 3
-
-## محدودیت‌های رعایت‌شده
-
-- RTL و JSON-LD حفظ شد
-- `/hajiasal` دست نخورده
-- Phosphor در landing
-- بدون کتابخانه جدید
-- `min-h-[100dvh]` در Hero
+## عمداً حذف نشده
+- scanlines / mesh / IDE window / marquee (هنوز حذف)
+- motion محدود: Reveal + HeroShowcase fade

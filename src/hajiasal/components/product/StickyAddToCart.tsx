@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "@phosphor-icons/react";
 import { Button } from "@asal/components/ui/Button";
 import { PriceDisplay } from "@asal/components/ui/PriceDisplay";
 
@@ -59,7 +59,7 @@ export function StickyAddToCart({
                 onClick={onAddToCart}
                 className="shrink-0"
               >
-                <ShoppingBag size={16} strokeWidth={1.5} />
+                <ShoppingBag size={16} weight="light" />
                 {inStock ? "افزودن" : "ناموجود"}
               </Button>
             </div>

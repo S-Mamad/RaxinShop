@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Send } from "lucide-react";
+import { PaperPlaneTilt } from "@phosphor-icons/react";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
 import { Reveal } from "@asal/components/ui/Reveal";
 import { Button } from "@asal/components/ui/Button";
@@ -58,7 +58,7 @@ export function Newsletter() {
               className="flex-1 border-white/20 bg-white/10 text-white placeholder:text-white/40"
             />
             <Button type="submit" disabled={status === "loading"} magnetic>
-              <Send size={16} strokeWidth={1.5} aria-hidden />
+              <PaperPlaneTilt size={16} weight="light" aria-hidden />
               عضویت
             </Button>
           </form>

@@ -20,25 +20,26 @@ export function About() {
           />
         </Reveal>
 
-        <div className="grid gap-6">
+        <div className="grid gap-6 lg:grid-cols-2">
           {data.team.map((member, i) => (
             <Reveal key={member.id} delay={i * 0.06}>
-              <article className="overflow-hidden border border-border bg-surface/40">
-                <div className="grid md:grid-cols-12">
-                  <div className="relative aspect-[4/5] overflow-hidden bg-void md:col-span-5 md:aspect-auto md:min-h-[360px]">
-                    <TeamImage member={member} />
-                  </div>
-
-                  <div className="flex flex-col justify-center border-t border-border p-8 md:col-span-7 md:border-t-0 md:border-s md:p-10 lg:p-12">
-                    <p className="text-sm text-muted">{member.role}</p>
-                    <h3 className="mt-3 font-display text-2xl text-foreground md:text-3xl">
+              <article className="group overflow-hidden border border-border bg-surface/50 transition-colors duration-300 hover:border-accent/20">
+                <div className="relative aspect-[5/4] overflow-hidden bg-void">
+                  <TeamImage member={member} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-void via-void/20 to-transparent" />
+                  <div className="absolute bottom-0 inset-x-0 p-6 md:p-8">
+                    <p className="text-sm text-accent">{member.role}</p>
+                    <h3 className="mt-2 font-display text-2xl text-foreground md:text-3xl">
                       {member.name}
                     </h3>
-                    <p className="mt-5 max-w-prose text-[15px] leading-[1.9] text-muted">
-                      {member.bio}
-                    </p>
-                    <TeamLinks member={member} />
                   </div>
+                </div>
+
+                <div className="border-t border-border p-6 md:p-8">
+                  <p className="max-w-prose text-[15px] leading-[1.9] text-muted">
+                    {member.bio}
+                  </p>
+                  <TeamLinks member={member} />
                 </div>
               </article>
             </Reveal>

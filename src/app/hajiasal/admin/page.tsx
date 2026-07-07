@@ -1,13 +1,14 @@
+import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@asal/lib/server/admin";
 import { AdminLogin } from "@asal/components/admin/AdminLogin";
-import { AdminDashboard } from "@asal/components/admin/AdminDashboard";
+import { hajiasalPath } from "@asal/lib/paths";
 
 export default async function AdminPage() {
   const authenticated = await isAdminAuthenticated();
 
-  if (!authenticated) {
-    return <AdminLogin />;
+  if (authenticated) {
+    redirect(hajiasalPath("/admin/dashboard"));
   }
 
-  return <AdminDashboard />;
+  return <AdminLogin />;
 }

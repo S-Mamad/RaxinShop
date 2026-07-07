@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "@phosphor-icons/react";
 import { useCartStore } from "@asal/store/cart";
@@ -10,6 +10,9 @@ import { CartSummary } from "./CartSummary";
 import { FreeShippingBar } from "./FreeShippingBar";
 import { hajiasalPath } from "@asal/lib/paths";
 
+const FOCUSABLE =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export function CartDrawer() {
   const isOpen = useCartStore((s) => s.isOpen);
   const closeCart = useCartStore((s) => s.closeCart);
@@ -18,6 +21,7 @@ export function CartDrawer() {
   const amountRemaining = useCartStore((s) => s.getAmountUntilFreeShipping());
   const isFree = useCartStore((s) => s.isFreeShipping());
   const setHasHydrated = useCartStore((s) => s.setHasHydrated);
+  const panelRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setHasHydrated(true);
@@ -34,6 +38,44 @@ export function CartDrawer() {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const panel = panelRef.current;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    panel?.querySelector<HTMLElement>(FOCUSABLE)?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeCart();
+        return;
+      }
+      if (e.key !== "Tab" || !panel) return;
+
+      const focusable = [...panel.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
+        (el) => !el.hasAttribute("disabled"),
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0]!;
+      const last = focusable[focusable.length - 1]!;
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      previousFocus?.focus();
+    };
+  }, [isOpen, closeCart]);
+
   return (
     <AnimatePresence>
       {isOpen ? (
@@ -48,6 +90,7 @@ export function CartDrawer() {
             aria-hidden
           />
           <motion.aside
+            ref={panelRef}
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}

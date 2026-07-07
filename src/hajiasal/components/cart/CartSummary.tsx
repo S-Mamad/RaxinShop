@@ -32,7 +32,7 @@ export function CartSummary({
         </div>
       ) : null}
       {discount > 0 ? (
-        <div className="flex justify-between text-amber">
+        <div className="flex justify-between text-success">
           <span>تخفیف</span>
           <span>−{formatPrice(discount)}</span>
         </div>

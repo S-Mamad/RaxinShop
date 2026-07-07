@@ -126,11 +126,15 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-            <div
-              className="mt-6 flex h-24 w-24 items-center justify-center rounded-xl border border-dashed border-border bg-cream text-center text-[10px] text-dim"
-              aria-label="نماد اعتماد الکترونیکی"
-            >
-              اینماد
+            <div className="mt-6 flex flex-wrap gap-2">
+              {siteData.trustItems.slice(0, 3).map((item) => (
+                <span
+                  key={item.id}
+                  className="rounded-full border border-border bg-cream px-3 py-1.5 text-[10px] font-medium text-muted"
+                >
+                  {item.title}
+                </span>
+              ))}
             </div>
           </div>
         </div>

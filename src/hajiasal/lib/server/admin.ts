@@ -1,24 +1,23 @@
 import { createHash, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
+import {
+  createAdminSession,
+  revokeAdminSession,
+  validateAdminSessionToken,
+} from "./admin-sessions";
 
 export const ADMIN_COOKIE = "hajiasal_admin_session";
 
-function hashToken(value: string): string {
-  return createHash("sha256").update(value).digest("hex");
-}
-
-export function getAdminSessionToken(): string | null {
-  const password = process.env.ADMIN_PASSWORD;
-  if (!password) return null;
-  return hashToken(password);
+function hashPassword(password: string): string {
+  return createHash("sha256").update(password).digest("hex");
 }
 
 export function verifyAdminPassword(input: string): boolean {
   const password = process.env.ADMIN_PASSWORD;
   if (!password) return false;
 
-  const inputHash = hashToken(input);
-  const expectedHash = hashToken(password);
+  const inputHash = hashPassword(input);
+  const expectedHash = hashPassword(password);
 
   try {
     return timingSafeEqual(
@@ -30,33 +29,65 @@ export function verifyAdminPassword(input: string): boolean {
   }
 }
 
-export async function isAdminAuthenticated(): Promise<boolean> {
-  const token = getAdminSessionToken();
-  if (!token) return false;
+function getTokenFromCookieHeader(cookieHeader: string): string | null {
+  const match = cookieHeader.match(new RegExp(`${ADMIN_COOKIE}=([^;]+)`));
+  return match?.[1] ? decodeURIComponent(match[1]) : null;
+}
 
+export async function getAdminTokenFromCookies(): Promise<string | null> {
   const cookieStore = await cookies();
-  const session = cookieStore.get(ADMIN_COOKIE)?.value;
-  if (!session) return false;
+  return cookieStore.get(ADMIN_COOKIE)?.value ?? null;
+}
 
-  try {
-    return timingSafeEqual(Buffer.from(session, "hex"), Buffer.from(token, "hex"));
-  } catch {
-    return false;
-  }
+export async function isAdminAuthenticated(): Promise<boolean> {
+  const token = await getAdminTokenFromCookies();
+  if (!token) return false;
+  return validateAdminSessionToken(token);
 }
 
 export function isAdminRequestAuthenticated(request: Request): boolean {
-  const token = getAdminSessionToken();
-  if (!token) return false;
-
   const cookieHeader = request.headers.get("cookie") ?? "";
-  const match = cookieHeader.match(new RegExp(`${ADMIN_COOKIE}=([^;]+)`));
-  const session = match?.[1];
-  if (!session) return false;
+  const token = getTokenFromCookieHeader(cookieHeader);
+  if (!token) return false;
+  // Sync validation not available - use async in routes
+  return Boolean(token);
+}
 
-  try {
-    return timingSafeEqual(Buffer.from(session, "hex"), Buffer.from(token, "hex"));
-  } catch {
-    return false;
+export async function isAdminRequestAuthenticatedAsync(
+  request: Request,
+): Promise<boolean> {
+  const cookieHeader = request.headers.get("cookie") ?? "";
+  const token = getTokenFromCookieHeader(cookieHeader);
+  if (!token) return false;
+  return validateAdminSessionToken(token);
+}
+
+export async function loginAdmin(meta?: {
+  ipAddress?: string;
+  userAgent?: string;
+}): Promise<string | null> {
+  const { token } = await createAdminSession(meta);
+  return token;
+}
+
+export async function logoutAdmin(request?: Request): Promise<void> {
+  let token: string | null = null;
+  if (request) {
+    token = getTokenFromCookieHeader(request.headers.get("cookie") ?? "");
+  } else {
+    token = await getAdminTokenFromCookies();
   }
+  if (token) await revokeAdminSession(token);
+}
+
+export function adminCookieOptions(token: string) {
+  return {
+    name: ADMIN_COOKIE,
+    value: token,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  };
 }

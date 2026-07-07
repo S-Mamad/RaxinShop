@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { cn } from "@asal/lib/utils";
 
@@ -13,7 +13,13 @@ interface ProductImageProps {
   className?: string;
 }
 
-const PLACEHOLDER_IMAGE = "/images/hajiasal/placeholder.webp";
+const PLACEHOLDER_WEBP = "/images/hajiasal/placeholder.webp";
+const PLACEHOLDER_SVG = "/images/hajiasal/placeholder.svg";
+
+function toSvgFallback(webpPath: string): string | null {
+  if (!webpPath.endsWith(".webp")) return null;
+  return webpPath.replace(/\.webp$/, ".svg");
+}
 
 export function ProductImage({
   src,
@@ -24,7 +30,12 @@ export function ProductImage({
   className,
 }: ProductImageProps) {
   const [imgSrc, setImgSrc] = useState(src);
-  const [usedFallback, setUsedFallback] = useState(false);
+  const [fallbackStep, setFallbackStep] = useState(0);
+
+  useEffect(() => {
+    setImgSrc(src);
+    setFallbackStep(0);
+  }, [src]);
 
   return (
     <Image
@@ -35,9 +46,22 @@ export function ProductImage({
       priority={priority}
       className={cn(className)}
       onError={() => {
-        if (!usedFallback) {
-          setUsedFallback(true);
-          setImgSrc(PLACEHOLDER_IMAGE);
+        if (fallbackStep === 0) {
+          const svg = toSvgFallback(src);
+          if (svg) {
+            setFallbackStep(1);
+            setImgSrc(svg);
+            return;
+          }
+        }
+        if (fallbackStep <= 1 && imgSrc !== PLACEHOLDER_WEBP) {
+          setFallbackStep(2);
+          setImgSrc(PLACEHOLDER_WEBP);
+          return;
+        }
+        if (fallbackStep <= 2 && imgSrc !== PLACEHOLDER_SVG) {
+          setFallbackStep(3);
+          setImgSrc(PLACEHOLDER_SVG);
         }
       }}
     />

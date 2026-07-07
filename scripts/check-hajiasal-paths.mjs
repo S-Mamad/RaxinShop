@@ -13,6 +13,7 @@ const badPatterns = [
   /href=["']\/faq(?:\/|["'])/g,
   /push\(["']\/shop/g,
   /router\.push\(["']\/checkout/g,
+  /\/hajiasal\/hajiasal/g,
 ];
 
 function walk(dir, files = []) {

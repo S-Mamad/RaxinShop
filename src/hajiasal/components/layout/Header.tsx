@@ -21,7 +21,7 @@ import { SearchModal } from "./SearchModal";
 
 const siteData = site as SiteConfig;
 
-import { extraNav } from "@asal/lib/nav";
+import { extraNav, resolveNavHref } from "@asal/lib/nav";
 import { hajiasalPath } from "@asal/lib/paths";
 
 export function Header() {
@@ -64,24 +64,30 @@ export function Header() {
           </Link>
 
           <nav className="hidden items-center gap-6 lg:flex">
-            {[...siteData.nav, ...extraNav].map((item) => (
+            {[...siteData.nav, ...extraNav].map((item) => {
+              const href =
+                "href" in item && item.href.startsWith("/hajiasal")
+                  ? item.href
+                  : resolveNavHref(item.href);
+              return (
               <Link
                 key={item.id}
-                href={item.href}
+                href={href}
                 className={cn(
                   "text-sm transition-colors duration-300",
                   scrolled || !isHome
-                    ? pathname === item.href
+                    ? pathname === href
                       ? "font-medium text-amber"
                       : "text-muted hover:text-amber"
-                    : pathname === item.href
+                    : pathname === href
                       ? "font-medium text-amber-bright"
                       : "text-white/80 hover:text-white",
                 )}
               >
                 {item.label}
               </Link>
-            ))}
+            );
+            })}
           </nav>
 
           <div className="flex items-center gap-1">

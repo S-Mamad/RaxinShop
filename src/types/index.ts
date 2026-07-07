@@ -70,6 +70,11 @@ export interface HeroCta {
   secondary: string;
 }
 
+export interface HeroStat {
+  value: string;
+  label: string;
+}
+
 export interface FaqItem {
   id: string;
   question: string;
@@ -101,6 +106,7 @@ export interface SiteConfig {
   team: TeamMember[];
   links: LinkItem[];
   heroCta?: HeroCta;
+  heroStats?: HeroStat[];
   clients?: ClientItem[];
   whyPoints?: WhyPoint[];
 }

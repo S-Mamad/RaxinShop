@@ -8,7 +8,7 @@
     "gradient": ["#451a03", "#b45309"],
     "category": "web",
     "tech": ["Next.js", "Tailwind"],
-    "image": "/portfolio/honey.svg",
+    "image": "/portfolio/hero-showcase.png",
     "metrics": ["۳۰+ محصول", "خرید آنلاین"],
     "featured": true,
     "year": "۱۴۰۴"
@@ -22,7 +22,7 @@
     "gradient": ["#1a1a2e", "#0f3460"],
     "category": "saas",
     "tech": ["React", "TypeScript"],
-    "image": "/portfolio/marham.svg",
+    "image": "/portfolio/marham-showcase.png",
     "metrics": ["پذیرش ۲۴", "محصول زنده"],
     "featured": false,
     "year": "۱۴۰۳"
@@ -36,7 +36,7 @@
     "gradient": ["#0e0e14", "#134e4a"],
     "category": "web",
     "tech": ["Branding", "UI"],
-    "image": "/portfolio/hamgam.svg",
+    "image": "/portfolio/brand-showcase.png",
     "metrics": ["پکیج برند", "خروجی دیجیتال"],
     "featured": false,
     "year": "۱۴۰۴",

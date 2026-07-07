@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import type { Product } from "@asal/types";
 import { ProductCard } from "@asal/components/product/ProductCard";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
@@ -88,7 +88,7 @@ export function BestsellersCarousel({
               className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-brown transition-colors hover:border-amber hover:text-amber focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber"
               aria-label="قبلی"
             >
-              <ChevronRight size={18} strokeWidth={1.5} />
+              <CaretRight size={18} weight="light" />
             </button>
             <button
               type="button"
@@ -96,7 +96,7 @@ export function BestsellersCarousel({
               className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-brown transition-colors hover:border-amber hover:text-amber focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber"
               aria-label="بعدی"
             >
-              <ChevronLeft size={18} strokeWidth={1.5} />
+              <CaretLeft size={18} weight="light" />
             </button>
           </div>
         </Reveal>

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, X, ArrowLeft } from "lucide-react";
+import { MagnifyingGlass, X, ArrowRight } from "@phosphor-icons/react";
 import type { Product } from "@asal/types";
 import { ProductImage } from "@asal/components/ui/ProductImage";
 import { hajiasalPath } from "@asal/lib/paths";
@@ -88,7 +88,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
             className="fixed inset-x-4 top-20 z-50 mx-auto max-w-2xl rounded-2xl border border-border bg-surface p-4 shadow-2xl md:inset-x-auto"
           >
             <div className="flex items-center gap-3 border-b border-border pb-3">
-              <Search size={20} strokeWidth={1.5} className="text-muted" />
+              <MagnifyingGlass size={20} weight="light" className="text-muted" />
               <input
                 type="search"
                 value={query}
@@ -103,7 +103,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                 className="text-muted hover:text-brown"
                 aria-label="بستن"
               >
-                <X size={20} strokeWidth={1.5} />
+                <X size={20} weight="light" />
               </button>
             </div>
             <div className="max-h-80 overflow-y-auto pt-2">
@@ -135,7 +135,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                             {product.categoryLabel}
                           </p>
                         </div>
-                        <ArrowLeft size={16} className="shrink-0 text-dim" strokeWidth={1.5} />
+                        <ArrowRight size={16} weight="light" className="shrink-0 text-dim" />
                       </Link>
                     </li>
                   ))}

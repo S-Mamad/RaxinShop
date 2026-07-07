@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
+import { ProductImage } from "@asal/components/ui/ProductImage";
 import { hajiasalPath } from "@asal/lib/paths";
 
 const siteData = site as SiteConfig;
+const AUTH_HERO_IMAGE = "/images/hajiasal/about/workshop.webp";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -22,13 +23,13 @@ export function AuthLayout({
   return (
     <div className="flex min-h-[100dvh] flex-col lg:flex-row">
       <div className="relative hidden min-h-[100dvh] flex-1 overflow-hidden bg-brown-deep lg:flex">
-        <Image
-          src={siteData.hero.image}
+        <ProductImage
+          src={AUTH_HERO_IMAGE}
           alt=""
           fill
-          className="object-cover opacity-50"
           priority
           sizes="50vw"
+          className="object-cover opacity-50"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-brown-deep via-brown-deep/60 to-transparent" />
         <div className="relative z-10 flex flex-col justify-end p-12">

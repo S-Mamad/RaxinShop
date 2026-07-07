@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle } from "@phosphor-icons/react";
 import { Button } from "@asal/components/ui/Button";
 import { hajiasalPath } from "@asal/lib/paths";
 
@@ -18,7 +18,7 @@ function SuccessContent() {
   return (
     <div className="mx-auto flex max-w-lg flex-col items-center px-4 py-20 text-center">
       <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gold-dim">
-        <CheckCircle size={32} strokeWidth={1.5} className="text-amber" />
+        <CheckCircle size={32} weight="light" className="text-amber" />
       </div>
       <h1 className="mb-2 text-2xl font-bold text-brown">
         سفارش شما ثبت شد

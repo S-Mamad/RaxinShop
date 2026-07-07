@@ -1,6 +1,6 @@
 "use client";
 
-import { Banknote, CreditCard } from "lucide-react";
+import { Money, CreditCard } from "@phosphor-icons/react";
 import { cn } from "@asal/lib/utils";
 import type { PaymentMethod } from "@asal/lib/server/orders";
 
@@ -28,8 +28,8 @@ const options: PaymentOption[] = [
   },
 ];
 
-const icons: Record<PaymentMethod, typeof Banknote> = {
-  cod: Banknote,
+const icons: Record<PaymentMethod, typeof Money> = {
+  cod: Money,
   card_to_card: CreditCard,
 };
 
@@ -63,7 +63,7 @@ export function PaymentMethodSelector({
                   selected ? "bg-amber text-white" : "bg-cream-dark text-muted",
                 )}
               >
-                <Icon size={18} strokeWidth={1.5} />
+                <Icon size={18} weight="light" />
               </div>
               <div>
                 <span className="font-medium text-brown">{option.label}</span>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@asal/components/ui/Input";
 import { Button } from "@asal/components/ui/Button";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
+import { hajiasalPath } from "@asal/lib/paths";
 
 export function AdminLogin() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export function AdminLogin() {
         return;
       }
 
+      router.push(hajiasalPath("/admin/dashboard"));
       router.refresh();
     } catch {
       setError("خطا در ورود");

@@ -8,24 +8,24 @@
     {
       "id": "home",
       "label": "خانه",
-      "href": "/hajiasal"
+      "href": "/"
     },
     {
       "id": "shop",
       "label": "فروشگاه",
-      "href": "/hajiasal/shop"
+      "href": "/shop"
     },
     {
       "id": "about",
       "label": "درباره ما",
-      "href": "/hajiasal/about"
+      "href": "/about"
     }
   ],
   "hero": {
     "title": "عسل طبیعی، اصیل و درجه یک",
     "subtitle": "از کوهستان تا خانه شما، ضمانت اصالت و ارسال سریع",
     "cta": "مشاهده محصولات",
-    "ctaHref": "/hajiasal/shop",
+    "ctaHref": "/shop",
     "image": "/images/hajiasal/hero.webp"
   },
   "freeShippingThreshold": 500000,

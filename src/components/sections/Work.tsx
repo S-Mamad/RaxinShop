@@ -21,7 +21,7 @@ export function Work() {
             index="02"
             eyebrow="کارها"
             title="نمونه‌کار"
-            description="پروژه‌های واقعی. از فروشگاه آنلاین تا SaaS و برند دیجیتال."
+            description="پروژه‌های واقعی با خروجی قابل لمس. از فروشگاه تا SaaS و برند."
           />
         </Reveal>
 

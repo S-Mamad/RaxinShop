@@ -1,5 +1,5 @@
 import { createHash, randomInt } from "crypto";
-import { getSupabaseAdmin } from "@asal/lib/server/supabase";
+import { getSupabaseAdmin, isSupabaseConfigured } from "@asal/lib/server/supabase";
 
 const OTP_TTL_MS = 5 * 60 * 1000;
 const MAX_SENDS_PER_WINDOW = 3;
@@ -39,6 +39,10 @@ export async function createOtpChallenge(
   phone: string,
   fixedCode?: string,
 ): Promise<string> {
+  if (process.env.NODE_ENV === "production" && !isSupabaseConfigured()) {
+    throw new Error("Supabase is required for OTP in production");
+  }
+
   const code = fixedCode ?? generateCode();
   const codeHash = hashCode(code);
   const expiresAt = new Date(Date.now() + OTP_TTL_MS).toISOString();

@@ -26,7 +26,8 @@ export function SectionHeading({
       )}
     >
       {(index || eyebrow) && (
-        <p className="label-mono mb-5 text-muted">
+        <p className="label-mono mb-5 flex items-center gap-3 text-muted">
+          <span className="h-px w-8 bg-accent/50" aria-hidden />
           {index ? `[ ${index} ]` : null}
           {index && eyebrow ? " · " : null}
           {eyebrow}

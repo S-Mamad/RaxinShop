@@ -1,4 +1,4 @@
-﻿import { Star } from "lucide-react";
+﻿import { Star } from "@phosphor-icons/react";
 import { cn } from "@asal/lib/utils";
 
 interface RatingStarsProps {
@@ -23,13 +23,19 @@ export function RatingStars({
           <Star
             key={i}
             size={iconSize}
-            strokeWidth={1.5}
+            weight={
+              i < Math.floor(rating)
+                ? "fill"
+                : i < rating
+                  ? "duotone"
+                  : "light"
+            }
             className={cn(
               i < Math.floor(rating)
-                ? "fill-amber text-amber"
+                ? "text-amber"
                 : i < rating
-                  ? "fill-amber/50 text-amber"
-                  : "fill-none text-dim",
+                  ? "text-amber/50"
+                  : "text-dim",
             )}
           />
         ))}

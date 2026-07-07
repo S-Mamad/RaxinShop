@@ -126,3 +126,34 @@ export async function createReview(input: {
   await appendToJsonArray(DYNAMIC_REVIEWS_FILE, review);
   return review;
 }
+
+export async function moderateReview(
+  id: string,
+  input: { approved?: boolean; adminReply?: string },
+): Promise<Review | null> {
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const updates: Record<string, unknown> = {};
+    if (input.approved !== undefined) updates.verified = input.approved;
+    if (input.adminReply !== undefined) updates.admin_reply = input.adminReply;
+
+    const { data, error } = await supabase
+      .from("product_reviews")
+      .update(updates)
+      .eq("id", id)
+      .select("*")
+      .maybeSingle();
+    if (error || !data) return null;
+    return mapReviewRow(data);
+  }
+
+  const dynamic = await getDynamicReviews();
+  const idx = dynamic.findIndex((r) => r.id === id);
+  if (idx === -1) return null;
+  if (input.approved !== undefined) {
+    dynamic[idx].verified = input.approved;
+  }
+  const { writeJsonFile } = await import("./db");
+  await writeJsonFile(DYNAMIC_REVIEWS_FILE, dynamic);
+  return dynamic[idx];
+}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag } from "@phosphor-icons/react";
 import type { Product } from "@asal/types";
 import { getMinPrice } from "@asal/lib/products";
 import { hajiasalPath } from "@asal/lib/paths";
@@ -84,8 +84,7 @@ export function ProductCard({ product, quickAdd = false }: ProductCardProps) {
               >
                 <Heart
                   size={16}
-                  strokeWidth={1.5}
-                  className={isWishlisted ? "fill-current" : ""}
+                  weight={isWishlisted ? "fill" : "light"}
                 />
               </button>
               {quickAdd && product.inStock ? (
@@ -95,7 +94,7 @@ export function ProductCard({ product, quickAdd = false }: ProductCardProps) {
                   className="absolute inset-x-3 bottom-3 flex items-center justify-center gap-2 rounded-full bg-brown/90 py-2.5 text-xs font-medium text-white opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 md:translate-y-1 md:group-hover:translate-y-0"
                   aria-label={`افزودن ${product.title} به سبد`}
                 >
-                  <ShoppingBag size={14} strokeWidth={1.5} />
+                  <ShoppingBag size={14} weight="light" />
                   افزودن سریع
                 </button>
               ) : null}
@@ -124,7 +123,7 @@ export function ProductCard({ product, quickAdd = false }: ProductCardProps) {
                 onClick={handleQuickAdd}
                 className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-cream py-2.5 text-xs font-medium text-brown transition-colors hover:border-amber hover:text-amber"
               >
-                <ShoppingBag size={14} strokeWidth={1.5} />
+                <ShoppingBag size={14} weight="light" />
                 افزودن به سبد
               </button>
             </div>

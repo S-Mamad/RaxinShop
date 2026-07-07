@@ -3,10 +3,10 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { X } from "lucide-react";
+import { X } from "@phosphor-icons/react";
 import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
-import { extraNav } from "@asal/lib/nav";
+import { extraNav, resolveNavHref } from "@asal/lib/nav";
 
 const siteData = site as SiteConfig;
 
@@ -56,21 +56,27 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 className="text-muted hover:text-brown"
                 aria-label="بستن"
               >
-                <X size={22} strokeWidth={1.5} />
+                <X size={22} weight="light" />
               </button>
             </div>
             <ul className="flex flex-col gap-4">
-              {navItems.map((item) => (
+              {navItems.map((item) => {
+                const href =
+                  "href" in item && item.href.startsWith("/hajiasal")
+                    ? item.href
+                    : resolveNavHref(item.href);
+                return (
                 <li key={item.id}>
                   <Link
-                    href={item.href}
+                    href={href}
                     onClick={onClose}
                     className="text-lg text-brown hover:text-amber"
                   >
                     {item.label}
                   </Link>
                 </li>
-              ))}
+              );
+              })}
             </ul>
           </motion.nav>
         </>

@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
-import { ShoppingBag, Minus, Plus, MessageCircle, Share2 } from "lucide-react";
+import { ShoppingBag, Minus, Plus, ChatCircle, ShareNetwork } from "@phosphor-icons/react";
 import type { Product, WeightOption } from "@asal/types";
 import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
@@ -155,7 +155,7 @@ export function ProductDetailClient({
                 className="flex h-11 w-11 items-center justify-center text-muted hover:text-brown"
                 aria-label="کاهش"
               >
-                <Minus size={16} strokeWidth={1.5} />
+                <Minus size={16} weight="light" />
               </button>
               <span className="min-w-[2rem] text-center font-medium">
                 {quantity.toLocaleString("fa-IR")}
@@ -166,7 +166,7 @@ export function ProductDetailClient({
                 className="flex h-11 w-11 items-center justify-center text-muted hover:text-brown"
                 aria-label="افزایش"
               >
-                <Plus size={16} strokeWidth={1.5} />
+                <Plus size={16} weight="light" />
               </button>
             </div>
 
@@ -177,7 +177,7 @@ export function ProductDetailClient({
               onClick={handleAddToCart}
               className="flex-1"
             >
-              <ShoppingBag size={18} strokeWidth={1.5} />
+              <ShoppingBag size={18} weight="light" />
               {product.inStock ? "افزودن به سبد" : "ناموجود"}
             </Button>
           </div>
@@ -191,12 +191,12 @@ export function ProductDetailClient({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <MessageCircle size={16} strokeWidth={1.5} />
+                <ChatCircle size={16} weight="light" />
                 پرسش در واتساپ
               </Button>
             ) : null}
             <Button variant="outline" size="sm" onClick={handleShare}>
-              <Share2 size={16} strokeWidth={1.5} />
+              <ShareNetwork size={16} weight="light" />
               اشتراک‌گذاری
             </Button>
             {shareMessage ? (

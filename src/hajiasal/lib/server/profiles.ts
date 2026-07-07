@@ -308,3 +308,68 @@ export async function setWishlist(
   }
   await writeJsonFile(WISHLISTS_FILE, without);
 }
+
+export interface ProfileWithStats extends CustomerUser {
+  orderCount: number;
+  totalSpent: number;
+}
+
+export async function getAllProfilesWithStats(): Promise<ProfileWithStats[]> {
+  const { getAllOrders } = await import("./orders");
+  const orders = await getAllOrders();
+
+  const statsByUser = new Map<string, { orderCount: number; totalSpent: number }>();
+  const statsByPhone = new Map<string, { orderCount: number; totalSpent: number }>();
+
+  for (const order of orders) {
+    const key = order.userId ?? order.customer.phone;
+    const map = order.userId ? statsByUser : statsByPhone;
+    const current = map.get(key) ?? { orderCount: 0, totalSpent: 0 };
+    current.orderCount += 1;
+    current.totalSpent += order.total;
+    map.set(key, current);
+  }
+
+  const supabase = getSupabaseAdmin();
+  let profiles: CustomerUser[] = [];
+
+  if (supabase) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .order("created_at", { ascending: false });
+    profiles = data?.map(mapProfileRow) ?? [];
+  } else {
+    profiles = await readJsonFile<CustomerUser[]>(PROFILES_FILE, []);
+  }
+
+  const seen = new Set<string>();
+  const result: ProfileWithStats[] = profiles.map((profile) => {
+    seen.add(profile.id);
+    const stats =
+      statsByUser.get(profile.id) ??
+      statsByPhone.get(profile.phone) ?? { orderCount: 0, totalSpent: 0 };
+    return { ...profile, ...stats };
+  });
+
+  for (const order of orders) {
+    if (order.userId && seen.has(order.userId)) continue;
+    const phone = order.customer.phone;
+    if (profiles.some((p) => p.phone === phone)) continue;
+    const stats = statsByPhone.get(phone) ?? { orderCount: 0, totalSpent: 0 };
+    result.push({
+      id: `guest-${phone}`,
+      phone,
+      fullName: order.customer.fullName,
+      email: null,
+      newsletterOptIn: false,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
+      ...stats,
+    });
+  }
+
+  return result.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+}

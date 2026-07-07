@@ -7,15 +7,15 @@ export function SocialProof() {
   if (!data.clients?.length) return null;
 
   return (
-    <div className="mt-8">
-      <p className="label-mono mb-3 text-dim">همکاری با</p>
-      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-        {data.clients.map((client, i) => (
-          <span key={client.name} className="flex items-center gap-3">
+    <div className="mt-8 border-t border-border pt-6">
+      <p className="label-mono mb-4 text-dim">همکاری با</p>
+      <div className="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
+        {data.clients.map((client) => (
+          <span key={client.name}>
             {client.href ? (
               <a
                 href={client.href}
-                className="text-sm text-muted transition-colors hover:text-accent"
+                className="inline-flex items-center border border-border bg-elevated/50 px-3 py-1.5 text-sm text-muted transition-colors hover:border-accent/30 hover:text-accent"
                 {...(client.href.startsWith("http")
                   ? { target: "_blank", rel: "noopener noreferrer" }
                   : {})}
@@ -23,13 +23,10 @@ export function SocialProof() {
                 {client.name}
               </a>
             ) : (
-              <span className="text-sm text-muted">{client.name}</span>
-            )}
-            {i < data.clients!.length - 1 ? (
-              <span className="text-dim" aria-hidden>
-                ·
+              <span className="inline-flex items-center border border-border px-3 py-1.5 text-sm text-muted">
+                {client.name}
               </span>
-            ) : null}
+            )}
           </span>
         ))}
       </div>

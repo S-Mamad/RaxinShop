@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Phone } from "@phosphor-icons/react";
 import { Input } from "@asal/components/ui/Input";
@@ -10,11 +10,20 @@ import { Icon } from "@asal/components/ui/Icon";
 import { hajiasalPath } from "@asal/lib/paths";
 import { useOtpTimer } from "@asal/hooks/useOtpTimer";
 import { syncWishlistToServer } from "@asal/lib/client/wishlist-sync";
+import { useAuth } from "@asal/hooks/useAuth";
+import {
+  formatPhoneInput,
+  isValidIranMobile,
+  maskPhone,
+  normalizePhoneInput,
+} from "@asal/lib/auth/phone-mask";
 
 interface PhoneLoginFormProps {
   mode?: "login" | "register";
   onNeedsRegister?: (phone: string) => void;
 }
+
+const IS_DEV = process.env.NODE_ENV === "development";
 
 export function PhoneLoginForm({
   mode = "login",
@@ -22,6 +31,7 @@ export function PhoneLoginForm({
 }: PhoneLoginFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { refresh } = useAuth();
   const redirect = searchParams.get("redirect") ?? hajiasalPath("/account");
 
   const [phone, setPhone] = useState("");
@@ -32,7 +42,13 @@ export function PhoneLoginForm({
   const [message, setMessage] = useState("");
   const { seconds, canResend, start: startTimer } = useOtpTimer(90);
 
+  const normalizedPhone = normalizePhoneInput(phone);
+
   const sendOtp = async () => {
+    if (!isValidIranMobile(phone)) {
+      setError("شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود");
+      return;
+    }
     setLoading(true);
     setError("");
     setMessage("");
@@ -40,7 +56,7 @@ export function PhoneLoginForm({
       const res = await fetch("/api/auth/otp/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
+        body: JSON.stringify({ phone: normalizedPhone }),
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
@@ -64,7 +80,7 @@ export function PhoneLoginForm({
       const res = await fetch("/api/auth/otp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, code: otp }),
+        body: JSON.stringify({ phone: normalizedPhone, code: otp }),
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
@@ -72,8 +88,17 @@ export function PhoneLoginForm({
         return;
       }
 
+      await refresh();
+
+      if (mode === "register" && !data.isNewUser) {
+        await syncWishlistToServer();
+        router.push(redirect);
+        router.refresh();
+        return;
+      }
+
       if (data.isNewUser || mode === "register") {
-        onNeedsRegister?.(phone);
+        onNeedsRegister?.(normalizedPhone);
         return;
       }
 
@@ -87,6 +112,13 @@ export function PhoneLoginForm({
     }
   };
 
+  useEffect(() => {
+    if (step === "otp" && otp.length === 4 && !loading) {
+      void verifyOtp();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [otp, step]);
+
   if (step === "phone") {
     return (
       <form
@@ -96,16 +128,26 @@ export function PhoneLoginForm({
         }}
         className="flex flex-col gap-4"
       >
+        {IS_DEV ? (
+          <div className="rounded-xl border border-amber/30 bg-gold-dim px-3 py-2 text-xs text-brown">
+            حالت توسعه: 09123456789 / 1234
+          </div>
+        ) : null}
         <Input
           label="شماره موبایل"
-          placeholder="09123456789"
+          placeholder="0912 345 6789"
           dir="ltr"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => setPhone(formatPhoneInput(e.target.value))}
           autoComplete="tel"
+          inputMode="numeric"
         />
         {error ? <p className="text-sm text-red-500">{error}</p> : null}
-        <Button type="submit" disabled={loading || phone.length < 10} className="w-full">
+        <Button
+          type="submit"
+          disabled={loading || !isValidIranMobile(phone)}
+          className="w-full"
+        >
           <Icon icon={Phone} size={18} />
           {loading ? "در حال ارسال..." : "دریافت کد تأیید"}
         </Button>
@@ -115,8 +157,12 @@ export function PhoneLoginForm({
 
   return (
     <div className="flex flex-col gap-5">
+      <p className="text-center text-xs text-muted">مرحله ۲ از ۲</p>
       <p className="text-center text-sm text-muted">
-        کد ارسال‌شده به <span dir="ltr" className="font-medium text-brown">{phone}</span>
+        کد ارسال‌شده به{" "}
+        <span dir="ltr" className="font-medium text-brown">
+          {maskPhone(normalizedPhone)}
+        </span>
       </p>
       {message ? <p className="text-center text-xs text-amber">{message}</p> : null}
       <OtpInput value={otp} onChange={setOtp} disabled={loading} error={error} />

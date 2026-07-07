@@ -5,7 +5,7 @@ test.describe("Raxin landing page", () => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: /محصول دیجیتالی/i }),
+      page.getByRole("heading", { name: /استارتاپت را به محصولی بساز/i }),
     ).toBeVisible({ timeout: 15_000 });
 
     await page.getByRole("link", { name: "تخصص" }).click();
@@ -41,7 +41,7 @@ test.describe("Raxin landing page", () => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: /محصول دیجیتالی/i }),
+      page.getByRole("heading", { name: /استارتاپت را به محصولی بساز/i }),
     ).toBeVisible();
 
     await page.getByRole("button", { name: "باز کردن منو" }).click();

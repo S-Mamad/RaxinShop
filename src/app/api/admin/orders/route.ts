@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { isAdminRequestAuthenticated } from "@asal/lib/server/admin";
-import { getAllContactMessages } from "@asal/lib/server/newsletter";
+import { getContactMessagesBySource } from "@asal/lib/server/newsletter";
 import {
   getAllOrders,
   updateOrderStatus,
@@ -21,19 +20,25 @@ const statusSchema = z.object({
 });
 
 export async function GET(request: Request) {
-  if (!isAdminRequestAuthenticated(request)) {
+  const { isAdminRequestAuthenticatedAsync } = await import(
+    "@asal/lib/server/admin"
+  );
+  if (!(await isAdminRequestAuthenticatedAsync(request))) {
     return NextResponse.json({ error: "دسترسی غیرمجاز" }, { status: 401 });
   }
 
   const [orders, messages] = await Promise.all([
     getAllOrders(),
-    getAllContactMessages(),
+    getContactMessagesBySource("hajiasal"),
   ]);
   return NextResponse.json({ orders, messages });
 }
 
 export async function PATCH(request: Request) {
-  if (!isAdminRequestAuthenticated(request)) {
+  const { isAdminRequestAuthenticatedAsync } = await import(
+    "@asal/lib/server/admin"
+  );
+  if (!(await isAdminRequestAuthenticatedAsync(request))) {
     return NextResponse.json({ error: "دسترسی غیرمجاز" }, { status: 401 });
   }
 

@@ -25,7 +25,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const message = await saveContactMessage(parsed.data);
+    const message = await saveContactMessage({
+      ...parsed.data,
+      source: "hajiasal",
+    });
 
     return NextResponse.json({
       success: true,

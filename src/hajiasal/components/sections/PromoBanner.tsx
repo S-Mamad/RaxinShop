@@ -1,11 +1,11 @@
 ﻿"use client";
 
-import Link from "next/link";
-import { ArrowLeft, Tag } from "@phosphor-icons/react";
+import { ArrowRight, Tag } from "@phosphor-icons/react";
 import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
 import { Reveal } from "@asal/components/ui/Reveal";
 import { Icon } from "@asal/components/ui/Icon";
+import { Button } from "@asal/components/ui/Button";
 import { hajiasalPath } from "@asal/lib/paths";
 import { formatPersianNumber } from "@asal/lib/utils";
 
@@ -17,34 +17,27 @@ export function PromoBanner() {
   const threshold = formatPersianNumber(minOrder);
 
   return (
-    <section className="py-12 md:py-16">
+    <section className="bg-cream-dark py-12 md:py-16">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         <Reveal>
-          <Link
-            href={shopUrl}
-            className="group relative block overflow-hidden rounded-3xl bg-gradient-to-l from-amber to-gold p-8 shadow-amber transition-transform duration-300 hover:scale-[1.005] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 md:p-12"
-          >
-            <div className="absolute -end-10 -top-10 h-40 w-40 rounded-full bg-white/10" aria-hidden />
-            <div className="absolute -bottom-8 -start-8 h-32 w-32 rounded-full bg-white/10" aria-hidden />
-            <div className="relative flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <span className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white">
-                  <Icon icon={Tag} size={12} aria-hidden />
-                  کد تخفیف: HAJI10
-                </span>
-                <h2 className="text-2xl font-bold text-white md:text-3xl">
-                  {formatPersianNumber(percent)}٪ تخفیف اولین خرید
-                </h2>
-                <p className="mt-1 text-white/80">
-                  برای سفارش‌های بالای {threshold} تومان
-                </p>
-              </div>
-              <span className="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 bg-white/10 px-8 py-3 text-base font-medium text-white transition-colors group-hover:bg-white/20">
-                خرید با کد تخفیف
-                <Icon icon={ArrowLeft} size={18} aria-hidden />
+          <div className="flex flex-col items-start gap-6 rounded-3xl border border-border bg-surface p-8 md:flex-row md:items-center md:justify-between md:p-10">
+            <div>
+              <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-accent/20 bg-accent-subtle px-3 py-1 text-xs font-medium text-accent">
+                <Icon icon={Tag} size={12} aria-hidden />
+                کد تخفیف: HAJI10
               </span>
+              <h2 className="text-2xl font-bold text-brown md:text-3xl">
+                {formatPersianNumber(percent)}٪ تخفیف اولین خرید
+              </h2>
+              <p className="mt-2 text-muted">
+                برای سفارش‌های بالای {threshold} تومان
+              </p>
             </div>
-          </Link>
+            <Button href={shopUrl} variant="outline" className="shrink-0 gap-2 border-accent text-accent hover:bg-accent-subtle">
+              خرید با کد تخفیف
+              <Icon icon={ArrowRight} size={18} aria-hidden />
+            </Button>
+          </div>
         </Reveal>
       </div>
     </section>

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@asal/components/ui/Input";
 import { Button } from "@asal/components/ui/Button";
 import { hajiasalPath } from "@asal/lib/paths";
+import { useAuth } from "@asal/hooks/useAuth";
 import { syncWishlistToServer } from "@asal/lib/client/wishlist-sync";
 
 interface RegisterFormProps {
@@ -13,6 +14,7 @@ interface RegisterFormProps {
 
 export function RegisterForm({ phone }: RegisterFormProps) {
   const router = useRouter();
+  const { refresh } = useAuth();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") ?? hajiasalPath("/account");
 
@@ -43,8 +45,8 @@ export function RegisterForm({ phone }: RegisterFormProps) {
         return;
       }
       await syncWishlistToServer();
+      await refresh();
       router.push(redirect);
-      router.refresh();
     } catch {
       setError("اتصال برقرار نشد. دوباره تلاش کنید");
     } finally {

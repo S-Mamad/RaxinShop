@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSessionFromRequest } from "@asal/lib/auth/session";
+import { updateOrderStatus } from "@asal/lib/server/orders";
 
 const createSchema = z.object({
   orderId: z.string().min(1),
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
       success: false,
       available: false,
       message:
-        "درگاه زرین‌پال هنوز پیکربندی نشده است. از پرداخت در محل یا کارت‌به‌کارت استفاده کنید.",
+        "درگاه زرین‌پال پیکربندی نشده است. از پرداخت در محل یا کارت‌به‌کارت استفاده کنید.",
     });
   }
 
@@ -37,9 +38,36 @@ export async function POST(request: Request) {
       );
     }
 
-    // Stub: real integration would call Zarinpal REST API and return authority + redirect URL
-    const authority = `A${Date.now().toString(36).toUpperCase()}`;
-    const callbackUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/hajiasal/checkout/verify`;
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+    const callbackUrl = `${siteUrl}/api/checkout/verify?orderId=${encodeURIComponent(parsed.data.orderId)}`;
+    const amountRial = Math.round(parsed.data.amount * 10);
+
+    const zarinRes = await fetch(
+      "https://api.zarinpal.com/pg/v4/payment/request.json",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          merchant_id: merchantId,
+          amount: amountRial,
+          callback_url: callbackUrl,
+          description: parsed.data.description ?? `سفارش ${parsed.data.orderId}`,
+          metadata: { order_id: parsed.data.orderId, mobile: session.phone },
+        }),
+      },
+    );
+
+    const zarinData = await zarinRes.json();
+    const authority = zarinData.data?.authority;
+
+    if (zarinData.data?.code !== 100 || !authority) {
+      return NextResponse.json({
+        success: false,
+        message: zarinData.errors?.message ?? "خطا در اتصال به زرین‌پال",
+      });
+    }
+
+    await updateOrderStatus(parsed.data.orderId, "pending_payment");
 
     return NextResponse.json({
       success: true,
@@ -47,7 +75,6 @@ export async function POST(request: Request) {
       authority,
       redirectUrl: `https://www.zarinpal.com/pg/StartPay/${authority}`,
       callbackUrl,
-      message: "درگاه آماده است (stub). اتصال واقعی در فاز بعدی فعال می‌شود.",
     });
   } catch {
     return NextResponse.json(

@@ -28,7 +28,7 @@ export default function OpenGraphImage() {
             marginBottom: 24,
           }}
         >
-          raxinshop · v3.1
+          raxinshop · v4.0
         </div>
         <div
           style={{
@@ -38,10 +38,10 @@ export default function OpenGraphImage() {
             maxWidth: 900,
           }}
         >
-          محصول دیجیتالی که فردا هم رشد کند.
+          استارتاپت را به محصولی بساز که فردا هم رشد کند.
         </div>
         <div style={{ fontSize: 28, color: "#8b8b9a", marginTop: 24 }}>
-          از ایده تا اجرا · تهران
+          فرانت · بک‌اند · برند · تهران
         </div>
       </div>
     ),

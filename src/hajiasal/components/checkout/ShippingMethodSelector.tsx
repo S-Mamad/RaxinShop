@@ -1,6 +1,6 @@
 "use client";
 
-import { Truck, Zap, Store } from "lucide-react";
+import { Truck, Lightning, Storefront } from "@phosphor-icons/react";
 import { cn } from "@asal/lib/utils";
 
 export type ShippingMethod = "standard" | "express" | "pickup";
@@ -21,8 +21,8 @@ interface ShippingMethodSelectorProps {
 
 const icons: Record<ShippingMethod, typeof Truck> = {
   standard: Truck,
-  express: Zap,
-  pickup: Store,
+  express: Lightning,
+  pickup: Storefront,
 };
 
 export function ShippingMethodSelector({
@@ -56,7 +56,7 @@ export function ShippingMethodSelector({
                   selected ? "bg-amber text-white" : "bg-cream-dark text-muted",
                 )}
               >
-                <Icon size={18} strokeWidth={1.5} />
+                <Icon size={18} weight="light" />
               </div>
               <div className="flex-1">
                 <div className="flex flex-wrap items-center justify-between gap-2">
