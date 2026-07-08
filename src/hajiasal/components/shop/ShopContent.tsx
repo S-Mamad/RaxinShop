@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";

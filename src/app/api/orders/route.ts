@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { checkoutApiSchema } from "@asal/lib/validations/checkout";
 import { createOrder } from "@asal/lib/server/orders";
 import { validateCouponAsync } from "@asal/lib/server/coupons";

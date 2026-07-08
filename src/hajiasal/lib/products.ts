@@ -1,4 +1,4 @@
-﻿import productsData from "@asal/data/products.json";
+import productsData from "@asal/data/products.json";
 import type { Product, ProductCategory, ProductFilters, SortOption } from "@asal/types";
 
 const products = productsData as Product[];

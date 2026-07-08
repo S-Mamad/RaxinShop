@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { formatPrice } from "@asal/lib/utils";
 import { useCartStore } from "@asal/store/cart";

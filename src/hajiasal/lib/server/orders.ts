@@ -1,4 +1,4 @@
-﻿import type { CartItem, CheckoutFormData } from "@asal/types";
+import type { CartItem, CheckoutFormData } from "@asal/types";
 import { readJsonFile, writeJsonFile } from "./db";
 import { requireSupabaseInProduction } from "./production";
 import { getSupabaseAdmin, isSupabaseConfigured } from "./supabase";

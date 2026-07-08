@@ -1,4 +1,4 @@
-﻿import { Star } from "@phosphor-icons/react";
+import { Star } from "@phosphor-icons/react";
 import { cn } from "@asal/lib/utils";
 
 interface RatingStarsProps {

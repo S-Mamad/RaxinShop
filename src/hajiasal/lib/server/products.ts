@@ -1,4 +1,4 @@
-﻿import type { Product, ProductCategory, ProductFilters, SortOption } from "@asal/types";
+import type { Product, ProductCategory, ProductFilters, SortOption } from "@asal/types";
 import {
   filterProducts,
   getAllCategories,

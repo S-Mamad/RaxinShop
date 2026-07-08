@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { Button } from "@asal/components/ui/Button";

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { Phone, Envelope, MapPin, Package, WhatsappLogo, InstagramLogo } from "@phosphor-icons/react";

@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { ShopContent } from "@asal/components/shop/ShopContent";
 import { getAllProductsAsync } from "@asal/lib/server/products-store";
 import { hajiasalCanonical } from "@asal/lib/paths";

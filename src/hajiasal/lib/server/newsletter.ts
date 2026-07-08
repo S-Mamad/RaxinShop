@@ -1,4 +1,4 @@
-﻿import { appendToJsonArray, readJsonFile } from "./db";
+import { appendToJsonArray, readJsonFile } from "./db";
 import { getSupabaseAdmin } from "./supabase";
 
 export interface NewsletterSubscriber {

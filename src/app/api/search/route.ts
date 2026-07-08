@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { searchProductsAsync } from "@asal/lib/server/products-store";
 
 export async function GET(request: Request) {

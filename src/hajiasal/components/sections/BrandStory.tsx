@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";

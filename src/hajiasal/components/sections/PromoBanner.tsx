@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { ArrowRight, Tag } from "@phosphor-icons/react";
 import { useSiteSettings } from "@asal/context/SiteSettingsContext";

@@ -1,4 +1,4 @@
-﻿import couponsData from "@asal/data/coupons.json";
+import couponsData from "@asal/data/coupons.json";
 import { getSupabaseAdmin } from "./supabase";
 
 export interface Coupon {

@@ -1,4 +1,4 @@
-﻿import reviewsData from "@asal/data/reviews.json";
+import reviewsData from "@asal/data/reviews.json";
 import { readJsonFile, appendToJsonArray } from "./db";
 import { getSupabaseAdmin } from "./supabase";
 
