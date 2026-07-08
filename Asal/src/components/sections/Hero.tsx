@@ -8,24 +8,24 @@ const siteData = site as SiteConfig;
 
 export function Hero() {
   return (
-    <section className="relative min-h-[100dvh] overflow-hidden bg-brown-deep">
+    <section className="relative min-h-[calc(100dvh-4rem)] overflow-hidden bg-void">
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-40"
+        className="absolute inset-0 bg-cover bg-center opacity-30"
         style={{ backgroundImage: `url(${siteData.hero.image})` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-brown-deep/60 via-brown-deep/40 to-cream" />
-      <div className="mesh-amber absolute inset-0 opacity-60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-void/40 via-void/70 to-void" />
+      <div className="mesh-warm absolute inset-0" />
 
-      <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-7xl flex-col justify-end px-4 pb-20 pt-32 md:px-6 md:pb-28 md:pt-40">
+      <div className="relative z-10 mx-auto flex min-h-[calc(100dvh-4rem)] max-w-7xl flex-col justify-end px-4 pb-20 pt-12 md:px-8 md:pb-28">
         <Reveal className="max-w-2xl">
-          <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.2em] text-amber-bright backdrop-blur-sm">
+          <span className="mb-5 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-1.5 text-[11px] font-medium tracking-[0.15em] text-gold backdrop-blur-sm">
             <Sparkles size={12} strokeWidth={1.5} />
             عسل اصل ایرانی
           </span>
-          <h1 className="mb-5 text-4xl font-bold leading-[1.1] tracking-tight text-white md:text-6xl lg:text-7xl">
+          <h1 className="mb-5 text-4xl font-bold leading-[1.1] tracking-tight text-primary md:text-6xl">
             {siteData.hero.title}
           </h1>
-          <p className="mb-8 max-w-lg text-base leading-relaxed text-white/75 md:text-lg">
+          <p className="mb-8 max-w-lg text-base leading-relaxed text-secondary md:text-lg">
             {siteData.hero.subtitle}
           </p>
           <div className="flex flex-wrap gap-3">
@@ -37,7 +37,7 @@ export function Hero() {
               href="/#about"
               variant="outline"
               size="lg"
-              className="border-white/30 text-white hover:bg-white/10"
+              className="border-white/20 text-primary hover:border-gold/50"
             >
               داستان ما
             </Button>
@@ -50,9 +50,12 @@ export function Hero() {
             { value: "۴.۹", label: "رضایت مشتری" },
             { value: "۳۵", label: "سال تجربه" },
           ].map((stat) => (
-            <div key={stat.label} className="border-s border-white/20 ps-8 first:border-0 first:ps-0">
-              <p className="text-2xl font-bold text-amber-bright">{stat.value}</p>
-              <p className="text-sm text-white/60">{stat.label}</p>
+            <div
+              key={stat.label}
+              className="border-s border-white/10 ps-8 first:border-0 first:ps-0"
+            >
+              <p className="text-2xl font-bold text-gold">{stat.value}</p>
+              <p className="text-sm text-dim">{stat.label}</p>
             </div>
           ))}
         </Reveal>

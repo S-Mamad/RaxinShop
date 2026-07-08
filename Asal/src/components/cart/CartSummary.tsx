@@ -14,19 +14,19 @@ export function CartSummary({ showShipping = true }: CartSummaryProps) {
 
   return (
     <div className="flex flex-col gap-2 text-sm">
-      <div className="flex justify-between text-muted">
+      <div className="flex justify-between text-secondary">
         <span>جمع جزء</span>
         <span>{formatPrice(subtotal)}</span>
       </div>
       {showShipping ? (
-        <div className="flex justify-between text-muted">
+        <div className="flex justify-between text-secondary">
           <span>هزینه ارسال</span>
           <span>{shipping === 0 ? "رایگان" : formatPrice(shipping)}</span>
         </div>
       ) : null}
-      <div className="flex justify-between border-t border-border pt-2 text-base font-bold text-brown">
+      <div className="flex justify-between border-t border-white/5 pt-2 text-base font-bold text-primary">
         <span>مجموع</span>
-        <span>{formatPrice(total)}</span>
+        <span className="text-gold">{formatPrice(total)}</span>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ShoppingBag } from "@phosphor-icons/react";
+import { ShoppingBag } from "lucide-react";
 import { Button } from "@asal/components/ui/Button";
 import { PriceDisplay } from "@asal/components/ui/PriceDisplay";
 
@@ -44,11 +44,11 @@ export function StickyAddToCart({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-            className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-glass px-4 py-3 backdrop-blur-xl md:hidden"
+            className="fixed inset-x-0 bottom-0 z-40 border-t border-white/5 bg-surface px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden"
           >
             <div className="mx-auto flex max-w-lg items-center justify-between gap-4">
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-brown">
+                <p className="truncate text-sm font-medium text-primary">
                   {title}
                 </p>
                 <PriceDisplay price={price} size="sm" />
@@ -59,7 +59,7 @@ export function StickyAddToCart({
                 onClick={onAddToCart}
                 className="shrink-0"
               >
-                <ShoppingBag size={16} weight="light" />
+                <ShoppingBag size={16} strokeWidth={1.5} />
                 {inStock ? "افزودن" : "ناموجود"}
               </Button>
             </div>

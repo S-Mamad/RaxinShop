@@ -14,14 +14,14 @@ export default function CartPage() {
   const isFree = useCartStore((s) => s.isFreeShipping());
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
+    <div className="mx-auto max-w-3xl px-4 py-10 md:px-8 md:py-14">
       <SectionHeading title="سبد خرید" className="mb-8" />
 
-      <div className="rounded-2xl border border-border bg-surface p-5 md:p-8">
+      <div className="rounded-2xl border border-white/6 bg-surface p-5 md:p-8">
         <CartItemRow />
 
         {itemCount > 0 ? (
-          <div className="mt-8 flex flex-col gap-6 border-t border-border pt-6">
+          <div className="mt-8 flex flex-col gap-6 border-t border-white/5 pt-6">
             <FreeShippingBar
               progress={progress}
               amountRemaining={amountRemaining}

@@ -26,15 +26,15 @@ export function RatingStars({
             strokeWidth={1.5}
             className={cn(
               i < Math.floor(rating)
-                ? "fill-amber text-amber"
+                ? "fill-gold text-gold"
                 : i < rating
-                  ? "fill-amber/50 text-amber"
+                  ? "fill-gold/50 text-gold"
                   : "fill-none text-dim",
             )}
           />
         ))}
       </div>
-      <span className="text-xs text-muted">
+      <span className="text-xs text-secondary">
         {rating.toLocaleString("fa-IR")}
         {reviewCount !== undefined
           ? ` (${reviewCount.toLocaleString("fa-IR")})`

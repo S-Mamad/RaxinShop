@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import {
   getAllSlugs,
   getProductBySlug,
+  getRelatedProducts,
 } from "@/lib/products";
 import {
   buildProductJsonLd,
@@ -43,6 +44,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!product) notFound();
 
   const productJsonLd = buildProductJsonLd(product);
+  const relatedProducts = getRelatedProducts(slug);
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "خانه", href: "/" },
     { name: "فروشگاه", href: "/shop" },
@@ -59,7 +61,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <ProductDetailClient product={product} />
+      <ProductDetailClient
+        product={product}
+        relatedProducts={relatedProducts}
+      />
     </>
   );
 }

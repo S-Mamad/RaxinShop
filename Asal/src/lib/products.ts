@@ -82,6 +82,19 @@ export function filterProducts(filters: ProductFilters): Product[] {
   return sortProducts(result, filters.sort ?? "popular");
 }
 
+export function getRelatedProducts(slug: string, limit = 4): Product[] {
+  const product = getProductBySlug(slug);
+  if (!product) return [];
+  return products
+    .filter(
+      (p) =>
+        p.category === product.category &&
+        p.slug !== slug &&
+        p.inStock,
+    )
+    .slice(0, limit);
+}
+
 export function getAllSlugs(): string[] {
   return products.map((p) => p.slug);
 }

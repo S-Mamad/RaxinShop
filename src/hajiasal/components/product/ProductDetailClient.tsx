@@ -1,51 +1,56 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { motion } from "motion/react";
 import {
   ShoppingBag,
   Minus,
   Plus,
-  ChatCircle,
-  ShareNetwork,
-  CheckCircle,
-} from "@phosphor-icons/react";
+  Check,
+  Leaf,
+  ShieldCheck,
+  Award,
+  Truck,
+  Shield,
+} from "lucide-react";
 import type { Product, WeightOption } from "@asal/types";
-import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { ProductGallery } from "@asal/components/product/ProductGallery";
-import { ProductTrustBadges } from "@asal/components/product/ProductTrustBadges";
 import { WeightSelector } from "@asal/components/product/WeightSelector";
 import { ProductAccordion } from "@asal/components/product/ProductAccordion";
 import { StickyAddToCart } from "@asal/components/product/StickyAddToCart";
-import { ReviewsSection } from "@asal/components/product/ReviewsSection";
-import type { Review } from "@asal/lib/server/reviews";
-import { RelatedProductsCarousel } from "@asal/components/product/RelatedProductsCarousel";
+import { RelatedProducts } from "@asal/components/product/RelatedProducts";
 import { Button } from "@asal/components/ui/Button";
+import { Badge } from "@asal/components/ui/Badge";
 import { PriceDisplay } from "@asal/components/ui/PriceDisplay";
 import { RatingStars } from "@asal/components/ui/RatingStars";
-import { Icon } from "@asal/components/ui/Icon";
 import { useCartStore } from "@asal/store/cart";
-import { hajiasalPath, hajiasalAbsoluteUrl } from "@asal/lib/paths";
-import { formatPersianNumber } from "@asal/lib/utils";
+import site from "@asal/data/site.json";
+import type { SiteConfig } from "@asal/types";
+
+const siteData = site as SiteConfig;
+
+const featureBadges = [
+  { icon: Leaf, label: "۱۰۰٪ طبیعی" },
+  { icon: ShieldCheck, label: "بدون افزودنی" },
+  { icon: Award, label: "دارای گواهی" },
+];
 
 interface ProductDetailClientProps {
   product: Product;
-  initialReviews?: Review[];
-  relatedProducts?: Product[];
+  relatedProducts: Product[];
 }
 
 export function ProductDetailClient({
   product,
-  initialReviews,
-  relatedProducts = [],
+  relatedProducts,
 }: ProductDetailClientProps) {
-  const siteData = useSiteSettings();
   const addItem = useCartStore((s) => s.addItem);
   const [selectedWeight, setSelectedWeight] = useState<WeightOption>(
     product.weightOptions[0],
   );
   const [quantity, setQuantity] = useState(1);
-  const [shareMessage, setShareMessage] = useState("");
+  const [cartPulse, setCartPulse] = useState(false);
 
   const handleAddToCart = () => {
     addItem(
@@ -58,36 +63,15 @@ export function ProductDetailClient({
       },
       quantity,
     );
+    setCartPulse(true);
+    window.setTimeout(() => setCartPulse(false), 300);
   };
 
-  const whatsappUrl = siteData.whatsappNumber
-    ? `https://wa.me/${siteData.whatsappNumber}?text=${encodeURIComponent(
-        `سلام، درباره ${product.title} سوال دارم.`,
-      )}`
-    : null;
-
-  const handleShare = useCallback(async () => {
-    const url = hajiasalAbsoluteUrl(`/product/${product.slug}`);
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: product.title,
-          text: product.shortDescription,
-          url,
-        });
-        return;
-      }
-      await navigator.clipboard.writeText(url);
-      setShareMessage("لینک محصول کپی شد");
-      setTimeout(() => setShareMessage(""), 2500);
-    } catch {
-      setShareMessage("اشتراک‌گذاری انجام نشد");
-      setTimeout(() => setShareMessage(""), 2500);
-    }
-  }, [product]);
-
   const accordionItems = [
-    { title: "توضیحات", content: product.longDescription },
+    {
+      title: "توضیحات",
+      content: product.longDescription,
+    },
     ...(product.ingredients
       ? [{ title: "ترکیبات", content: product.ingredients }]
       : []),
@@ -96,32 +80,32 @@ export function ProductDetailClient({
       : []),
   ];
 
+  const freeShippingLabel = `ارسال رایگان بالای ${(siteData.freeShippingThreshold / 1000).toLocaleString("fa-IR")} هزار تومان`;
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
-      <nav className="mb-6 text-sm text-[var(--pdp-muted)]">
-        <Link href={hajiasalPath()} className="hover:text-[var(--pdp-accent)]">
-          خانه
-        </Link>
-        <span className="mx-2">/</span>
-        <Link
-          href={hajiasalPath("/shop")}
-          className="hover:text-[var(--pdp-accent)]"
-        >
-          فروشگاه
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-[var(--pdp-text)]">{product.title}</span>
-      </nav>
+    <div className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-16">
+      <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
+        <div className="order-2 flex flex-col gap-6 lg:order-2">
+          <nav className="text-sm text-dim">
+            <Link href="/hajiasal/shop" className="hover:text-gold">
+              {product.categoryLabel}
+            </Link>
+            <span className="mx-2 text-secondary">/</span>
+            <span className="text-secondary">{product.title}</span>
+          </nav>
 
-      <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:gap-12 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-        <ProductGallery images={product.images} title={product.title} />
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="default">{product.categoryLabel}</Badge>
+            {product.isBestseller ? (
+              <Badge variant="bestseller">پرفروش</Badge>
+            ) : null}
+            {product.isNew ? <Badge variant="new">جدید</Badge> : null}
+            {!product.inStock ? (
+              <Badge variant="out-of-stock">ناموجود</Badge>
+            ) : null}
+          </div>
 
-        <div className="flex flex-col gap-6">
-          <p className="text-sm text-[var(--pdp-muted)]">
-            {product.categoryLabel}
-          </p>
-
-          <h1 className="text-2xl font-bold leading-tight text-[var(--pdp-text)] text-balance md:text-3xl lg:text-4xl">
+          <h1 className="font-[family-name:var(--font-lalezar)] text-3xl font-bold leading-tight text-primary md:text-4xl">
             {product.title}
           </h1>
 
@@ -131,29 +115,34 @@ export function ProductDetailClient({
             size="md"
           />
 
-          <p className="leading-relaxed text-[var(--pdp-muted)]">
+          <p className="max-w-md leading-relaxed text-secondary">
             {product.shortDescription}
           </p>
 
-          <ProductTrustBadges />
-
-          <div className="rounded-2xl border border-[var(--pdp-border)] bg-[var(--pdp-surface)] p-5">
-            <PriceDisplay
-              price={selectedWeight.price}
-              discountPrice={product.discountPrice}
-              size="lg"
-              className="[&_.text-brown]:text-[var(--pdp-accent)] [&_.text-muted]:text-[var(--pdp-muted)]"
-            />
-
-            {product.inStock ? (
-              <p className="mt-3 flex items-center gap-2 text-sm text-[var(--success)]">
-                <Icon icon={CheckCircle} size={18} weight="fill" />
-                موجود در انبار
-              </p>
-            ) : (
-              <p className="mt-3 text-sm text-[var(--error)]">ناموجود</p>
-            )}
+          <div className="flex flex-wrap gap-4">
+            {featureBadges.map(({ icon: Icon, label }) => (
+              <div
+                key={label}
+                className="flex items-center gap-2 text-sm text-secondary"
+              >
+                <Icon size={16} strokeWidth={1.5} className="text-gold" />
+                <span>{label}</span>
+              </div>
+            ))}
           </div>
+
+          <PriceDisplay
+            price={selectedWeight.price}
+            discountPrice={product.discountPrice}
+            size="lg"
+          />
+
+          {product.inStock ? (
+            <div className="flex items-center gap-2 text-sm text-success">
+              <Check size={16} strokeWidth={2} />
+              <span>موجود در انبار</span>
+            </div>
+          ) : null}
 
           <WeightSelector
             options={product.weightOptions}
@@ -162,85 +151,70 @@ export function ProductDetailClient({
           />
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 rounded-xl border border-[var(--pdp-border)] bg-[var(--pdp-surface)]">
+            <div className="flex items-center gap-1 rounded-xl bg-surface-elevated px-1">
               <button
                 type="button"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="flex h-11 w-11 items-center justify-center text-[var(--pdp-muted)] hover:text-[var(--pdp-text)]"
+                className="flex h-11 w-11 items-center justify-center text-secondary hover:text-primary"
                 aria-label="کاهش"
               >
-                <Minus size={16} weight="light" />
+                <Minus size={16} strokeWidth={1.5} />
               </button>
-              <span className="min-w-[2rem] text-center font-medium tabular-nums text-[var(--pdp-text)]">
+              <span className="min-w-[2rem] text-center font-medium text-primary">
                 {quantity.toLocaleString("fa-IR")}
               </span>
               <button
                 type="button"
                 onClick={() => setQuantity(quantity + 1)}
-                className="flex h-11 w-11 items-center justify-center text-[var(--pdp-muted)] hover:text-[var(--pdp-text)]"
+                className="flex h-11 w-11 items-center justify-center text-secondary hover:text-primary"
                 aria-label="افزایش"
               >
-                <Plus size={16} weight="light" />
+                <Plus size={16} strokeWidth={1.5} />
               </button>
             </div>
 
-            <Button
-              size="lg"
-              disabled={!product.inStock}
-              onClick={handleAddToCart}
-              className="flex-1 bg-[var(--pdp-accent)] text-[#1c1714] hover:bg-[#b8922a]"
+            <motion.div
+              animate={cartPulse ? { scale: [1, 1.03, 1] } : { scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="flex-1"
             >
-              <ShoppingBag size={18} weight="light" />
-              {product.inStock ? "افزودن به سبد خرید" : "ناموجود"}
-            </Button>
-          </div>
-
-          <div className="space-y-1 text-xs text-[var(--pdp-muted)]">
-            <p>
-              ارسال رایگان برای سفارش‌های بالای{" "}
-              {formatPersianNumber(siteData.freeShippingThreshold)} تومان
-            </p>
-            <p>ضمانت کیفیت و اصالت محصول</p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {whatsappUrl ? (
               <Button
-                href={whatsappUrl}
-                variant="outline"
-                size="sm"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border-[var(--pdp-border)] text-[var(--pdp-text)]"
+                size="lg"
+                magnetic
+                disabled={!product.inStock}
+                onClick={handleAddToCart}
+                className="w-full"
               >
-                <ChatCircle size={16} weight="light" />
-                پرسش در واتساپ
+                <ShoppingBag size={18} strokeWidth={1.5} />
+                {product.inStock ? "افزودن به سبد خرید" : "ناموجود"}
               </Button>
-            ) : null}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleShare}
-              className="border-[var(--pdp-border)] text-[var(--pdp-text)]"
-            >
-              <ShareNetwork size={16} weight="light" />
-              اشتراک‌گذاری
-            </Button>
-            {shareMessage ? (
-              <span className="self-center text-xs text-[var(--pdp-accent)]" role="status">
-                {shareMessage}
-              </span>
-            ) : null}
+            </motion.div>
           </div>
+
+          <div className="flex flex-wrap gap-6 border-t border-white/5 pt-4 text-xs text-secondary">
+            <div className="flex items-center gap-2">
+              <Truck size={14} strokeWidth={1.5} className="text-gold" />
+              <span>{freeShippingLabel}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield size={14} strokeWidth={1.5} className="text-gold" />
+              <span>{siteData.trustItems[0]?.title ?? "ضمانت کیفیت"}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="order-1 lg:order-1">
+          <ProductGallery images={product.images} title={product.title} />
         </div>
       </div>
 
-      <div className="mt-12 max-w-2xl">
+      <div className="mt-12 lg:max-w-none">
         <ProductAccordion items={accordionItems} />
       </div>
 
-      <ReviewsSection product={product} initialReviews={initialReviews} />
-      <RelatedProductsCarousel products={relatedProducts} />
+      {relatedProducts.length > 0 ? (
+        <RelatedProducts products={relatedProducts} />
+      ) : null}
 
       <StickyAddToCart
         title={product.title}

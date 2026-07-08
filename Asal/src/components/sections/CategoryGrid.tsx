@@ -10,7 +10,7 @@ const siteData = site as SiteConfig;
 export function CategoryGrid() {
   return (
     <section className="bg-surface py-16 md:py-24">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+      <div className="mx-auto max-w-7xl px-4 md:px-8">
         <Reveal className="mb-10">
           <SectionHeading
             title="دسته‌بندی محصولات"
@@ -24,7 +24,7 @@ export function CategoryGrid() {
             <Reveal key={cat.id} delay={i * 0.05}>
               <Link
                 href={`/shop?category=${cat.id}`}
-                className="group block overflow-hidden rounded-2xl border border-border bg-elevated transition-all duration-500 hover:border-amber hover:shadow-lg"
+                className="group block overflow-hidden rounded-2xl border border-white/6 bg-surface-elevated transition-all duration-500 hover:border-gold/30 hover:shadow-[0_8px_24px_-8px_rgba(212,160,86,0.15)]"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <ProductImage
@@ -34,12 +34,12 @@ export function CategoryGrid() {
                     sizes="(max-width: 768px) 50vw, 25vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-brown/60 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-void/80 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-4">
-                    <h3 className="text-sm font-bold text-white md:text-base">
+                    <h3 className="text-sm font-bold text-primary md:text-base">
                       {cat.label}
                     </h3>
-                    <p className="mt-0.5 text-xs text-white/70">
+                    <p className="mt-0.5 text-xs text-secondary">
                       {cat.description}
                     </p>
                   </div>

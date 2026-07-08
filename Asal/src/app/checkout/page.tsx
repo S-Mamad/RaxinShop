@@ -57,7 +57,7 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-lg px-4 py-20 text-center">
-        <p className="mb-6 text-muted">سبد خرید شما خالی است.</p>
+        <p className="mb-6 text-secondary">سبد خرید شما خالی است.</p>
         <Button href="/shop">رفتن به فروشگاه</Button>
       </div>
     );
@@ -132,7 +132,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
+    <div className="mx-auto max-w-3xl px-4 py-10 md:px-8 md:py-14">
       <SectionHeading title="تکمیل خرید" className="mb-8" />
 
       <div className="mb-8 flex items-center justify-between">
@@ -143,8 +143,8 @@ export default function CheckoutPage() {
                 className={cn(
                   "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                   step >= s.id
-                    ? "bg-amber text-white"
-                    : "bg-cream-dark text-muted",
+                    ? "bg-gold text-void"
+                    : "bg-surface-elevated text-secondary",
                 )}
               >
                 {step > s.id ? (
@@ -153,7 +153,7 @@ export default function CheckoutPage() {
                   s.id.toLocaleString("fa-IR")
                 )}
               </div>
-              <span className="hidden text-xs text-muted sm:block">
+              <span className="hidden text-xs text-secondary sm:block">
                 {s.title}
               </span>
             </div>
@@ -161,7 +161,7 @@ export default function CheckoutPage() {
               <div
                 className={cn(
                   "mx-2 h-px flex-1",
-                  step > s.id ? "bg-amber" : "bg-border",
+                  step > s.id ? "bg-gold" : "bg-white/10",
                 )}
               />
             ) : null}
@@ -171,7 +171,7 @@ export default function CheckoutPage() {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="rounded-2xl border border-border bg-surface p-5 md:p-8"
+        className="rounded-2xl border border-white/6 bg-surface p-5 md:p-8"
       >
         {step === 1 ? (
           <div className="flex flex-col gap-4">
@@ -224,18 +224,18 @@ export default function CheckoutPage() {
 
         {step === 3 ? (
           <div className="flex flex-col gap-6">
-            <div className="rounded-xl bg-cream p-4 text-sm">
+            <div className="rounded-xl bg-surface-elevated p-4 text-sm">
               <p>
-                <span className="text-muted">نام: </span>
+                <span className="text-secondary">نام: </span>
                 {getValues("fullName")}
               </p>
               <p>
-                <span className="text-muted">موبایل: </span>
+                <span className="text-secondary">موبایل: </span>
                 <span dir="ltr">{getValues("phone")}</span>
               </p>
               <p>
-                <span className="text-muted">آدرس: </span>
-                {getValues("province")}، {getValues("city")} —{" "}
+                <span className="text-secondary">آدرس: </span>
+                {getValues("province")}، {getValues("city")}،{" "}
                 {getValues("address")}
               </p>
             </div>
@@ -253,14 +253,14 @@ export default function CheckoutPage() {
               </Button>
             </div>
             {couponMessage ? (
-              <p className={`text-xs ${discount > 0 ? "text-amber" : "text-muted"}`}>
+              <p className={`text-xs ${discount > 0 ? "text-gold" : "text-secondary"}`}>
                 {couponMessage}
               </p>
             ) : null}
             <CartSummary />
             {discount > 0 ? (
-              <p className="text-sm text-amber">
-                تخفیف: {discount.toLocaleString("fa-IR")} تومان — مجموع:{" "}
+              <p className="text-sm text-gold">
+                تخفیف: {discount.toLocaleString("fa-IR")} تومان، مجموع:{" "}
                 {total.toLocaleString("fa-IR")} تومان
               </p>
             ) : null}

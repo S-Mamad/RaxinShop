@@ -12,7 +12,7 @@ export function CartItemRow() {
 
   if (items.length === 0) {
     return (
-      <p className="py-12 text-center text-sm text-muted">
+      <p className="py-12 text-center text-sm text-secondary">
         سبد خرید شما خالی است
       </p>
     );
@@ -25,7 +25,7 @@ export function CartItemRow() {
           key={`${item.productId}-${item.weight.grams}`}
           className="flex gap-3"
         >
-          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-cream-dark">
+          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-surface-muted">
             <ProductImage
               src={item.image}
               alt={item.title}
@@ -36,13 +36,13 @@ export function CartItemRow() {
           </div>
           <div className="flex min-w-0 flex-1 flex-col justify-between">
             <div>
-              <p className="truncate text-sm font-medium text-brown">
+              <p className="truncate text-sm font-medium text-primary">
                 {item.title}
               </p>
-              <p className="text-xs text-muted">{item.weight.label}</p>
+              <p className="text-xs text-secondary">{item.weight.label}</p>
             </div>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 rounded-lg border border-border">
+              <div className="flex items-center gap-1 rounded-lg bg-surface-elevated px-1">
                 <button
                   type="button"
                   onClick={() =>
@@ -52,12 +52,12 @@ export function CartItemRow() {
                       item.quantity - 1,
                     )
                   }
-                  className="flex h-8 w-8 items-center justify-center text-muted hover:text-brown"
+                  className="flex h-8 w-8 items-center justify-center text-secondary hover:text-primary"
                   aria-label="کاهش"
                 >
                   <Minus size={14} strokeWidth={1.5} />
                 </button>
-                <span className="min-w-[1.5rem] text-center text-sm">
+                <span className="min-w-[1.5rem] text-center text-sm text-primary">
                   {item.quantity.toLocaleString("fa-IR")}
                 </span>
                 <button
@@ -69,13 +69,13 @@ export function CartItemRow() {
                       item.quantity + 1,
                     )
                   }
-                  className="flex h-8 w-8 items-center justify-center text-muted hover:text-brown"
+                  className="flex h-8 w-8 items-center justify-center text-secondary hover:text-primary"
                   aria-label="افزایش"
                 >
                   <Plus size={14} strokeWidth={1.5} />
                 </button>
               </div>
-              <p className="text-sm font-semibold text-brown">
+              <p className="text-sm font-semibold text-gold">
                 {formatPrice(item.weight.price * item.quantity)}
               </p>
             </div>
@@ -83,7 +83,7 @@ export function CartItemRow() {
           <button
             type="button"
             onClick={() => removeItem(item.productId, item.weight.grams)}
-            className="self-start text-dim hover:text-red-500"
+            className="self-start text-dim hover:text-red-400"
             aria-label="حذف"
           >
             <Trash2 size={16} strokeWidth={1.5} />

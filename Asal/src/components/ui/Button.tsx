@@ -33,17 +33,17 @@ export function Button({
     useMagneticHover(0.15);
 
   const styles = cn(
-    "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
+    "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-void",
     "disabled:pointer-events-none disabled:opacity-50",
     variant === "primary" &&
-      "bg-amber text-white shadow-[0_4px_24px_-4px_var(--amber-glow)] hover:bg-amber-bright active:scale-[0.98]",
-    variant === "ghost" && "text-brown hover:bg-brown/5",
+      "bg-gold text-void shadow-gold-glow hover:bg-gold-bright active:scale-[0.98]",
+    variant === "ghost" && "text-secondary hover:bg-white/5 hover:text-gold",
     variant === "outline" &&
-      "border border-border text-brown hover:border-border-bright hover:bg-surface",
+      "border border-white/10 text-primary hover:border-gold/50 hover:bg-white/5",
     size === "sm" && "h-9 px-4 text-sm",
     size === "default" && "h-11 px-6 text-sm",
-    size === "lg" && "h-13 px-8 text-base",
+    size === "lg" && "h-12 px-8 text-base md:h-14",
     className,
   );
 

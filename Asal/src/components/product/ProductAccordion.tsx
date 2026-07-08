@@ -17,7 +17,7 @@ export function ProductAccordion({ items }: ProductAccordionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="divide-y divide-border rounded-2xl border border-border bg-surface">
+    <div className="divide-y divide-white/5 rounded-2xl border border-white/6 bg-surface">
       {items.map((item, i) => (
         <div key={item.title}>
           <button
@@ -25,25 +25,27 @@ export function ProductAccordion({ items }: ProductAccordionProps) {
             onClick={() => setOpenIndex(openIndex === i ? null : i)}
             className="flex w-full items-center justify-between px-5 py-4 text-start"
           >
-            <span className="text-sm font-medium text-brown">{item.title}</span>
+            <span className="text-sm font-medium text-primary">{item.title}</span>
             <ChevronDown
               size={18}
               strokeWidth={1.5}
               className={cn(
-                "text-muted transition-transform duration-300",
+                "text-gold transition-transform duration-300",
                 openIndex === i && "rotate-180",
               )}
             />
           </button>
           <div
             className={cn(
-              "overflow-hidden transition-all duration-300",
-              openIndex === i ? "max-h-48 pb-4" : "max-h-0",
+              "grid transition-all duration-300 ease-out",
+              openIndex === i ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
             )}
           >
-            <p className="px-5 text-sm leading-relaxed text-muted">
-              {item.content}
-            </p>
+            <div className="overflow-hidden">
+              <p className="px-5 pb-4 text-sm leading-relaxed text-secondary">
+                {item.content}
+              </p>
+            </div>
           </div>
         </div>
       ))}

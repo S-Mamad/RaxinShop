@@ -14,8 +14,8 @@ export function Testimonials() {
   const review = reviews[active];
 
   return (
-    <section className="mesh-amber py-20 md:py-28">
-      <div className="mx-auto max-w-4xl px-4 md:px-6">
+    <section className="py-20 md:py-28">
+      <div className="mx-auto max-w-4xl px-4 md:px-8">
         <Reveal className="mb-12 text-center">
           <SectionHeading
             title="نظر مشتریان"
@@ -25,15 +25,19 @@ export function Testimonials() {
           />
         </Reveal>
         <Reveal>
-          <blockquote className="rounded-3xl border border-border bg-surface p-8 text-center shadow-[0_16px_48px_-16px_rgba(61,43,31,0.12)] md:p-12">
-            <RatingStars rating={review.rating} size="md" className="mb-4 justify-center" />
-            <p className="mb-6 text-lg leading-relaxed text-brown md:text-xl">
+          <blockquote className="rounded-2xl border border-white/6 bg-surface-elevated p-8 text-center md:p-12">
+            <RatingStars
+              rating={review.rating}
+              size="md"
+              className="mb-4 justify-center"
+            />
+            <p className="mb-6 text-lg leading-relaxed text-primary md:text-xl">
               «{review.comment}»
             </p>
-            <footer className="text-sm text-muted">
+            <footer className="text-sm text-secondary">
               {review.author}
               {review.verified ? (
-                <span className="ms-2 text-amber">خرید تأییدشده</span>
+                <span className="ms-2 text-gold">خرید تأییدشده</span>
               ) : null}
             </footer>
           </blockquote>
@@ -44,7 +48,7 @@ export function Testimonials() {
                 type="button"
                 onClick={() => setActive(i)}
                 className={`h-2 rounded-full transition-all ${
-                  i === active ? "w-8 bg-amber" : "w-2 bg-border"
+                  i === active ? "w-8 bg-gold" : "w-2 bg-white/20"
                 }`}
                 aria-label={`نظر ${i + 1}`}
               />

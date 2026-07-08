@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Vazirmatn } from "next/font/google";
+import { Lalezar, Vazirmatn } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
@@ -11,6 +11,13 @@ import "./globals.css";
 const vazirmatn = Vazirmatn({
   variable: "--font-vazirmatn",
   subsets: ["arabic", "latin"],
+  display: "swap",
+});
+
+const lalezar = Lalezar({
+  variable: "--font-lalezar",
+  subsets: ["arabic", "latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -49,7 +56,7 @@ export default function RootLayout({
     <html
       lang="fa"
       dir="rtl"
-      className={`${vazirmatn.variable} h-full antialiased`}
+      className={`${vazirmatn.variable} ${lalezar.variable} h-full antialiased`}
     >
       <head>
         <script
@@ -57,7 +64,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
       </head>
-      <body className="flex min-h-full flex-col bg-cream text-foreground">
+      <body className="flex min-h-full flex-col bg-void text-primary">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

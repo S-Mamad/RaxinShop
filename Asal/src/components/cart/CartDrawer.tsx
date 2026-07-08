@@ -42,24 +42,24 @@ export function CartDrawer() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-brown/30 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-void/80 backdrop-blur-sm"
             onClick={closeCart}
             aria-hidden
           />
           <motion.aside
-            initial={{ x: "-100%" }}
+            initial={{ x: "100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
+            exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
             className="fixed start-0 top-0 z-50 flex h-full w-full max-w-md flex-col bg-surface shadow-2xl"
             role="dialog"
             aria-label="سبد خرید"
           >
-            <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <h2 className="text-lg font-bold text-brown">
+            <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
+              <h2 className="text-lg font-bold text-primary">
                 سبد خرید
                 {itemCount > 0 ? (
-                  <span className="ms-2 text-sm font-normal text-muted">
+                  <span className="ms-2 text-sm font-normal text-secondary">
                     ({itemCount.toLocaleString("fa-IR")} قلم)
                   </span>
                 ) : null}
@@ -67,7 +67,7 @@ export function CartDrawer() {
               <button
                 type="button"
                 onClick={closeCart}
-                className="flex h-9 w-9 items-center justify-center rounded-full text-muted hover:bg-cream-dark hover:text-brown"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-secondary hover:bg-surface-elevated hover:text-primary"
                 aria-label="بستن"
               >
                 <X size={20} strokeWidth={1.5} />
@@ -79,7 +79,7 @@ export function CartDrawer() {
             </div>
 
             {itemCount > 0 ? (
-              <div className="border-t border-border px-5 py-4">
+              <div className="border-t border-white/5 px-5 py-4">
                 <div className="mb-4">
                   <FreeShippingBar
                     progress={progress}

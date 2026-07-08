@@ -32,14 +32,14 @@ export function Newsletter() {
   };
 
   return (
-    <section className="bg-brown-deep py-20 md:py-24">
-      <div className="mx-auto max-w-2xl px-4 text-center md:px-6">
+    <section className="border-t border-white/5 py-20 md:py-24">
+      <div className="mx-auto max-w-2xl px-4 text-center md:px-8">
         <Reveal>
           <SectionHeading
             title="خبرنامه حاجی عسل"
             subtitle="اولین نفری باشید که از تخفیف‌ها و محصولات فصلی باخبر می‌شوید"
             align="center"
-            className="mx-auto [&_h2]:text-white [&_p]:text-white/60"
+            className="mx-auto"
           />
           <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Input
@@ -48,7 +48,7 @@ export function Newsletter() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-white/40"
+              className="flex-1"
             />
             <Button type="submit" disabled={status === "loading"} magnetic>
               <Send size={16} strokeWidth={1.5} />
@@ -56,7 +56,9 @@ export function Newsletter() {
             </Button>
           </form>
           {message ? (
-            <p className={`mt-3 text-sm ${status === "success" ? "text-amber-bright" : "text-red-300"}`}>
+            <p
+              className={`mt-3 text-sm ${status === "success" ? "text-gold" : "text-red-400"}`}
+            >
               {message}
             </p>
           ) : null}

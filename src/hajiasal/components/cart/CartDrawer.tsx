@@ -1,17 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X } from "@phosphor-icons/react";
+import { X } from "lucide-react";
 import { useCartStore } from "@asal/store/cart";
 import { Button } from "@asal/components/ui/Button";
 import { CartItemRow } from "./CartItem";
 import { CartSummary } from "./CartSummary";
 import { FreeShippingBar } from "./FreeShippingBar";
-import { hajiasalPath } from "@asal/lib/paths";
-
-const FOCUSABLE =
-  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 export function CartDrawer() {
   const isOpen = useCartStore((s) => s.isOpen);
@@ -21,7 +17,6 @@ export function CartDrawer() {
   const amountRemaining = useCartStore((s) => s.getAmountUntilFreeShipping());
   const isFree = useCartStore((s) => s.isFreeShipping());
   const setHasHydrated = useCartStore((s) => s.setHasHydrated);
-  const panelRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setHasHydrated(true);
@@ -38,44 +33,6 @@ export function CartDrawer() {
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const panel = panelRef.current;
-    const previousFocus = document.activeElement as HTMLElement | null;
-    panel?.querySelector<HTMLElement>(FOCUSABLE)?.focus();
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closeCart();
-        return;
-      }
-      if (e.key !== "Tab" || !panel) return;
-
-      const focusable = [...panel.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
-        (el) => !el.hasAttribute("disabled"),
-      );
-      if (focusable.length === 0) return;
-
-      const first = focusable[0]!;
-      const last = focusable[focusable.length - 1]!;
-
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      previousFocus?.focus();
-    };
-  }, [isOpen, closeCart]);
-
   return (
     <AnimatePresence>
       {isOpen ? (
@@ -85,25 +42,24 @@ export function CartDrawer() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-brown/30 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-void/80 backdrop-blur-sm"
             onClick={closeCart}
             aria-hidden
           />
           <motion.aside
-            ref={panelRef}
-            initial={{ x: "-100%" }}
+            initial={{ x: "100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
+            exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
             className="fixed start-0 top-0 z-50 flex h-full w-full max-w-md flex-col bg-surface shadow-2xl"
             role="dialog"
             aria-label="سبد خرید"
           >
-            <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <h2 className="text-lg font-bold text-brown">
+            <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
+              <h2 className="text-lg font-bold text-primary">
                 سبد خرید
                 {itemCount > 0 ? (
-                  <span className="ms-2 text-sm font-normal text-muted">
+                  <span className="ms-2 text-sm font-normal text-secondary">
                     ({itemCount.toLocaleString("fa-IR")} قلم)
                   </span>
                 ) : null}
@@ -111,10 +67,10 @@ export function CartDrawer() {
               <button
                 type="button"
                 onClick={closeCart}
-                className="flex h-9 w-9 items-center justify-center rounded-full text-muted hover:bg-cream-dark hover:text-brown"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-secondary hover:bg-surface-elevated hover:text-primary"
                 aria-label="بستن"
               >
-                <X size={20} weight="light" />
+                <X size={20} strokeWidth={1.5} />
               </button>
             </div>
 
@@ -123,7 +79,7 @@ export function CartDrawer() {
             </div>
 
             {itemCount > 0 ? (
-              <div className="border-t border-border px-5 py-4">
+              <div className="border-t border-white/5 px-5 py-4">
                 <div className="mb-4">
                   <FreeShippingBar
                     progress={progress}
@@ -133,11 +89,11 @@ export function CartDrawer() {
                 </div>
                 <CartSummary />
                 <div className="mt-4 flex flex-col gap-2">
-                  <Button href={hajiasalPath("/checkout")} onClick={closeCart} className="w-full">
+                  <Button href="/hajiasal/checkout" onClick={closeCart} className="w-full">
                     تکمیل خرید
                   </Button>
                   <Button
-                    href={hajiasalPath("/cart")}
+                    href="/hajiasal/cart"
                     variant="outline"
                     onClick={closeCart}
                     className="w-full"

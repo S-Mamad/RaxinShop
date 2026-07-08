@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "motion/react";
 import { Search, X, ArrowLeft } from "lucide-react";
 import type { Product } from "@/types";
 import { ProductImage } from "@/components/ui/ProductImage";
-import { formatPrice } from "@/lib/utils";
 
 interface SearchModalProps {
   open: boolean;
@@ -45,13 +44,17 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
-      setQuery("");
-      setResults([]);
     }
     return () => {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  const handleClose = () => {
+    setQuery("");
+    setResults([]);
+    onClose();
+  };
 
   return (
     <AnimatePresence>
@@ -61,30 +64,30 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-brown-deep/50 backdrop-blur-md"
-            onClick={onClose}
+            className="fixed inset-0 z-50 bg-void/80 backdrop-blur-md"
+            onClick={handleClose}
           />
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-            className="fixed inset-x-4 top-20 z-50 mx-auto max-w-2xl rounded-2xl border border-border bg-surface p-4 shadow-2xl md:inset-x-auto"
+            className="fixed inset-x-4 top-20 z-50 mx-auto max-w-2xl rounded-2xl border border-white/8 bg-surface p-4 shadow-2xl md:inset-x-auto"
           >
-            <div className="flex items-center gap-3 border-b border-border pb-3">
-              <Search size={20} strokeWidth={1.5} className="text-muted" />
+            <div className="flex items-center gap-3 border-b border-white/8 pb-3">
+              <Search size={20} strokeWidth={1.5} className="text-secondary" />
               <input
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="جستجوی محصول..."
-                className="flex-1 bg-transparent text-base text-brown outline-none placeholder:text-dim"
+                className="flex-1 bg-transparent text-base text-primary outline-none placeholder:text-dim"
                 autoFocus
               />
               <button
                 type="button"
-                onClick={onClose}
-                className="text-muted hover:text-brown"
+                onClick={handleClose}
+                className="text-secondary hover:text-gold"
                 aria-label="بستن"
               >
                 <X size={20} strokeWidth={1.5} />
@@ -92,15 +95,17 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
             </div>
             <div className="max-h-80 overflow-y-auto pt-2">
               {loading ? (
-                <p className="py-8 text-center text-sm text-muted">در حال جستجو...</p>
+                <p className="py-8 text-center text-sm text-secondary">
+                  در حال جستجو...
+                </p>
               ) : results.length > 0 ? (
                 <ul className="flex flex-col gap-1">
                   {results.map((product) => (
                     <li key={product.id}>
                       <Link
                         href={`/product/${product.slug}`}
-                        onClick={onClose}
-                        className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-cream-dark"
+                        onClick={handleClose}
+                        className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-surface-elevated"
                       >
                         <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">
                           <ProductImage
@@ -112,20 +117,26 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                           />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-sm font-medium text-brown">
+                          <p className="truncate text-sm font-medium text-primary">
                             {product.title}
                           </p>
-                          <p className="text-xs text-muted">
+                          <p className="text-xs text-secondary">
                             {product.categoryLabel}
                           </p>
                         </div>
-                        <ArrowLeft size={16} className="shrink-0 text-dim" strokeWidth={1.5} />
+                        <ArrowLeft
+                          size={16}
+                          className="shrink-0 text-dim"
+                          strokeWidth={1.5}
+                        />
                       </Link>
                     </li>
                   ))}
                 </ul>
               ) : query.length >= 2 ? (
-                <p className="py-8 text-center text-sm text-muted">نتیجه‌ای یافت نشد</p>
+                <p className="py-8 text-center text-sm text-secondary">
+                  نتیجه‌ای یافت نشد
+                </p>
               ) : (
                 <p className="py-8 text-center text-sm text-dim">
                   حداقل ۲ حرف تایپ کنید

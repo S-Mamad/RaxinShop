@@ -1,4 +1,4 @@
-﻿import { cn, formatPrice } from "@asal/lib/utils";
+import { cn, formatPrice } from "@asal/lib/utils";
 
 interface PriceDisplayProps {
   price: number;
@@ -16,17 +16,14 @@ export function PriceDisplay({
   const sizeClasses = {
     sm: "text-sm",
     md: "text-base",
-    lg: "text-xl",
+    lg: "text-2xl md:text-3xl",
   };
 
   if (discountPrice && discountPrice < price) {
     return (
       <div className={cn("flex items-center gap-2", className)}>
         <span
-          className={cn(
-            "font-bold text-amber",
-            sizeClasses[size],
-          )}
+          className={cn("font-bold text-gold", sizeClasses[size])}
         >
           {formatPrice(discountPrice)}
         </span>
@@ -44,7 +41,7 @@ export function PriceDisplay({
 
   return (
     <span
-      className={cn("font-bold text-brown", sizeClasses[size], className)}
+      className={cn("font-bold text-gold", sizeClasses[size], className)}
     >
       {formatPrice(price)}
     </span>

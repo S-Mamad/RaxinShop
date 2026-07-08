@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { getAllProducts } from "@asal/lib/products";
 import { useWishlistStore } from "@asal/store/wishlist";
@@ -13,7 +13,7 @@ export default function WishlistPage() {
   const products = allProducts.filter((p) => ids.includes(p.id));
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-24 md:px-6 md:py-32">
+    <div className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
       <SectionHeading
         title="علاقه‌مندی‌ها"
         subtitle={

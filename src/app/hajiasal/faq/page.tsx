@@ -1,25 +1,23 @@
-﻿import type { Metadata } from "next";
-import faqData from "@asal/data/faq.json";
-import { FaqContent } from "@asal/components/sections/FaqContent";
-import { buildFaqJsonLd } from "@asal/lib/seo";
-import { hajiasalPath } from "@asal/lib/paths";
+"use client";
 
-export const metadata: Metadata = {
-  title: "سوالات متداول",
-  description: "پاسخ پرسش‌های رایج درباره خرید، ارسال و نگهداری عسل",
-  alternates: { canonical: hajiasalPath("/faq") },
-};
+import faqData from "@asal/data/faq.json";
+import { SectionHeading } from "@asal/components/ui/SectionHeading";
+import { ProductAccordion } from "@asal/components/product/ProductAccordion";
 
 export default function FaqPage() {
-  const faqJsonLd = buildFaqJsonLd(faqData);
+  const items = faqData.map((f) => ({
+    title: f.question,
+    content: f.answer,
+  }));
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+    <div className="mx-auto max-w-2xl px-4 py-16 md:px-8 md:py-24">
+      <SectionHeading
+        title="سوالات متداول"
+        subtitle="پاسخ پرسش‌های رایج درباره خرید، ارسال و نگهداری عسل"
+        className="mb-10"
       />
-      <FaqContent />
-    </>
+      <ProductAccordion items={items} />
+    </div>
   );
 }

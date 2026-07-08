@@ -2,20 +2,16 @@
 
 import { useMemo, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import type { Product, ProductCategory, SortOption } from "@asal/types";
-import {
-  filterProducts,
-  getPriceRange,
-  paginateProducts,
-} from "@asal/lib/products";
-import { useSiteSettings } from "@asal/context/SiteSettingsContext";
+import type { ProductCategory, SortOption } from "@asal/types";
+import { filterProducts, getPriceRange } from "@asal/lib/products";
+import site from "@asal/data/site.json";
+import type { SiteConfig } from "@asal/types";
 import { ProductGrid } from "@asal/components/product/ProductGrid";
-import { ProductGridSkeleton } from "@asal/components/ui/ProductGridSkeleton";
-import { ShopEmptyState } from "@asal/components/shop/ShopEmptyState";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
-import { Button } from "@asal/components/ui/Button";
 import { cn } from "@asal/lib/utils";
-import { hajiasalPath } from "@asal/lib/paths";
+
+const siteData = site as SiteConfig;
+const priceRange = getPriceRange();
 
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: "popular", label: "محبوب‌ترین" },
@@ -24,41 +20,15 @@ const sortOptions: { value: SortOption; label: string }[] = [
   { value: "newest", label: "جدیدترین" },
 ];
 
-const ratingOptions = [
-  { value: "", label: "همه امتیازها" },
-  { value: "3", label: "۳ ستاره به بالا" },
-  { value: "4", label: "۴ ستاره به بالا" },
-  { value: "4.5", label: "۴.۵ ستاره به بالا" },
-];
-
-const weightOptions = [
-  { value: "", label: "همه وزن‌ها" },
-  { value: "300", label: "۳۰۰ گرم" },
-  { value: "500", label: "۵۰۰ گرم" },
-  { value: "1000", label: "۱ کیلوگرم" },
-];
-
-interface ShopContentProps {
-  initialProducts: Product[];
-}
-
-function ShopContentInner({ initialProducts }: ShopContentProps) {
-  const siteData = useSiteSettings();
+function ShopContentInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const priceRange = useMemo(
-    () => getPriceRange(initialProducts),
-    [initialProducts],
-  );
 
   const category = (searchParams.get("category") as ProductCategory) || null;
   const sort = (searchParams.get("sort") as SortOption) || "popular";
   const minPrice = Number(searchParams.get("minPrice") || priceRange.min);
   const maxPrice = Number(searchParams.get("maxPrice") || priceRange.max);
-  const minRating = Number(searchParams.get("minRating") || 0);
-  const weightGrams = Number(searchParams.get("weight") || 0);
   const inStockOnly = searchParams.get("inStock") === "1";
-  const page = Number(searchParams.get("page") || 1);
 
   const updateParams = useCallback(
     (updates: Record<string, string | null>) => {
@@ -70,58 +40,38 @@ function ShopContentInner({ initialProducts }: ShopContentProps) {
           params.set(key, value);
         }
       });
-      if (!("page" in updates) && Object.keys(updates).some((k) => k !== "page")) {
-        params.delete("page");
-      }
-      router.push(`${hajiasalPath("/shop")}?${params.toString()}`, { scroll: false });
+      router.push(`/shop?${params.toString()}`, { scroll: false });
     },
     [searchParams, router],
   );
 
   const filtered = useMemo(
     () =>
-      filterProducts(
-        {
-          category,
-          minPrice,
-          maxPrice,
-          minRating: minRating || undefined,
-          weightGrams: weightGrams || undefined,
-          sort,
-          inStockOnly,
-        },
-        initialProducts,
-      ),
-    [
-      category,
-      minPrice,
-      maxPrice,
-      minRating,
-      weightGrams,
-      sort,
-      inStockOnly,
-      initialProducts,
-    ],
-  );
-
-  const { items, page: currentPage, totalPages, total } = useMemo(
-    () => paginateProducts(filtered, page),
-    [filtered, page],
+      filterProducts({
+        category,
+        minPrice,
+        maxPrice,
+        sort,
+        inStockOnly,
+      }),
+    [category, minPrice, maxPrice, sort, inStockOnly],
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
+    <div className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-14">
       <SectionHeading
         title="فروشگاه"
-        subtitle={`${total.toLocaleString("fa-IR")} محصول`}
+        subtitle={`${filtered.length.toLocaleString("fa-IR")} محصول`}
         className="mb-8"
       />
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <aside className="w-full shrink-0 lg:w-64">
-          <div className="sticky top-24 flex flex-col gap-6 rounded-2xl border border-border bg-surface p-5">
+          <div className="sticky top-24 flex flex-col gap-6 rounded-2xl border border-white/6 bg-surface p-5">
             <div>
-              <h3 className="mb-3 text-sm font-semibold text-brown">دسته‌بندی</h3>
+              <h3 className="mb-3 text-sm font-semibold text-primary">
+                دسته‌بندی
+              </h3>
               <ul className="flex flex-col gap-2">
                 <li>
                   <button
@@ -130,8 +80,8 @@ function ShopContentInner({ initialProducts }: ShopContentProps) {
                     className={cn(
                       "w-full rounded-lg px-3 py-2 text-start text-sm transition-colors",
                       !category
-                        ? "bg-gold-dim font-medium text-brown"
-                        : "text-muted hover:bg-cream-dark",
+                        ? "bg-gold-dim font-medium text-gold"
+                        : "text-secondary hover:bg-surface-elevated",
                     )}
                   >
                     همه محصولات
@@ -145,8 +95,8 @@ function ShopContentInner({ initialProducts }: ShopContentProps) {
                       className={cn(
                         "w-full rounded-lg px-3 py-2 text-start text-sm transition-colors",
                         category === cat.id
-                          ? "bg-gold-dim font-medium text-brown"
-                          : "text-muted hover:bg-cream-dark",
+                          ? "bg-gold-dim font-medium text-gold"
+                          : "text-secondary hover:bg-surface-elevated",
                       )}
                     >
                       {cat.label}
@@ -157,28 +107,10 @@ function ShopContentInner({ initialProducts }: ShopContentProps) {
             </div>
 
             <div>
-              <h3 className="mb-3 text-sm font-semibold text-brown">
+              <h3 className="mb-3 text-sm font-semibold text-primary">
                 محدوده قیمت (تومان)
               </h3>
               <div className="flex flex-col gap-3">
-                <label className="text-xs text-muted">
-                  از {minPrice.toLocaleString("fa-IR")} تومان
-                </label>
-                <input
-                  type="range"
-                  min={priceRange.min}
-                  max={priceRange.max}
-                  step={50000}
-                  value={minPrice}
-                  onChange={(e) =>
-                    updateParams({ minPrice: e.target.value })
-                  }
-                  aria-label="حداقل قیمت"
-                  className="w-full accent-amber"
-                />
-                <label className="text-xs text-muted">
-                  تا {maxPrice.toLocaleString("fa-IR")} تومان
-                </label>
                 <input
                   type="range"
                   min={priceRange.min}
@@ -188,52 +120,22 @@ function ShopContentInner({ initialProducts }: ShopContentProps) {
                   onChange={(e) =>
                     updateParams({ maxPrice: e.target.value })
                   }
-                  aria-label="حداکثر قیمت"
-                  className="w-full accent-amber"
+                  className="w-full accent-gold"
                 />
+                <p className="text-xs text-secondary">
+                  تا {maxPrice.toLocaleString("fa-IR")} تومان
+                </p>
               </div>
             </div>
 
             <div>
-              <h3 className="mb-3 text-sm font-semibold text-brown">امتیاز</h3>
-              <select
-                value={minRating ? String(minRating) : ""}
-                onChange={(e) =>
-                  updateParams({ minRating: e.target.value || null })
-                }
-                className="w-full rounded-xl border border-border bg-cream px-3 py-2 text-sm text-brown focus:border-amber focus:outline-none"
-              >
-                {ratingOptions.map((opt) => (
-                  <option key={opt.value || "all"} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <h3 className="mb-3 text-sm font-semibold text-brown">وزن</h3>
-              <select
-                value={weightGrams ? String(weightGrams) : ""}
-                onChange={(e) =>
-                  updateParams({ weight: e.target.value || null })
-                }
-                className="w-full rounded-xl border border-border bg-cream px-3 py-2 text-sm text-brown focus:border-amber focus:outline-none"
-              >
-                {weightOptions.map((opt) => (
-                  <option key={opt.value || "all"} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <h3 className="mb-3 text-sm font-semibold text-brown">مرتب‌سازی</h3>
+              <h3 className="mb-3 text-sm font-semibold text-primary">
+                مرتب‌سازی
+              </h3>
               <select
                 value={sort}
                 onChange={(e) => updateParams({ sort: e.target.value })}
-                className="w-full rounded-xl border border-border bg-cream px-3 py-2 text-sm text-brown focus:border-amber focus:outline-none"
+                className="w-full rounded-xl border border-white/8 bg-surface-elevated px-3 py-2 text-sm text-primary focus:border-gold/50 focus:outline-none"
               >
                 {sortOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -243,14 +145,14 @@ function ShopContentInner({ initialProducts }: ShopContentProps) {
               </select>
             </div>
 
-            <label className="flex items-center gap-2 text-sm text-muted">
+            <label className="flex items-center gap-2 text-sm text-secondary">
               <input
                 type="checkbox"
                 checked={inStockOnly}
                 onChange={(e) =>
                   updateParams({ inStock: e.target.checked ? "1" : null })
                 }
-                className="accent-amber"
+                className="accent-gold"
               />
               فقط موجود
             </label>
@@ -258,55 +160,29 @@ function ShopContentInner({ initialProducts }: ShopContentProps) {
         </aside>
 
         <div className="flex-1">
-          {items.length > 0 ? (
-            <>
-              <ProductGrid products={items} />
-              {totalPages > 1 ? (
-                <nav
-                  className="mt-10 flex items-center justify-center gap-2"
-                  aria-label="صفحه‌بندی"
-                >
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={currentPage <= 1}
-                    onClick={() =>
-                      updateParams({ page: String(currentPage - 1) })
-                    }
-                  >
-                    قبلی
-                  </Button>
-                  <span className="px-3 text-sm text-muted">
-                    صفحه {currentPage.toLocaleString("fa-IR")} از{" "}
-                    {totalPages.toLocaleString("fa-IR")}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={currentPage >= totalPages}
-                    onClick={() =>
-                      updateParams({ page: String(currentPage + 1) })
-                    }
-                  >
-                    بعدی
-                  </Button>
-                </nav>
-              ) : null}
-            </>
+          {filtered.length > 0 ? (
+            <ProductGrid products={filtered} />
           ) : (
-            <ShopEmptyState />
+            <p className="py-20 text-center text-secondary">
+              محصولی با این فیلترها یافت نشد.
+            </p>
           )}
         </div>
       </div>
-
     </div>
   );
 }
 
-export function ShopContent({ initialProducts }: ShopContentProps) {
+export function ShopContent() {
   return (
-    <Suspense fallback={<ProductGridSkeleton count={6} />}>
-      <ShopContentInner initialProducts={initialProducts} />
+    <Suspense
+      fallback={
+        <div className="flex min-h-[50vh] items-center justify-center text-secondary">
+          در حال بارگذاری...
+        </div>
+      }
+    >
+      <ShopContentInner />
     </Suspense>
   );
 }

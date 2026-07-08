@@ -2,28 +2,55 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingBag, Minus, Plus } from "lucide-react";
+import { motion } from "motion/react";
+import {
+  ShoppingBag,
+  Minus,
+  Plus,
+  Check,
+  Leaf,
+  ShieldCheck,
+  Award,
+  Truck,
+  Shield,
+} from "lucide-react";
 import type { Product, WeightOption } from "@/types";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { WeightSelector } from "@/components/product/WeightSelector";
 import { ProductAccordion } from "@/components/product/ProductAccordion";
 import { StickyAddToCart } from "@/components/product/StickyAddToCart";
+import { RelatedProducts } from "@/components/product/RelatedProducts";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { PriceDisplay } from "@/components/ui/PriceDisplay";
 import { RatingStars } from "@/components/ui/RatingStars";
 import { useCartStore } from "@/store/cart";
+import site from "@/data/site.json";
+import type { SiteConfig } from "@/types";
+
+const siteData = site as SiteConfig;
+
+const featureBadges = [
+  { icon: Leaf, label: "۱۰۰٪ طبیعی" },
+  { icon: ShieldCheck, label: "بدون افزودنی" },
+  { icon: Award, label: "دارای گواهی" },
+];
 
 interface ProductDetailClientProps {
   product: Product;
+  relatedProducts: Product[];
 }
 
-export function ProductDetailClient({ product }: ProductDetailClientProps) {
+export function ProductDetailClient({
+  product,
+  relatedProducts,
+}: ProductDetailClientProps) {
   const addItem = useCartStore((s) => s.addItem);
   const [selectedWeight, setSelectedWeight] = useState<WeightOption>(
     product.weightOptions[0],
   );
   const [quantity, setQuantity] = useState(1);
+  const [cartPulse, setCartPulse] = useState(false);
 
   const handleAddToCart = () => {
     addItem(
@@ -36,6 +63,8 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
       },
       quantity,
     );
+    setCartPulse(true);
+    window.setTimeout(() => setCartPulse(false), 300);
   };
 
   const accordionItems = [
@@ -51,24 +80,20 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
       : []),
   ];
 
+  const freeShippingLabel = `ارسال رایگان بالای ${(siteData.freeShippingThreshold / 1000).toLocaleString("fa-IR")} هزار تومان`;
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-14">
-      <nav className="mb-6 text-sm text-muted">
-        <Link href="/" className="hover:text-amber">
-          خانه
-        </Link>
-        <span className="mx-2">/</span>
-        <Link href="/shop" className="hover:text-amber">
-          فروشگاه
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-brown">{product.title}</span>
-      </nav>
+    <div className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-16">
+      <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
+        <div className="order-2 flex flex-col gap-6 lg:order-2">
+          <nav className="text-sm text-dim">
+            <Link href="/shop" className="hover:text-gold">
+              {product.categoryLabel}
+            </Link>
+            <span className="mx-2 text-secondary">/</span>
+            <span className="text-secondary">{product.title}</span>
+          </nav>
 
-      <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-        <ProductGallery images={product.images} title={product.title} />
-
-        <div className="flex flex-col gap-6">
           <div className="flex flex-wrap gap-2">
             <Badge variant="default">{product.categoryLabel}</Badge>
             {product.isBestseller ? (
@@ -80,7 +105,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
             ) : null}
           </div>
 
-          <h1 className="text-2xl font-bold text-brown md:text-3xl">
+          <h1 className="font-[family-name:var(--font-lalezar)] text-3xl font-bold leading-tight text-primary md:text-4xl">
             {product.title}
           </h1>
 
@@ -90,15 +115,34 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
             size="md"
           />
 
-          <p className="text-muted leading-relaxed">
+          <p className="max-w-md leading-relaxed text-secondary">
             {product.shortDescription}
           </p>
+
+          <div className="flex flex-wrap gap-4">
+            {featureBadges.map(({ icon: Icon, label }) => (
+              <div
+                key={label}
+                className="flex items-center gap-2 text-sm text-secondary"
+              >
+                <Icon size={16} strokeWidth={1.5} className="text-gold" />
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
 
           <PriceDisplay
             price={selectedWeight.price}
             discountPrice={product.discountPrice}
             size="lg"
           />
+
+          {product.inStock ? (
+            <div className="flex items-center gap-2 text-sm text-success">
+              <Check size={16} strokeWidth={2} />
+              <span>موجود در انبار</span>
+            </div>
+          ) : null}
 
           <WeightSelector
             options={product.weightOptions}
@@ -107,45 +151,70 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
           />
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 rounded-xl border border-border">
+            <div className="flex items-center gap-1 rounded-xl bg-surface-elevated px-1">
               <button
                 type="button"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="flex h-11 w-11 items-center justify-center text-muted hover:text-brown"
+                className="flex h-11 w-11 items-center justify-center text-secondary hover:text-primary"
                 aria-label="کاهش"
               >
                 <Minus size={16} strokeWidth={1.5} />
               </button>
-              <span className="min-w-[2rem] text-center font-medium">
+              <span className="min-w-[2rem] text-center font-medium text-primary">
                 {quantity.toLocaleString("fa-IR")}
               </span>
               <button
                 type="button"
                 onClick={() => setQuantity(quantity + 1)}
-                className="flex h-11 w-11 items-center justify-center text-muted hover:text-brown"
+                className="flex h-11 w-11 items-center justify-center text-secondary hover:text-primary"
                 aria-label="افزایش"
               >
                 <Plus size={16} strokeWidth={1.5} />
               </button>
             </div>
 
-            <Button
-              size="lg"
-              magnetic
-              disabled={!product.inStock}
-              onClick={handleAddToCart}
+            <motion.div
+              animate={cartPulse ? { scale: [1, 1.03, 1] } : { scale: 1 }}
+              transition={{ duration: 0.3 }}
               className="flex-1"
             >
-              <ShoppingBag size={18} strokeWidth={1.5} />
-              {product.inStock ? "افزودن به سبد" : "ناموجود"}
-            </Button>
+              <Button
+                size="lg"
+                magnetic
+                disabled={!product.inStock}
+                onClick={handleAddToCart}
+                className="w-full"
+              >
+                <ShoppingBag size={18} strokeWidth={1.5} />
+                {product.inStock ? "افزودن به سبد خرید" : "ناموجود"}
+              </Button>
+            </motion.div>
           </div>
+
+          <div className="flex flex-wrap gap-6 border-t border-white/5 pt-4 text-xs text-secondary">
+            <div className="flex items-center gap-2">
+              <Truck size={14} strokeWidth={1.5} className="text-gold" />
+              <span>{freeShippingLabel}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield size={14} strokeWidth={1.5} className="text-gold" />
+              <span>{siteData.trustItems[0]?.title ?? "ضمانت کیفیت"}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="order-1 lg:order-1">
+          <ProductGallery images={product.images} title={product.title} />
         </div>
       </div>
 
-      <div className="mt-12 max-w-2xl">
+      <div className="mt-12 lg:max-w-none">
         <ProductAccordion items={accordionItems} />
       </div>
+
+      {relatedProducts.length > 0 ? (
+        <RelatedProducts products={relatedProducts} />
+      ) : null}
 
       <StickyAddToCart
         title={product.title}

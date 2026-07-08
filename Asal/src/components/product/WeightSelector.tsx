@@ -16,7 +16,7 @@ export function WeightSelector({
 }: WeightSelectorProps) {
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-sm font-medium text-brown">انتخاب وزن</p>
+      <p className="text-sm font-medium text-primary">انتخاب وزن</p>
       <div className="flex flex-wrap gap-2">
         {options.map((option) => (
           <button
@@ -26,8 +26,8 @@ export function WeightSelector({
             className={cn(
               "rounded-xl border px-4 py-2.5 text-sm transition-all duration-300",
               selected.grams === option.grams
-                ? "border-amber bg-gold-dim text-brown font-medium"
-                : "border-border bg-surface text-muted hover:border-border-bright",
+                ? "border-gold bg-gold-dim font-medium text-gold"
+                : "border-white/8 bg-surface-elevated text-secondary hover:border-white/20",
             )}
           >
             <span className="block">{option.label}</span>

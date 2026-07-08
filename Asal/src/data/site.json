@@ -23,10 +23,10 @@
   ],
   "hero": {
     "title": "عسل طبیعی، اصیل و درجه یک",
-    "subtitle": "از دل کوهستان تا خانه شما — با ضمانت اصالت و ارسال سریع",
+    "subtitle": "از دل کوهستان تا خانه شما، با ضمانت اصالت و ارسال سریع",
     "cta": "مشاهده محصولات",
     "ctaHref": "/shop",
-    "image": "/images/hero.svg"
+    "image": "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=1920&q=80"
   },
   "freeShippingThreshold": 500000,
   "shippingCost": 45000,
@@ -52,7 +52,7 @@
     "paragraphs": [
       "حاجی عسل از سال ۱۳۶۵ با عشق به طبیعت و احترام به زنبور عسل، سفر خود را آغاز کرد. امروز با شبکه‌ای از زنبورداران بومی در مناطق کوهستانی، محصولاتی ارائه می‌دهیم که هر قطره‌اش داستان دارد.",
       "ما معتقدیم عسل واقعی نیاز به میان‌بُر ندارد. از برداشت تا بسته‌بندی، هر مرحله با استانداردهای سخت‌گیرانه کنترل می‌شود تا شما با خیال راحت از اصالت و کیفیت لذت ببرید.",
-      "انتخاب حاجی عسل یعنی انتخاب سلامتی، طعم اصیل و اعتماد — همان چیزی که نسل‌ها در خاطر دارند."
+      "انتخاب حاجی عسل یعنی انتخاب سلامتی، طعم اصیل و اعتماد؛ همان چیزی که نسل‌ها در خاطر دارند."
     ]
   },
   "footer": {
@@ -65,43 +65,43 @@
       "id": "mountain",
       "label": "عسل کوهستان",
       "description": "از ارتفاعات البرز و زاگرس",
-      "image": "/images/categories/mountain.svg"
+      "image": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80"
     },
     {
       "id": "thyme",
       "label": "عسل آویشن",
       "description": "عطر و طعم منحصربه‌فرد",
-      "image": "/images/categories/thyme.svg"
+      "image": "https://images.unsplash.com/photo-1499002238440-d864edd389b7?w=800&q=80"
     },
     {
       "id": "multifloral",
       "label": "عسل چهل‌گیاه",
       "description": "ترکیب گل‌های وحشی",
-      "image": "/images/categories/multifloral.svg"
+      "image": "https://images.unsplash.com/photo-1465146633011-14f8e0781093?w=800&q=80"
     },
     {
       "id": "royal-jelly",
       "label": "ژل رویال",
       "description": "سرشار از انرژی و مواد مغذی",
-      "image": "/images/categories/royal-jelly.svg"
+      "image": "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=800&q=80"
     },
     {
       "id": "honeycomb",
       "label": "شهد با موم",
       "description": "طبیعی و بدون فرآوری",
-      "image": "/images/categories/honeycomb.svg"
+      "image": "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=800&q=80"
     },
     {
       "id": "specialty",
       "label": "عسل‌های خاص",
       "description": "سدر، گون، بربط و بیشتر",
-      "image": "/images/categories/specialty.svg"
+      "image": "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=800&q=80"
     },
     {
       "id": "gift-set",
       "label": "ست هدیه",
       "description": "بسته‌های لوکس و آزمایشی",
-      "image": "/images/categories/gift-set.svg"
+      "image": "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800&q=80"
     }
   ]
 }

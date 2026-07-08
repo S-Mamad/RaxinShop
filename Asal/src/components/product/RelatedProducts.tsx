@@ -3,12 +3,12 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { Product } from "@asal/types";
-import { getMinPrice } from "@asal/lib/products";
-import { SectionHeading } from "@asal/components/ui/SectionHeading";
-import { PriceDisplay } from "@asal/components/ui/PriceDisplay";
-import { ProductImage } from "@asal/components/ui/ProductImage";
-import { Reveal } from "@asal/components/ui/Reveal";
+import type { Product } from "@/types";
+import { getMinPrice } from "@/lib/products";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PriceDisplay } from "@/components/ui/PriceDisplay";
+import { ProductImage } from "@/components/ui/ProductImage";
+import { Reveal } from "@/components/ui/Reveal";
 
 interface RelatedProductsProps {
   products: Product[];
@@ -63,7 +63,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
           return (
             <Link
               key={product.id}
-              href={`/hajiasal/product/${product.slug}`}
+              href={`/product/${product.slug}`}
               className="group flex w-[min(100%,280px)] shrink-0 snap-start items-center gap-4 rounded-2xl border border-white/6 bg-surface p-3 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-8px_rgba(212,160,86,0.15)]"
             >
               <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-surface-muted">

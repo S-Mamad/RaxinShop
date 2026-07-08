@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ShoppingBag, Menu, Search, Heart } from "lucide-react";
@@ -21,7 +21,6 @@ const extraNav = [
 
 export function Header() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const openCart = useCartStore((s) => s.openCart);
@@ -29,31 +28,16 @@ export function Header() {
   const hasHydrated = useCartStore((s) => s._hasHydrated);
   const wishlistCount = useWishlistStore((s) => s.count());
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const isHome = pathname === "/";
+  const iconBtn =
+    "flex h-9 w-9 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-white/5 hover:text-gold";
 
   return (
     <>
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-40 flex justify-center px-4 pt-4 md:pt-5">
-        <header
-          className={cn(
-            "pointer-events-auto flex w-full max-w-5xl items-center justify-between rounded-full px-4 py-2.5 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] md:px-6",
-            scrolled || !isHome
-              ? "border border-border-bright bg-glass shadow-[0_8px_32px_-8px_rgba(61,43,31,0.15)] backdrop-blur-xl"
-              : "border border-white/20 bg-brown-deep/30 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.3)] backdrop-blur-xl",
-          )}
-        >
+      <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-white/5 bg-[#141414]/95 backdrop-blur-xl">
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 md:px-8">
           <Link
             href="/"
-            className={cn(
-              "text-base font-bold tracking-tight md:text-lg",
-              scrolled || !isHome ? "text-brown" : "text-white",
-            )}
+            className="text-base font-bold tracking-tight text-primary md:text-lg"
           >
             {siteData.brand.name}
           </Link>
@@ -65,13 +49,9 @@ export function Header() {
                 href={item.href}
                 className={cn(
                   "text-sm transition-colors duration-300",
-                  scrolled || !isHome
-                    ? pathname === item.href
-                      ? "font-medium text-amber"
-                      : "text-muted hover:text-amber"
-                    : pathname === item.href
-                      ? "font-medium text-amber-bright"
-                      : "text-white/80 hover:text-white",
+                  pathname === item.href
+                    ? "font-medium text-gold underline decoration-gold/40 underline-offset-4"
+                    : "text-secondary hover:text-gold",
                 )}
               >
                 {item.label}
@@ -83,29 +63,19 @@ export function Header() {
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className={cn(
-                "flex h-9 w-9 items-center justify-center rounded-full transition-colors",
-                scrolled || !isHome
-                  ? "text-brown hover:bg-cream-dark"
-                  : "text-white/90 hover:bg-white/10",
-              )}
+              className={iconBtn}
               aria-label="جستجو"
             >
               <Search size={18} strokeWidth={1.5} />
             </button>
             <Link
               href="/wishlist"
-              className={cn(
-                "relative flex h-9 w-9 items-center justify-center rounded-full transition-colors",
-                scrolled || !isHome
-                  ? "text-brown hover:bg-cream-dark"
-                  : "text-white/90 hover:bg-white/10",
-              )}
+              className={cn("relative", iconBtn)}
               aria-label="علاقه‌مندی‌ها"
             >
               <Heart size={18} strokeWidth={1.5} />
               {wishlistCount > 0 ? (
-                <span className="absolute -top-0.5 -end-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-amber text-[9px] font-bold text-white">
+                <span className="absolute -top-0.5 -end-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[9px] font-bold text-void">
                   {wishlistCount}
                 </span>
               ) : null}
@@ -113,17 +83,12 @@ export function Header() {
             <button
               type="button"
               onClick={openCart}
-              className={cn(
-                "relative flex h-9 w-9 items-center justify-center rounded-full transition-colors",
-                scrolled || !isHome
-                  ? "text-brown hover:bg-cream-dark"
-                  : "text-white/90 hover:bg-white/10",
-              )}
+              className={cn("relative", iconBtn)}
               aria-label="سبد خرید"
             >
               <ShoppingBag size={18} strokeWidth={1.5} />
               {hasHydrated && itemCount > 0 ? (
-                <span className="absolute -top-0.5 -end-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-amber text-[9px] font-bold text-white">
+                <span className="absolute -top-0.5 -end-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[9px] font-bold text-void">
                   {itemCount > 9 ? "۹+" : itemCount}
                 </span>
               ) : null}
@@ -131,19 +96,15 @@ export function Header() {
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className={cn(
-                "flex h-9 w-9 items-center justify-center rounded-full lg:hidden",
-                scrolled || !isHome
-                  ? "text-brown hover:bg-cream-dark"
-                  : "text-white/90 hover:bg-white/10",
-              )}
+              className={cn(iconBtn, "lg:hidden")}
               aria-label="منو"
             >
               <Menu size={18} strokeWidth={1.5} />
             </button>
           </div>
-        </header>
-      </div>
+        </div>
+      </header>
+      <div className="h-16" aria-hidden />
       <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>

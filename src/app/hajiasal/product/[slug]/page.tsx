@@ -1,33 +1,29 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
-  getProductBySlugAsync,
-  getAllSlugsAsync,
-  getRelatedProductsAsync,
-} from "@asal/lib/server/products-store";
+  getAllSlugs,
+  getProductBySlug,
+  getRelatedProducts,
+} from "@asal/lib/products";
 import {
   buildProductJsonLd,
   buildBreadcrumbJsonLd,
 } from "@asal/lib/seo";
 import { ProductDetailClient } from "@asal/components/product/ProductDetailClient";
-import { getReviewsByProduct } from "@asal/lib/server/reviews";
-
-export const revalidate = 60;
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const slugs = await getAllSlugsAsync();
-  return slugs.map((slug) => ({ slug }));
+  return getAllSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = await getProductBySlugAsync(slug);
+  const product = getProductBySlug(slug);
   if (!product) return { title: "محصول یافت نشد" };
 
   return {
@@ -38,26 +34,25 @@ export async function generateMetadata({
       description: product.shortDescription,
       images: product.images,
     },
-    alternates: { canonical: `/hajiasal/product/${slug}` },
+    alternates: { canonical: `/product/${slug}` },
   };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = await getProductBySlugAsync(slug);
+  const product = getProductBySlug(slug);
   if (!product) notFound();
 
   const productJsonLd = buildProductJsonLd(product);
+  const relatedProducts = getRelatedProducts(slug);
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
-    { name: "خانه", href: "/hajiasal" },
-    { name: "فروشگاه", href: "/hajiasal/shop" },
-    { name: product.title, href: `/hajiasal/product/${slug}` },
+    { name: "خانه", href: "/" },
+    { name: "فروشگاه", href: "/shop" },
+    { name: product.title, href: `/product/${slug}` },
   ]);
-  const initialReviews = await getReviewsByProduct(product.id);
-  const relatedProducts = await getRelatedProductsAsync(product, 6);
 
   return (
-    <div className="pdp-dark">
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
@@ -68,9 +63,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
       />
       <ProductDetailClient
         product={product}
-        initialReviews={initialReviews}
         relatedProducts={relatedProducts}
       />
-    </div>
+    </>
   );
 }

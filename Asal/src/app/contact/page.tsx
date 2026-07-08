@@ -54,35 +54,46 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-24 md:px-6 md:py-32">
+    <div className="mx-auto max-w-2xl px-4 py-16 md:px-8 md:py-24">
       <SectionHeading
         title="تماس با ما"
-        subtitle="سؤال، پیشنهاد یا درخواست مشاوره — پاسخگوی شما هستیم"
+        subtitle="سؤال، پیشنهاد یا درخواست مشاوره. پاسخگوی شما هستیم"
         className="mb-8"
       />
-      <div className="mb-8 rounded-2xl border border-border bg-surface p-5 text-sm text-muted">
+      <div className="mb-8 rounded-2xl border border-white/6 bg-surface p-5 text-sm text-secondary">
         <p>تلفن: {siteData.footer.phone}</p>
         <p>ایمیل: {siteData.footer.email}</p>
         <p>آدرس: {siteData.footer.address}</p>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-4 rounded-2xl border border-white/6 bg-surface p-6"
+      >
         <Input label="نام" {...register("name")} error={errors.name?.message} />
         <Input label="ایمیل" {...register("email")} error={errors.email?.message} />
         <Input label="موبایل" dir="ltr" {...register("phone")} error={errors.phone?.message} />
         <Input label="موضوع" {...register("subject")} error={errors.subject?.message} />
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-brown">پیام</label>
+          <label className="text-sm font-medium text-secondary">پیام</label>
           <textarea
             {...register("message")}
             rows={5}
-            className="rounded-xl border border-border bg-cream px-4 py-3 text-sm focus:border-amber focus:outline-none"
+            className="rounded-xl border border-white/8 bg-surface-elevated px-4 py-3 text-sm text-primary focus:border-gold/50 focus:outline-none focus:ring-1 focus:ring-gold/30"
           />
-          {errors.message ? <p className="text-xs text-red-500">{errors.message.message}</p> : null}
+          {errors.message ? (
+            <p className="text-xs text-red-400">{errors.message.message}</p>
+          ) : null}
         </div>
         <Button type="submit" disabled={status === "loading"}>
           {status === "loading" ? "در حال ارسال..." : "ارسال پیام"}
         </Button>
-        {msg ? <p className={`text-sm ${status === "done" ? "text-amber" : "text-red-500"}`}>{msg}</p> : null}
+        {msg ? (
+          <p
+            className={`text-sm ${status === "done" ? "text-gold" : "text-red-400"}`}
+          >
+            {msg}
+          </p>
+        ) : null}
       </form>
     </div>
   );

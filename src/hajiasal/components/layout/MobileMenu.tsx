@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { X } from "@phosphor-icons/react";
-import { useSiteSettings } from "@asal/context/SiteSettingsContext";
-import { extraNav, resolveNavHref } from "@asal/lib/nav";
+import { X } from "lucide-react";
+import site from "@asal/data/site.json";
+import type { SiteConfig } from "@asal/types";
+
+const siteData = site as SiteConfig;
+
+const extraNav = [
+  { id: "faq", label: "سوالات", href: "/faq" },
+  { id: "contact", label: "تماس", href: "/contact" },
+];
 
 interface MobileMenuProps {
   open: boolean;
@@ -13,17 +19,7 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
-  const siteData = useSiteSettings();
   const navItems = [...siteData.nav, ...extraNav];
-
-  useEffect(() => {
-    if (!open) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [open, onClose]);
 
   return (
     <AnimatePresence>
@@ -33,48 +29,44 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-brown/40 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-40 bg-void/95 backdrop-blur-sm md:hidden"
             onClick={onClose}
           />
           <motion.nav
-            initial={{ x: "100%" }}
+            initial={{ x: "-100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "100%" }}
+            exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
             className="fixed end-0 top-0 z-50 flex h-full w-72 flex-col bg-surface p-6 shadow-2xl md:hidden"
-            role="dialog"
-            aria-modal="true"
-            aria-label="منوی موبایل"
           >
             <div className="mb-8 flex items-center justify-between">
-              <span className="font-bold text-brown">{siteData.brand.name}</span>
+              <span className="font-bold text-primary">{siteData.brand.name}</span>
               <button
                 type="button"
                 onClick={onClose}
-                className="text-muted hover:text-brown"
+                className="text-secondary hover:text-gold"
                 aria-label="بستن"
               >
-                <X size={22} weight="light" />
+                <X size={22} strokeWidth={1.5} />
               </button>
             </div>
             <ul className="flex flex-col gap-4">
-              {navItems.map((item) => {
-                const href =
-                  "href" in item && item.href.startsWith("/hajiasal")
-                    ? item.href
-                    : resolveNavHref(item.href);
-                return (
-                <li key={item.id}>
+              {navItems.map((item, i) => (
+                <motion.li
+                  key={item.id}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                >
                   <Link
-                    href={href}
+                    href={item.href}
                     onClick={onClose}
-                    className="text-lg text-brown hover:text-amber"
+                    className="text-lg text-primary hover:text-gold"
                   >
                     {item.label}
                   </Link>
-                </li>
-              );
-              })}
+                </motion.li>
+              ))}
             </ul>
           </motion.nav>
         </>

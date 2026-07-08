@@ -16,25 +16,27 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-surface">
-      <div className="mx-auto max-w-7xl px-4 py-14 md:px-6 md:py-20">
+    <footer className="border-t border-white/5 bg-void">
+      <div className="mx-auto max-w-7xl px-4 py-14 md:px-8 md:py-20">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <h3 className="mb-3 text-xl font-bold text-brown">
+            <h3 className="mb-3 text-xl font-bold text-primary">
               {siteData.brand.name}
             </h3>
-            <p className="max-w-md text-sm leading-relaxed text-muted">
+            <p className="max-w-md text-sm leading-relaxed text-secondary">
               {siteData.brand.description}
             </p>
           </div>
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-brown">دسترسی سریع</h4>
+            <h4 className="mb-4 text-sm font-semibold text-primary">
+              دسترسی سریع
+            </h4>
             <ul className="flex flex-col gap-2.5">
               {footerLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted transition-colors hover:text-amber"
+                    className="text-sm text-secondary transition-colors hover:text-gold"
                   >
                     {link.label}
                   </Link>
@@ -43,24 +45,30 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-brown">تماس با ما</h4>
-            <ul className="flex flex-col gap-3 text-sm text-muted">
+            <h4 className="mb-4 text-sm font-semibold text-primary">
+              تماس با ما
+            </h4>
+            <ul className="flex flex-col gap-3 text-sm text-secondary">
               <li className="flex items-center gap-2">
-                <Phone size={16} strokeWidth={1.5} className="text-amber" />
+                <Phone size={16} strokeWidth={1.5} className="text-gold" />
                 <span dir="ltr">{siteData.footer.phone}</span>
               </li>
               <li className="flex items-center gap-2">
-                <Mail size={16} strokeWidth={1.5} className="text-amber" />
+                <Mail size={16} strokeWidth={1.5} className="text-gold" />
                 <span>{siteData.footer.email}</span>
               </li>
               <li className="flex items-start gap-2">
-                <MapPin size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-amber" />
+                <MapPin
+                  size={16}
+                  strokeWidth={1.5}
+                  className="mt-0.5 shrink-0 text-gold"
+                />
                 <span>{siteData.footer.address}</span>
               </li>
               <li>
                 <Link
                   href="/track-order"
-                  className="inline-flex items-center gap-2 text-amber hover:text-amber-bright"
+                  className="inline-flex items-center gap-2 text-gold hover:text-gold-bright"
                 >
                   <Package size={16} strokeWidth={1.5} />
                   پیگیری سفارش
@@ -69,8 +77,9 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-12 border-t border-border pt-6 text-center text-xs text-dim">
-          © {new Date().getFullYear()} {siteData.brand.name}. تمامی حقوق محفوظ است.
+        <div className="mt-12 border-t border-white/5 pt-6 text-center text-xs text-dim">
+          © {new Date().getFullYear()} {siteData.brand.name}. تمامی حقوق محفوظ
+          است.
         </div>
       </div>
     </footer>

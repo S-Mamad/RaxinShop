@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "motion/react";
-import { CaretDown } from "@phosphor-icons/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { cn } from "@asal/lib/utils";
 import { ProductImage } from "@asal/components/ui/ProductImage";
-import { Icon } from "@asal/components/ui/Icon";
 
 interface ProductGalleryProps {
   images: string[];
@@ -14,73 +12,69 @@ interface ProductGalleryProps {
 
 export function ProductGallery({ images, title }: ProductGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isZoomed, setIsZoomed] = useState(false);
+  const reducedMotion = useReducedMotion();
 
-  const scrollThumbs = (direction: "down" | "up") => {
-    if (direction === "down") {
-      setActiveIndex((i) => Math.min(images.length - 1, i + 1));
-    } else {
-      setActiveIndex((i) => Math.max(0, i - 1));
-    }
-  };
+  const thumbnailBtn = (img: string, i: number, vertical: boolean) => (
+    <button
+      key={`${img}-${i}`}
+      type="button"
+      onClick={() => setActiveIndex(i)}
+      className={cn(
+        "relative shrink-0 overflow-hidden rounded-xl border-2 transition-colors",
+        vertical ? "h-16 w-16 md:h-[72px] md:w-[72px]" : "h-16 w-16",
+        i === activeIndex
+          ? "border-gold ring-2 ring-gold/30"
+          : "border-white/8 hover:border-white/20",
+      )}
+    >
+      <ProductImage
+        src={img}
+        alt={`${title} - ${i + 1}`}
+        fill
+        sizes="72px"
+        className="object-cover"
+      />
+    </button>
+  );
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[72px_1fr] lg:gap-5">
-      {images.length > 1 ? (
-        <div className="order-2 flex gap-3 overflow-x-auto lg:order-1 lg:flex-col lg:overflow-y-auto lg:overflow-x-hidden lg:max-h-[520px]">
-          {images.map((img, i) => (
-            <button
-              key={`${img}-${i}`}
-              type="button"
-              onClick={() => setActiveIndex(i)}
-              className={cn(
-                "relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition-colors lg:h-[72px] lg:w-[72px]",
-                i === activeIndex
-                  ? "border-[var(--pdp-accent)]"
-                  : "border-[var(--pdp-border)] hover:border-white/20",
-              )}
+    <div className="flex flex-col gap-4 lg:col-span-2">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-5">
+        {images.length > 1 ? (
+          <div className="scrollbar-hide hidden flex-col gap-3 lg:flex">
+            {images.map((img, i) => thumbnailBtn(img, i, true))}
+          </div>
+        ) : null}
+
+        <div className="gallery-frame relative aspect-[4/5] w-full flex-1 overflow-hidden bg-surface-muted lg:aspect-[4/5]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,160,86,0.12),transparent_70%)]" />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeIndex}
+              initial={reducedMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={reducedMotion ? undefined : { opacity: 0 }}
+              transition={{ duration: reducedMotion ? 0 : 0.3 }}
+              className="absolute inset-0"
             >
               <ProductImage
-                src={img}
-                alt={`${title} - ${i + 1}`}
+                src={images[activeIndex]}
+                alt={title}
                 fill
-                sizes="72px"
+                sizes="(max-width: 768px) 100vw, 40vw"
+                priority
                 className="object-cover"
               />
-            </button>
-          ))}
-          {images.length > 4 ? (
-            <button
-              type="button"
-              onClick={() => scrollThumbs("down")}
-              className="hidden h-8 w-full items-center justify-center text-[var(--pdp-muted)] hover:text-[var(--pdp-accent)] lg:flex"
-              aria-label="تصاویر بیشتر"
-            >
-              <Icon icon={CaretDown} size={16} />
-            </button>
-          ) : null}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {images.length > 1 ? (
+        <div className="scrollbar-hide flex gap-3 overflow-x-auto lg:hidden">
+          {images.map((img, i) => thumbnailBtn(img, i, false))}
         </div>
       ) : null}
-
-      <div className="order-1 lg:order-2">
-        <motion.div
-          className="relative aspect-square overflow-hidden rounded-2xl border border-[var(--pdp-border)] bg-[var(--pdp-surface)]"
-          onMouseEnter={() => setIsZoomed(true)}
-          onMouseLeave={() => setIsZoomed(false)}
-        >
-          <ProductImage
-            src={images[activeIndex]}
-            alt={title}
-            fill
-            sizes="(max-width: 1024px) 100vw, 45vw"
-            priority
-            className={cn(
-              "object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]",
-              isZoomed && "scale-125",
-            )}
-          />
-        </motion.div>
-      </div>
     </div>
   );
 }

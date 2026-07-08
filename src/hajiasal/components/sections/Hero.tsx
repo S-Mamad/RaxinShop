@@ -1,79 +1,63 @@
-"use client";
-
-import { useSiteSettings } from "@asal/context/SiteSettingsContext";
+import site from "@asal/data/site.json";
+import type { SiteConfig } from "@asal/types";
 import { Button } from "@asal/components/ui/Button";
 import { Reveal } from "@asal/components/ui/Reveal";
-import { Icon } from "@asal/components/ui/Icon";
-import { hajiasalPath } from "@asal/lib/paths";
-import { ArrowRight, Sparkle } from "@phosphor-icons/react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 
-const stats = [
-  { value: "۳۰+", label: "محصول" },
-  { value: "۴.۹", label: "رضایت" },
-  { value: "۳۵", label: "سال تجربه" },
-];
-
-function limitWords(text: string, max: number): string {
-  const words = text.split(/\s+/).filter(Boolean);
-  if (words.length <= max) return text;
-  return words.slice(0, max).join(" ");
-}
+const siteData = site as SiteConfig;
 
 export function Hero() {
-  const siteData = useSiteSettings();
-  const subtitle = limitWords(siteData.hero.subtitle, 20);
-
   return (
-    <section className="relative min-h-[100dvh] overflow-hidden bg-brown-deep">
+    <section className="relative min-h-[calc(100dvh-4rem)] overflow-hidden bg-void">
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-50"
+        className="absolute inset-0 bg-cover bg-center opacity-30"
         style={{ backgroundImage: `url(${siteData.hero.image})` }}
-        aria-hidden
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-brown-deep/70 via-brown-deep/50 to-cream" />
+      <div className="absolute inset-0 bg-gradient-to-b from-void/40 via-void/70 to-void" />
+      <div className="mesh-warm absolute inset-0" />
 
-      <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-7xl flex-col justify-between px-4 pb-6 pt-28 md:justify-end md:px-6 md:pb-28 md:pt-40">
-        <Reveal className="max-w-2xl md:mb-0">
-          <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-[11px] font-medium tracking-wide text-white/90 backdrop-blur-sm">
-            <Icon icon={Sparkle} size={12} aria-hidden />
+      <div className="relative z-10 mx-auto flex min-h-[calc(100dvh-4rem)] max-w-7xl flex-col justify-end px-4 pb-20 pt-12 md:px-8 md:pb-28">
+        <Reveal className="max-w-2xl">
+          <span className="mb-5 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-1.5 text-[11px] font-medium tracking-[0.15em] text-gold backdrop-blur-sm">
+            <Sparkles size={12} strokeWidth={1.5} />
             عسل اصل ایرانی
           </span>
-          <h1 className="mb-5 line-clamp-2 text-4xl font-bold leading-[1.08] tracking-tight text-white text-balance md:text-6xl lg:text-7xl">
+          <h1 className="mb-5 text-4xl font-bold leading-[1.1] tracking-tight text-primary md:text-6xl">
             {siteData.hero.title}
           </h1>
-          <p className="mb-8 max-w-lg text-base leading-relaxed text-white/80 md:text-lg line-clamp-3">
-            {subtitle}
+          <p className="mb-8 max-w-lg text-base leading-relaxed text-secondary md:text-lg">
+            {siteData.hero.subtitle}
           </p>
           <div className="flex flex-wrap gap-3">
-            <Button href={hajiasalPath("/shop")} size="lg" magnetic>
+            <Button href={siteData.hero.ctaHref} size="lg" magnetic>
               {siteData.hero.cta}
-              <Icon icon={ArrowRight} size={18} aria-hidden />
+              <ArrowLeft size={18} strokeWidth={1.5} />
             </Button>
             <Button
-              href={hajiasalPath("/about")}
+              href="/#about"
               variant="outline"
               size="lg"
-              className="border-white/30 text-white hover:bg-white/10"
+              className="border-white/20 text-primary hover:border-gold/50"
             >
               داستان ما
             </Button>
           </div>
         </Reveal>
 
-        <Reveal delay={0.2} className="mt-6 md:mt-16">
-          <div
-            className="inline-grid w-full grid-cols-3 gap-4 rounded-2xl border border-border bg-surface px-4 py-4 shadow-sm sm:w-auto sm:gap-8 sm:px-8"
-            aria-label="آمار فروشگاه"
-          >
-            {stats.map((stat) => (
-              <div key={stat.label} className="min-w-0 text-center sm:text-start">
-                <p className="text-lg font-bold tabular-nums text-brown md:text-2xl">
-                  {stat.value}
-                </p>
-                <p className="truncate text-xs text-muted">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+        <Reveal delay={0.2} className="mt-16 hidden gap-8 md:flex">
+          {[
+            { value: "۳۰+", label: "محصول متنوع" },
+            { value: "۴.۹", label: "رضایت مشتری" },
+            { value: "۳۵", label: "سال تجربه" },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="border-s border-white/10 ps-8 first:border-0 first:ps-0"
+            >
+              <p className="text-2xl font-bold text-gold">{stat.value}</p>
+              <p className="text-sm text-dim">{stat.label}</p>
+            </div>
+          ))}
         </Reveal>
       </div>
     </section>

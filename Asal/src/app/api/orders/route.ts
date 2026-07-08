@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { checkoutApiSchema } from "@/lib/validations/checkout";
 import { createOrder } from "@/lib/server/orders";
 import { validateCoupon } from "@/lib/server/coupons";

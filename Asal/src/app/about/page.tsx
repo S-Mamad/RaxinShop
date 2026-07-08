@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-24 md:px-6 md:py-32">
+    <div className="mx-auto max-w-3xl px-4 py-16 md:px-8 md:py-24">
       <Reveal>
         <SectionHeading
           title={siteData.brand.name}
@@ -24,7 +24,7 @@ export default function AboutPage() {
       <div className="flex flex-col gap-6">
         {siteData.brandStory.paragraphs.map((p, i) => (
           <Reveal key={i} delay={i * 0.1}>
-            <p className="text-base leading-relaxed text-muted md:text-lg">{p}</p>
+            <p className="text-base leading-relaxed text-secondary md:text-lg">{p}</p>
           </Reveal>
         ))}
       </div>

@@ -25,7 +25,7 @@ export function Reveal({
 
   const initial = {
     opacity: 0,
-    y: direction === "up" ? 24 : direction === "down" ? -24 : 0,
+    y: direction === "up" ? 16 : direction === "down" ? -16 : 0,
   };
 
   return (
@@ -34,7 +34,7 @@ export function Reveal({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{
-        duration: 0.7,
+        duration: 0.5,
         delay,
         ease: [0.32, 0.72, 0, 1],
       }}

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { AnimatePresence } from "motion/react";
 import type { Product } from "@asal/types";

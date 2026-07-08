@@ -8,8 +8,8 @@
     "category": "mountain",
     "categoryLabel": "عسل کوهستان",
     "images": [
-      "/images/hajiasal/products/p001.webp",
-      "/images/hajiasal/products/p001-alt.webp"
+      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=900&q=80",
+      "https://images.unsplash.com/photo-1471944290927-c6488375b1a9?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -28,8 +28,7 @@
     "reviewCount": 128,
     "isBestseller": true,
     "ingredients": "۱۰۰٪ عسل طبیعی کوهستان",
-    "shippingInfo": "ارسال در بسته‌بندی ضدضربه ظرف ۲ تا ۴ روز کاری",
-    "createdAt": "2024-01-15"
+    "shippingInfo": "ارسال در بسته‌بندی ضدضربه ظرف ۲ تا ۴ روز کاری"
   },
   {
     "id": "p002",
@@ -40,8 +39,8 @@
     "category": "mountain",
     "categoryLabel": "عسل کوهستان",
     "images": [
-      "/images/hajiasal/products/p002.webp",
-      "/images/hajiasal/products/p002-alt.webp"
+      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=80",
+      "https://images.unsplash.com/photo-1587735243615-c843de7ae9c0?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -60,8 +59,7 @@
     "reviewCount": 94,
     "isBestseller": true,
     "ingredients": "۱۰۰٪ عسل طبیعی کوهی",
-    "shippingInfo": "ارسال سردخانه‌ای در فصل گرم سال",
-    "createdAt": "2024-02-14"
+    "shippingInfo": "ارسال سردخانه‌ای در فصل گرم سال"
   },
   {
     "id": "p003",
@@ -72,8 +70,8 @@
     "category": "mountain",
     "categoryLabel": "عسل کوهستان",
     "images": [
-      "/images/hajiasal/products/p003.webp",
-      "/images/hajiasal/products/p003-alt.webp"
+      "https://images.unsplash.com/photo-1471944290927-c6488375b1a9?w=900&q=80",
+      "https://images.unsplash.com/photo-1548550024-79243bb06110?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -91,8 +89,7 @@
     "rating": 4.7,
     "reviewCount": 67,
     "ingredients": "۱۰۰٪ عسل طبیعی",
-    "shippingInfo": "ارسال رایگان برای سفارش بالای ۵۰۰ هزار تومان",
-    "createdAt": "2024-03-16"
+    "shippingInfo": "ارسال رایگان برای سفارش بالای ۵۰۰ هزار تومان"
   },
   {
     "id": "p004",
@@ -103,8 +100,8 @@
     "category": "mountain",
     "categoryLabel": "عسل کوهستان",
     "images": [
-      "/images/hajiasal/products/p004.webp",
-      "/images/hajiasal/products/p004-alt.webp"
+      "https://images.unsplash.com/photo-1587735243615-c843de7ae9c0?w=900&q=80",
+      "https://images.unsplash.com/photo-1633619300414-85681f96c4b8?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -122,8 +119,7 @@
     "rating": 4.6,
     "reviewCount": 45,
     "ingredients": "۱۰۰٪ عسل طبیعی کوهستان",
-    "shippingInfo": "ارسال در سراسر کشور",
-    "createdAt": "2024-04-16"
+    "shippingInfo": "ارسال در سراسر کشور"
   },
   {
     "id": "p005",
@@ -134,8 +130,8 @@
     "category": "mountain",
     "categoryLabel": "عسل کوهستان",
     "images": [
-      "/images/hajiasal/products/p005.webp",
-      "/images/hajiasal/products/p005-alt.webp"
+      "https://images.unsplash.com/photo-1548550024-79243bb06110?w=900&q=80",
+      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -153,8 +149,7 @@
     "rating": 4.9,
     "reviewCount": 112,
     "ingredients": "۱۰۰٪ عسل طبیعی",
-    "shippingInfo": "موجودی محدود، پیش‌سفارش فعال",
-    "createdAt": "2024-05-17"
+    "shippingInfo": "موجودی محدود، پیش‌سفارش فعال"
   },
   {
     "id": "p006",
@@ -165,8 +160,8 @@
     "category": "thyme",
     "categoryLabel": "عسل آویشن",
     "images": [
-      "/images/hajiasal/products/p006.webp",
-      "/images/hajiasal/products/p006-alt.webp"
+      "https://images.unsplash.com/photo-1633619300414-85681f96c4b8?w=900&q=80",
+      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -185,8 +180,7 @@
     "reviewCount": 203,
     "isBestseller": true,
     "ingredients": "۱۰۰٪ عسل آویشن طبیعی",
-    "shippingInfo": "بسته‌بندی ویژه با جعبه چوبی",
-    "createdAt": "2024-06-17"
+    "shippingInfo": "بسته‌بندی ویژه با جعبه چوبی"
   },
   {
     "id": "p007",
@@ -197,8 +191,8 @@
     "category": "thyme",
     "categoryLabel": "عسل آویشن",
     "images": [
-      "/images/hajiasal/products/p007.webp",
-      "/images/hajiasal/products/p007-alt.webp"
+      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=900&q=80",
+      "https://images.unsplash.com/photo-1471944290927-c6488375b1a9?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -217,8 +211,7 @@
     "reviewCount": 87,
     "isNew": true,
     "ingredients": "۱۰۰٪ عسل آویشن ارگانیک",
-    "shippingInfo": "ارسال با بیمه کامل",
-    "createdAt": "2024-07-18"
+    "shippingInfo": "ارسال با بیمه کامل"
   },
   {
     "id": "p008",
@@ -229,8 +222,8 @@
     "category": "thyme",
     "categoryLabel": "عسل آویشن",
     "images": [
-      "/images/hajiasal/products/p008.webp",
-      "/images/hajiasal/products/p008-alt.webp"
+      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=80",
+      "https://images.unsplash.com/photo-1587735243615-c843de7ae9c0?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -248,8 +241,7 @@
     "rating": 4.8,
     "reviewCount": 56,
     "ingredients": "۱۰۰٪ عسل آویشن",
-    "shippingInfo": "ارسال ۲ تا ۵ روز کاری",
-    "createdAt": "2024-08-18"
+    "shippingInfo": "ارسال ۲ تا ۵ روز کاری"
   },
   {
     "id": "p009",
@@ -260,8 +252,8 @@
     "category": "thyme",
     "categoryLabel": "عسل آویشن",
     "images": [
-      "/images/hajiasal/products/p009.webp",
-      "/images/hajiasal/products/p009-alt.webp"
+      "https://images.unsplash.com/photo-1471944290927-c6488375b1a9?w=900&q=80",
+      "https://images.unsplash.com/photo-1548550024-79243bb06110?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -275,8 +267,7 @@
     "rating": 4.9,
     "reviewCount": 34,
     "ingredients": "۱۰۰٪ عسل آویشن ممتاز",
-    "shippingInfo": "ارسال اکسپرس در تهران",
-    "createdAt": "2024-09-18"
+    "shippingInfo": "ارسال اکسپرس در تهران"
   },
   {
     "id": "p010",
@@ -287,8 +278,8 @@
     "category": "multifloral",
     "categoryLabel": "عسل چهل‌گیاه",
     "images": [
-      "/images/hajiasal/products/p010.webp",
-      "/images/hajiasal/products/p010-alt.webp"
+      "https://images.unsplash.com/photo-1587735243615-c843de7ae9c0?w=900&q=80",
+      "https://images.unsplash.com/photo-1633619300414-85681f96c4b8?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -307,8 +298,7 @@
     "reviewCount": 156,
     "isBestseller": true,
     "ingredients": "۱۰۰٪ عسل چهل‌گیاه",
-    "shippingInfo": "ارسال استاندارد",
-    "createdAt": "2024-10-19"
+    "shippingInfo": "ارسال استاندارد"
   },
   {
     "id": "p011",
@@ -319,8 +309,8 @@
     "category": "multifloral",
     "categoryLabel": "عسل چهل‌گیاه",
     "images": [
-      "/images/hajiasal/products/p011.webp",
-      "/images/hajiasal/products/p011-alt.webp"
+      "https://images.unsplash.com/photo-1548550024-79243bb06110?w=900&q=80",
+      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -338,8 +328,7 @@
     "rating": 4.6,
     "reviewCount": 78,
     "ingredients": "۱۰۰٪ عسل بهار",
-    "shippingInfo": "ارسال در سراسر کشور",
-    "createdAt": "2024-11-19"
+    "shippingInfo": "ارسال در سراسر کشور"
   },
   {
     "id": "p012",
@@ -350,8 +339,8 @@
     "category": "multifloral",
     "categoryLabel": "عسل چهل‌گیاه",
     "images": [
-      "/images/hajiasal/products/p012.webp",
-      "/images/hajiasal/products/p012-alt.webp"
+      "https://images.unsplash.com/photo-1633619300414-85681f96c4b8?w=900&q=80",
+      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -369,8 +358,7 @@
     "rating": 4.5,
     "reviewCount": 42,
     "ingredients": "۱۰۰٪ عسل طبیعی",
-    "shippingInfo": "ارسال ۳ روز کاری",
-    "createdAt": "2024-12-20"
+    "shippingInfo": "ارسال ۳ روز کاری"
   },
   {
     "id": "p013",
@@ -381,8 +369,8 @@
     "category": "multifloral",
     "categoryLabel": "عسل چهل‌گیاه",
     "images": [
-      "/images/hajiasal/products/p013.webp",
-      "/images/hajiasal/products/p013-alt.webp"
+      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=900&q=80",
+      "https://images.unsplash.com/photo-1471944290927-c6488375b1a9?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -395,8 +383,7 @@
     "rating": 4.7,
     "reviewCount": 38,
     "ingredients": "۱۰۰٪ عسل پاییزه",
-    "shippingInfo": "موجودی فصلی محدود",
-    "createdAt": "2025-01-20"
+    "shippingInfo": "موجودی فصلی محدود"
   },
   {
     "id": "p014",
@@ -407,8 +394,8 @@
     "category": "multifloral",
     "categoryLabel": "عسل چهل‌گیاه",
     "images": [
-      "/images/hajiasal/products/p014.webp",
-      "/images/hajiasal/products/p014-alt.webp"
+      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=80",
+      "https://images.unsplash.com/photo-1587735243615-c843de7ae9c0?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -427,8 +414,7 @@
     "reviewCount": 61,
     "isNew": true,
     "ingredients": "۱۰۰٪ عسل گیاهان وحشی",
-    "shippingInfo": "ارسال با بسته‌بندی اکو",
-    "createdAt": "2025-02-20"
+    "shippingInfo": "ارسال با بسته‌بندی اکو"
   },
   {
     "id": "p015",
@@ -439,8 +425,8 @@
     "category": "royal-jelly",
     "categoryLabel": "ژل رویال",
     "images": [
-      "/images/hajiasal/products/p015.webp",
-      "/images/hajiasal/products/p015-alt.webp"
+      "https://images.unsplash.com/photo-1471944290927-c6488375b1a9?w=900&q=80",
+      "https://images.unsplash.com/photo-1548550024-79243bb06110?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -459,8 +445,7 @@
     "reviewCount": 72,
     "isBestseller": true,
     "ingredients": "۱۰۰٪ ژل رویال خالص",
-    "shippingInfo": "ارسال سردخانه‌ای الزامی",
-    "createdAt": "2025-03-23"
+    "shippingInfo": "ارسال سردخانه‌ای الزامی"
   },
   {
     "id": "p016",
@@ -471,8 +456,8 @@
     "category": "royal-jelly",
     "categoryLabel": "ژل رویال",
     "images": [
-      "/images/hajiasal/products/p016.webp",
-      "/images/hajiasal/products/p016-alt.webp"
+      "https://images.unsplash.com/photo-1587735243615-c843de7ae9c0?w=900&q=80",
+      "https://images.unsplash.com/photo-1633619300414-85681f96c4b8?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -490,8 +475,7 @@
     "rating": 4.8,
     "reviewCount": 48,
     "ingredients": "عسل طبیعی، ژل رویال ۳٪",
-    "shippingInfo": "نگهداری در یخچال پس از باز کردن",
-    "createdAt": "2025-04-22"
+    "shippingInfo": "نگهداری در یخچال پس از باز کردن"
   },
   {
     "id": "p017",
@@ -502,8 +486,8 @@
     "category": "royal-jelly",
     "categoryLabel": "ژل رویال",
     "images": [
-      "/images/hajiasal/products/p017.webp",
-      "/images/hajiasal/products/p017-alt.webp"
+      "https://images.unsplash.com/photo-1548550024-79243bb06110?w=900&q=80",
+      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -517,8 +501,7 @@
     "reviewCount": 29,
     "isNew": true,
     "ingredients": "ژل رویال خشک، کپسول گیاهی",
-    "shippingInfo": "ارسال عادی",
-    "createdAt": "2025-05-23"
+    "shippingInfo": "ارسال عادی"
   },
   {
     "id": "p018",
@@ -529,8 +512,8 @@
     "category": "honeycomb",
     "categoryLabel": "شهد با موم",
     "images": [
-      "/images/hajiasal/products/p018.webp",
-      "/images/hajiasal/products/p018-alt.webp"
+      "https://images.unsplash.com/photo-1633619300414-85681f96c4b8?w=900&q=80",
+      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -549,8 +532,7 @@
     "reviewCount": 89,
     "isBestseller": true,
     "ingredients": "موم عسل طبیعی، عسل خام",
-    "shippingInfo": "بسته‌بندی وکیوم",
-    "createdAt": "2025-06-23"
+    "shippingInfo": "بسته‌بندی وکیوم"
   },
   {
     "id": "p019",
@@ -561,8 +543,8 @@
     "category": "honeycomb",
     "categoryLabel": "شهد با موم",
     "images": [
-      "/images/hajiasal/products/p019.webp",
-      "/images/hajiasal/products/p019-alt.webp"
+      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=900&q=80",
+      "https://images.unsplash.com/photo-1471944290927-c6488375b1a9?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -580,8 +562,7 @@
     "rating": 4.5,
     "reviewCount": 23,
     "ingredients": "۱۰۰٪ موم عسل طبیعی",
-    "shippingInfo": "ارسال استاندارد",
-    "createdAt": "2025-07-24"
+    "shippingInfo": "ارسال استاندارد"
   },
   {
     "id": "p020",
@@ -592,8 +573,8 @@
     "category": "honeycomb",
     "categoryLabel": "شهد با موم",
     "images": [
-      "/images/hajiasal/products/p020.webp",
-      "/images/hajiasal/products/p020-alt.webp"
+      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=80",
+      "https://images.unsplash.com/photo-1587735243615-c843de7ae9c0?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -606,8 +587,7 @@
     "rating": 4.7,
     "reviewCount": 31,
     "ingredients": "موم عسل، عسل طبیعی",
-    "shippingInfo": "جعبه هدیه شامل",
-    "createdAt": "2025-08-24"
+    "shippingInfo": "جعبه هدیه شامل"
   },
   {
     "id": "p021",
@@ -618,8 +598,8 @@
     "category": "honeycomb",
     "categoryLabel": "شهد با موم",
     "images": [
-      "/images/hajiasal/products/p021.webp",
-      "/images/hajiasal/products/p021-alt.webp"
+      "https://images.unsplash.com/photo-1471944290927-c6488375b1a9?w=900&q=80",
+      "https://images.unsplash.com/photo-1548550024-79243bb06110?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -632,8 +612,7 @@
     "rating": 5,
     "reviewCount": 18,
     "ingredients": "موم عسل، عسل آویشن",
-    "shippingInfo": "ارسال ویژه",
-    "createdAt": "2025-09-24"
+    "shippingInfo": "ارسال ویژه"
   },
   {
     "id": "p022",
@@ -644,8 +623,8 @@
     "category": "specialty",
     "categoryLabel": "عسل‌های خاص",
     "images": [
-      "/images/hajiasal/products/p022.webp",
-      "/images/hajiasal/products/p022-alt.webp"
+      "https://images.unsplash.com/photo-1587735243615-c843de7ae9c0?w=900&q=80",
+      "https://images.unsplash.com/photo-1633619300414-85681f96c4b8?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -664,8 +643,7 @@
     "reviewCount": 64,
     "isBestseller": true,
     "ingredients": "۱۰۰٪ عسل سدر",
-    "shippingInfo": "گواهی اصالت ضمیمه",
-    "createdAt": "2025-10-25"
+    "shippingInfo": "گواهی اصالت ضمیمه"
   },
   {
     "id": "p023",
@@ -676,8 +654,8 @@
     "category": "specialty",
     "categoryLabel": "عسل‌های خاص",
     "images": [
-      "/images/hajiasal/products/p023.webp",
-      "/images/hajiasal/products/p023-alt.webp"
+      "https://images.unsplash.com/photo-1548550024-79243bb06110?w=900&q=80",
+      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -695,8 +673,7 @@
     "rating": 4.8,
     "reviewCount": 95,
     "ingredients": "۱۰۰٪ عسل گون",
-    "shippingInfo": "ارسال استاندارد",
-    "createdAt": "2025-11-25"
+    "shippingInfo": "ارسال استاندارد"
   },
   {
     "id": "p024",
@@ -707,8 +684,8 @@
     "category": "specialty",
     "categoryLabel": "عسل‌های خاص",
     "images": [
-      "/images/hajiasal/products/p024.webp",
-      "/images/hajiasal/products/p024-alt.webp"
+      "https://images.unsplash.com/photo-1633619300414-85681f96c4b8?w=900&q=80",
+      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -721,8 +698,7 @@
     "rating": 4.7,
     "reviewCount": 41,
     "ingredients": "۱۰۰٪ عسل بربط",
-    "shippingInfo": "موجودی محدود",
-    "createdAt": "2025-12-26"
+    "shippingInfo": "موجودی محدود"
   },
   {
     "id": "p025",
@@ -733,8 +709,8 @@
     "category": "specialty",
     "categoryLabel": "عسل‌های خاص",
     "images": [
-      "/images/hajiasal/products/p025.webp",
-      "/images/hajiasal/products/p025-alt.webp"
+      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=900&q=80",
+      "https://images.unsplash.com/photo-1471944290927-c6488375b1a9?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -752,8 +728,7 @@
     "rating": 4.6,
     "reviewCount": 27,
     "ingredients": "۱۰۰٪ عسل انگبین",
-    "shippingInfo": "ارسال ۳ تا ۵ روز",
-    "createdAt": "2026-01-26"
+    "shippingInfo": "ارسال ۳ تا ۵ روز"
   },
   {
     "id": "p026",
@@ -764,8 +739,8 @@
     "category": "specialty",
     "categoryLabel": "عسل‌های خاص",
     "images": [
-      "/images/hajiasal/products/p026.webp",
-      "/images/hajiasal/products/p026-alt.webp"
+      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=80",
+      "https://images.unsplash.com/photo-1587735243615-c843de7ae9c0?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -778,8 +753,7 @@
     "rating": 4.8,
     "reviewCount": 53,
     "ingredients": "عسل کاسه‌ای خام",
-    "shippingInfo": "ارسال با ظرف شیشه‌ای",
-    "createdAt": "2026-02-26"
+    "shippingInfo": "ارسال با ظرف شیشه‌ای"
   },
   {
     "id": "p027",
@@ -790,8 +764,8 @@
     "category": "gift-set",
     "categoryLabel": "ست هدیه",
     "images": [
-      "/images/hajiasal/products/p027.webp",
-      "/images/hajiasal/products/p027-alt.webp"
+      "https://images.unsplash.com/photo-1471944290927-c6488375b1a9?w=900&q=80",
+      "https://images.unsplash.com/photo-1548550024-79243bb06110?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -805,8 +779,7 @@
     "reviewCount": 44,
     "isBestseller": true,
     "ingredients": "عسل آویشن، عسل سدر، شهد با موم",
-    "shippingInfo": "بسته‌بندی هدیه ویژه",
-    "createdAt": "2026-03-29"
+    "shippingInfo": "بسته‌بندی هدیه ویژه"
   },
   {
     "id": "p028",
@@ -817,8 +790,8 @@
     "category": "gift-set",
     "categoryLabel": "ست هدیه",
     "images": [
-      "/images/hajiasal/products/p028.webp",
-      "/images/hajiasal/products/p028-alt.webp"
+      "https://images.unsplash.com/photo-1587735243615-c843de7ae9c0?w=900&q=80",
+      "https://images.unsplash.com/photo-1633619300414-85681f96c4b8?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -833,8 +806,7 @@
     "reviewCount": 112,
     "isNew": true,
     "ingredients": "۶ نوع عسل طبیعی",
-    "shippingInfo": "ارسال سریع",
-    "createdAt": "2026-04-29"
+    "shippingInfo": "ارسال سریع"
   },
   {
     "id": "p029",
@@ -845,8 +817,8 @@
     "category": "gift-set",
     "categoryLabel": "ست هدیه",
     "images": [
-      "/images/hajiasal/products/p029.webp",
-      "/images/hajiasal/products/p029-alt.webp"
+      "https://images.unsplash.com/photo-1548550024-79243bb06110?w=900&q=80",
+      "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -859,8 +831,7 @@
     "rating": 4.9,
     "reviewCount": 36,
     "ingredients": "عسل، موم، ژل رویال",
-    "shippingInfo": "ارسال قبل از نوروز تضمین شده",
-    "createdAt": "2026-05-30"
+    "shippingInfo": "ارسال قبل از نوروز تضمین شده"
   },
   {
     "id": "p030",
@@ -871,8 +842,8 @@
     "category": "gift-set",
     "categoryLabel": "ست هدیه",
     "images": [
-      "/images/hajiasal/products/p030.webp",
-      "/images/hajiasal/products/p030-alt.webp"
+      "https://images.unsplash.com/photo-1633619300414-85681f96c4b8?w=900&q=80",
+      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=80"
     ],
     "weightOptions": [
       {
@@ -885,7 +856,6 @@
     "rating": 4.8,
     "reviewCount": 22,
     "ingredients": "عسل، ژل رویال، گرده گل، پراپولیس",
-    "shippingInfo": "ارسال با بیمه",
-    "createdAt": "2026-06-30"
+    "shippingInfo": "ارسال با بیمه"
   }
 ]

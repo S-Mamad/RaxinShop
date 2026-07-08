@@ -26,7 +26,7 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
 
   return (
     <section className="py-16 md:py-24">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
+      <div className="mx-auto max-w-7xl px-4 md:px-8">
         <Reveal className="mb-8 flex items-end justify-between gap-4">
           <SectionHeading
             title="پرفروش‌ترین‌ها"
@@ -36,7 +36,7 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
             <button
               type="button"
               onClick={() => scroll("right")}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-brown hover:border-amber hover:text-amber"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-secondary transition-colors hover:border-gold/50 hover:text-gold"
               aria-label="قبلی"
             >
               <ChevronRight size={18} strokeWidth={1.5} />
@@ -44,7 +44,7 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
             <button
               type="button"
               onClick={() => scroll("left")}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-brown hover:border-amber hover:text-amber"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-secondary transition-colors hover:border-gold/50 hover:text-gold"
               aria-label="بعدی"
             >
               <ChevronLeft size={18} strokeWidth={1.5} />
