@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Vazirmatn } from "next/font/google";
+import { Lalezar, Vazirmatn } from "next/font/google";
 import { StoreChrome } from "@asal/components/layout/StoreChrome";
 import {
   buildOrganizationJsonLd,
@@ -15,6 +15,13 @@ const vazirmatn = Vazirmatn({
   variable: "--font-vazirmatn",
   subsets: ["arabic"],
   weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const lalezar = Lalezar({
+  variable: "--font-lalezar",
+  subsets: ["arabic", "latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -78,7 +85,9 @@ export default async function HajiasalLayout({
   const webSiteJsonLd = buildWebSiteJsonLd(siteData);
 
   return (
-    <div className={`${vazirmatn.variable} hajiasal-root flex min-h-full flex-col`}>
+    <div
+      className={`${vazirmatn.variable} ${lalezar.variable} hajiasal-root flex min-h-full flex-col bg-void text-primary antialiased`}
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
