@@ -60,8 +60,11 @@ function sortProducts(items: Product[], sort: SortOption): Product[] {
   }
 }
 
-export function filterProducts(filters: ProductFilters): Product[] {
-  let result = [...products];
+export function filterProducts(
+  filters: ProductFilters,
+  catalog?: Product[],
+): Product[] {
+  let result = [...(catalog ?? products)];
 
   if (filters.category) {
     result = result.filter((p) => p.category === filters.category);
@@ -97,4 +100,16 @@ export function getRelatedProducts(slug: string, limit = 4): Product[] {
 
 export function getAllSlugs(): string[] {
   return products.map((p) => p.slug);
+}
+
+export function searchProducts(query: string): Product[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return products.filter(
+    (p) =>
+      p.title.toLowerCase().includes(q) ||
+      p.slug.toLowerCase().includes(q) ||
+      p.categoryLabel.toLowerCase().includes(q) ||
+      p.shortDescription.toLowerCase().includes(q),
+  );
 }
