@@ -22,7 +22,17 @@ export async function POST(request: Request) {
 
     const phone = normalizePhone(parsed.data.phone)!;
 
-    if (session && session.phone !== phone) {
+    if (!session) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "ابتدا کد تأیید را وارد کنید و وارد شوید",
+        },
+        { status: 401 },
+      );
+    }
+
+    if (session.phone !== phone) {
       return NextResponse.json(
         { success: false, message: "شماره موبایل با حساب فعلی مطابقت ندارد" },
         { status: 403 },
@@ -30,7 +40,7 @@ export async function POST(request: Request) {
     }
 
     let profile = await findProfileByPhone(phone);
-    if (!profile) {
+    if (!profile || profile.id !== session.userId) {
       return NextResponse.json(
         { success: false, message: "ابتدا کد تأیید را وارد کنید" },
         { status: 400 },

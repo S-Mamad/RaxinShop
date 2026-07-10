@@ -1,4 +1,5 @@
 import type { CartItem, CheckoutFormData } from "@asal/types";
+import { normalizePhone } from "@asal/lib/auth/phone";
 import { readJsonFile, writeJsonFile } from "./db";
 import {
   memoryGetOrders,
@@ -228,6 +229,18 @@ export async function getOrdersByUserId(userId: string): Promise<StoredOrder[]> 
   }
 
   return memoryGetOrders<StoredOrder>().filter((o) => o.userId === userId);
+}
+
+/** True if this phone has at least one non-cancelled order (buyer). */
+export async function hasPurchasedByPhone(phone: string): Promise<boolean> {
+  const normalized = normalizePhone(phone);
+  if (!normalized) return false;
+
+  const orders = await getAllOrders();
+  return orders.some((order) => {
+    if (order.status === "cancelled") return false;
+    return normalizePhone(order.customer?.phone ?? "") === normalized;
+  });
 }
 
 export async function updateOrderStatus(

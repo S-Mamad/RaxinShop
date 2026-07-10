@@ -15,6 +15,7 @@ interface PaymentOption {
 interface PaymentMethodSelectorProps {
   value: PaymentMethod;
   onChange: (method: PaymentMethod) => void;
+  onlineDisabled?: boolean;
 }
 
 const baseOptions: PaymentOption[] = [
@@ -45,6 +46,7 @@ const icons: Record<PaymentMethod, typeof Money> = {
 export function PaymentMethodSelector({
   value,
   onChange,
+  onlineDisabled = false,
 }: PaymentMethodSelectorProps) {
   const [showOnline, setShowOnline] = useState(false);
 
@@ -64,14 +66,19 @@ export function PaymentMethodSelector({
         {options.map((option) => {
           const Icon = icons[option.id];
           const selected = value === option.id;
+          const disabled = option.id === "online" && onlineDisabled;
 
           return (
             <button
               key={option.id}
               type="button"
-              onClick={() => onChange(option.id)}
+              disabled={disabled}
+              onClick={() => {
+                if (!disabled) onChange(option.id);
+              }}
               className={cn(
                 "flex items-start gap-3 rounded-xl border p-4 text-start transition-colors",
+                disabled && "cursor-not-allowed opacity-45",
                 selected
                   ? "border-gold bg-gold-dim"
                   : "border-white/8 hover:border-white/15",
@@ -80,14 +87,20 @@ export function PaymentMethodSelector({
               <div
                 className={cn(
                   "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-                  selected ? "bg-gold text-void" : "bg-surface-elevated text-secondary",
+                  selected
+                    ? "bg-gold text-void"
+                    : "bg-surface-elevated text-secondary",
                 )}
               >
                 <Icon size={18} weight="light" />
               </div>
               <div>
                 <span className="font-medium text-primary">{option.label}</span>
-                <p className="mt-1 text-xs text-secondary">{option.description}</p>
+                <p className="mt-1 text-xs text-secondary">
+                  {disabled
+                    ? "برای این روش ابتدا وارد حساب شوید"
+                    : option.description}
+                </p>
               </div>
             </button>
           );

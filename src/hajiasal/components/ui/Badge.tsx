@@ -14,12 +14,11 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-        variant === "bestseller" && "bg-gold-dim text-gold",
-        variant === "new" && "bg-emerald-500/10 text-emerald-400",
-        variant === "out-of-stock" && "bg-red-500/10 text-red-400",
-        variant === "default" &&
-          "border border-white/5 bg-white/5 text-secondary",
+        "inline-flex items-center text-[10px] font-medium tracking-wide sm:text-[11px]",
+        variant === "bestseller" && "text-gold",
+        variant === "new" && "text-primary/80",
+        variant === "out-of-stock" && "text-red-400/90",
+        variant === "default" && "text-secondary",
         className,
       )}
     >

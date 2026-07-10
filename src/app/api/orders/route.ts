@@ -2,13 +2,32 @@ import { NextResponse } from "next/server";
 import { checkoutApiSchema } from "@asal/lib/validations/checkout";
 import { createOrder } from "@asal/lib/server/orders";
 import { validateCouponAsync } from "@asal/lib/server/coupons";
+import {
+  rebuildOrderItems,
+  calcShippingCost,
+} from "@asal/lib/server/order-pricing";
 import { getSessionFromRequest } from "@asal/lib/auth/session";
 import { normalizePhone } from "@asal/lib/auth/phone";
+import { checkRateLimit, getClientIp } from "@asal/lib/server/rate-limit";
 
 export async function POST(request: Request) {
   try {
-    const session = getSessionFromRequest(request);
+    const ip = getClientIp(request);
+    const limited = checkRateLimit(`orders:${ip}`, 8, 15 * 60 * 1000);
+    if (!limited.ok) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "تعداد درخواست‌ها زیاد است. کمی بعد دوباره تلاش کنید.",
+        },
+        {
+          status: 429,
+          headers: { "Retry-After": String(limited.retryAfterSec) },
+        },
+      );
+    }
 
+    const session = getSessionFromRequest(request);
     const body = await request.json();
     const parsed = checkoutApiSchema.safeParse(body);
 
@@ -23,7 +42,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { customer, items, subtotal, shipping, total } = parsed.data;
+    const { customer, items: rawItems } = parsed.data;
 
     const customerPhone = normalizePhone(customer.phone);
     if (!customerPhone) {
@@ -46,6 +65,14 @@ export async function POST(request: Request) {
       }
     }
 
+    const rebuilt = rebuildOrderItems(rawItems);
+    if (!rebuilt.ok) {
+      return NextResponse.json(
+        { success: false, message: rebuilt.message },
+        { status: 400 },
+      );
+    }
+
     const extra = body as {
       couponCode?: string;
       paymentMethod?: "cod" | "card_to_card" | "online";
@@ -53,7 +80,20 @@ export async function POST(request: Request) {
     };
     const couponCode = extra.couponCode;
     const paymentMethod = extra.paymentMethod ?? "cod";
-    const shippingMethod = extra.shippingMethod;
+    const shippingMethod = extra.shippingMethod ?? "standard";
+
+    if (paymentMethod === "online" && !session) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "برای پرداخت آنلاین ابتدا وارد حساب کاربری شوید",
+        },
+        { status: 401 },
+      );
+    }
+
+    const subtotal = rebuilt.subtotal;
+    const shipping = calcShippingCost(shippingMethod, subtotal);
 
     let discount = 0;
     if (couponCode) {
@@ -67,21 +107,11 @@ export async function POST(request: Request) {
       discount = couponResult.discount;
     }
 
-    const expectedTotal = subtotal + shipping - discount;
-    if (Math.abs(expectedTotal - total) > 1) {
-      return NextResponse.json(
-        { success: false, message: "مبلغ سفارش نامعتبر است" },
-        { status: 400 },
-      );
-    }
-
-    // Future: Zarinpal integration — POST /api/checkout/create → redirect → verify
-    // const merchantId = process.env.ZARINPAL_MERCHANT_ID;
-    // Never log or expose payment credentials
+    const total = Math.max(0, subtotal + shipping - discount);
 
     const order = await createOrder({
       customer: { ...customer, phone: customerPhone },
-      items,
+      items: rebuilt.items,
       subtotal,
       shipping,
       discount,
@@ -96,6 +126,7 @@ export async function POST(request: Request) {
       orderId: order.id,
       trackingCode: order.trackingCode,
       status: order.status,
+      total: order.total,
       message:
         paymentMethod === "cod"
           ? "سفارش ثبت شد. پرداخت هنگام تحویل انجام می‌شود."
@@ -115,7 +146,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const orderId = searchParams.get("id");
   const tracking = searchParams.get("tracking");
-  const phone = searchParams.get("phone");
+  const phoneRaw = searchParams.get("phone");
 
   if (!orderId && !tracking) {
     return NextResponse.json(
@@ -129,14 +160,57 @@ export async function GET(request: Request) {
     getOrderByTracking,
     getOrderByPhoneAndTracking,
   } = await import("@asal/lib/server/orders");
+  const session = getSessionFromRequest(request);
 
   let order = null;
+
   if (orderId) {
     order = await getOrderById(orderId);
-  } else if (tracking && phone) {
+    if (!order) {
+      return NextResponse.json({ error: "سفارش یافت نشد" }, { status: 404 });
+    }
+    const owns =
+      session &&
+      (order.userId === session.userId ||
+        normalizePhone(order.customer.phone) ===
+          normalizePhone(session.phone));
+    if (!owns) {
+      return NextResponse.json(
+        { error: "دسترسی به این سفارش مجاز نیست" },
+        { status: 403 },
+      );
+    }
+  } else if (tracking && phoneRaw) {
+    const phone = normalizePhone(phoneRaw);
+    if (!phone) {
+      return NextResponse.json(
+        { error: "شماره موبایل نامعتبر است" },
+        { status: 400 },
+      );
+    }
     order = await getOrderByPhoneAndTracking(phone, tracking);
   } else if (tracking) {
+    // Public track by code only — limited fields, no PII
     order = await getOrderByTracking(tracking);
+    if (!order) {
+      return NextResponse.json({ error: "سفارش یافت نشد" }, { status: 404 });
+    }
+    return NextResponse.json({
+      order: {
+        id: order.id,
+        status: order.status,
+        paymentMethod: order.paymentMethod,
+        trackingCode: order.trackingCode,
+        total: order.total,
+        createdAt: order.createdAt,
+        shippingMethod: order.shippingMethod,
+        items: order.items.map((i) => ({
+          title: i.title,
+          quantity: i.quantity,
+          weight: i.weight.label,
+        })),
+      },
+    });
   }
 
   if (!order) {

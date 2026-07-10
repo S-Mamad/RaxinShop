@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
   GENERAL_REVIEW_PRODUCT_ID,
@@ -6,11 +6,14 @@ import {
   getReviewsByProduct,
   createReview,
 } from "@asal/lib/server/reviews";
+import { hasPurchasedByPhone } from "@asal/lib/server/orders";
+import { normalizePhone } from "@asal/lib/auth/phone";
 import { checkRateLimit, getClientIp } from "@asal/lib/server/rate-limit";
 
 const reviewSchema = z.object({
   productId: z.string().min(1).max(64).optional(),
   author: z.string().min(2).max(60),
+  phone: z.string().min(10).max(20),
   rating: z.coerce.number().int().min(1).max(5),
   comment: z.string().min(10).max(500),
   /** Honeypot — bots fill this; humans leave empty */
@@ -64,8 +67,27 @@ export async function POST(request: Request) {
     }
 
     if (parsed.data.website && parsed.data.website.trim().length > 0) {
-      // Bot filled honeypot — pretend success
       return NextResponse.json({ success: true });
+    }
+
+    const phone = normalizePhone(parsed.data.phone);
+    if (!phone) {
+      return NextResponse.json(
+        { success: false, message: "شماره موبایل نامعتبر است" },
+        { status: 400 },
+      );
+    }
+
+    const isBuyer = await hasPurchasedByPhone(phone);
+    if (!isBuyer) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "فقط خریداران می‌توانند نظر ثبت کنند. شماره موبایل باید همان شماره سفارش باشد.",
+        },
+        { status: 403 },
+      );
     }
 
     const review = await createReview({
@@ -80,7 +102,6 @@ export async function POST(request: Request) {
       message: "نظر شما ثبت شد و پس از تأیید نمایش داده می‌شود.",
       review: {
         id: review.id,
-        // Never expose unverified content as public feed
         verified: review.verified,
       },
     });

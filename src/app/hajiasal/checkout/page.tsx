@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +23,7 @@ import {
   type ShippingOption,
 } from "@asal/components/checkout/ShippingMethodSelector";
 import { useCartStore } from "@asal/store/cart";
+import { useAuth } from "@asal/hooks/useAuth";
 import { cn } from "@asal/lib/utils";
 import { hajiasalPath } from "@asal/lib/paths";
 import site from "@asal/data/site.json";
@@ -37,6 +39,7 @@ const steps = [
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { user, isLoggedIn, loading: authLoading } = useAuth();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,6 +49,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
   const [shippingMethod, setShippingMethod] =
     useState<ShippingMethod>("standard");
+  const [prefilled, setPrefilled] = useState(false);
 
   const items = useCartStore((s) => s.items);
   const subtotal = useCartStore((s) => s.getSubtotal());
@@ -53,9 +57,7 @@ export default function CheckoutPage() {
 
   const shippingOptions: ShippingOption[] = useMemo(() => {
     const free =
-      subtotal >= siteData.freeShippingThreshold
-        ? 0
-        : siteData.shippingCost;
+      subtotal >= siteData.freeShippingThreshold ? 0 : siteData.shippingCost;
     return [
       {
         id: "standard",
@@ -91,6 +93,7 @@ export default function CheckoutPage() {
     handleSubmit,
     trigger,
     getValues,
+    setValue,
     formState: { errors },
   } = useForm<CheckoutSchemaType>({
     resolver: zodResolver(checkoutSchema),
@@ -104,6 +107,47 @@ export default function CheckoutPage() {
       notes: "",
     },
   });
+
+  useEffect(() => {
+    if (authLoading || prefilled || !user) return;
+
+    if (user.fullName) setValue("fullName", user.fullName);
+    if (user.phone) setValue("phone", user.phone);
+
+    void (async () => {
+      try {
+        const res = await fetch("/api/account/addresses");
+        if (!res.ok) return;
+        const data = await res.json();
+        const list = (data.addresses ?? []) as Array<{
+          isDefault?: boolean;
+          province?: string;
+          city?: string;
+          address?: string;
+          postalCode?: string;
+        }>;
+        const preferred =
+          list.find((a) => a.isDefault) ?? list[0] ?? null;
+        if (!preferred) return;
+        if (preferred.province) setValue("province", preferred.province);
+        if (preferred.city) setValue("city", preferred.city);
+        if (preferred.address) setValue("address", preferred.address);
+        if (preferred.postalCode) setValue("postalCode", preferred.postalCode);
+      } catch {
+        /* ignore */
+      } finally {
+        setPrefilled(true);
+      }
+    })();
+
+    setPrefilled(true);
+  }, [authLoading, user, prefilled, setValue]);
+
+  useEffect(() => {
+    if (paymentMethod === "online" && !isLoggedIn && !authLoading) {
+      setPaymentMethod("cod");
+    }
+  }, [paymentMethod, isLoggedIn, authLoading]);
 
   if (items.length === 0) {
     return (
@@ -155,6 +199,10 @@ export default function CheckoutPage() {
     setError(null);
 
     try {
+      if (paymentMethod === "online" && !isLoggedIn) {
+        throw new Error("برای پرداخت آنلاین ابتدا وارد حساب شوید");
+      }
+
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -189,7 +237,8 @@ export default function CheckoutPage() {
           return;
         }
         throw new Error(
-          pay.message || "انتقال به درگاه پرداخت ممکن نشد. روش دیگری انتخاب کنید.",
+          pay.message ||
+            "انتقال به درگاه پرداخت ممکن نشد. روش دیگری انتخاب کنید.",
         );
       }
 
@@ -206,9 +255,29 @@ export default function CheckoutPage() {
     }
   };
 
+  const loginHref = `${hajiasalPath("/login")}?redirect=${encodeURIComponent(hajiasalPath("/checkout"))}`;
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 md:px-8 md:py-14">
       <SectionHeading title="تکمیل خرید" className="mb-6 md:mb-8" />
+
+      {!authLoading && !isLoggedIn ? (
+        <div className="mb-6 rounded-xl border border-white/8 bg-surface px-4 py-3 text-sm text-secondary md:mb-8">
+          برای پیگیری آسان‌تر سفارش‌ها{" "}
+          <Link href={loginHref} className="text-gold hover:text-gold-bright">
+            وارد حساب شوید
+          </Link>
+          . خرید مهمان هم ممکن است.
+        </div>
+      ) : null}
+
+      {isLoggedIn ? (
+        <p className="mb-5 text-xs text-dim md:mb-6">
+          وارد شده‌اید
+          {user?.fullName ? ` · ${user.fullName}` : ""} — اطلاعات از حساب پر
+          می‌شود.
+        </p>
+      ) : null}
 
       <div className="mb-6 flex items-center justify-between md:mb-8">
         {steps.map((s, i) => (
@@ -261,7 +330,13 @@ export default function CheckoutPage() {
               dir="ltr"
               {...register("phone")}
               error={errors.phone?.message}
+              disabled={isLoggedIn}
             />
+            {isLoggedIn ? (
+              <p className="text-[11px] text-dim">
+                موبایل حساب کاربری قابل تغییر در این مرحله نیست.
+              </p>
+            ) : null}
           </div>
         ) : null}
 
@@ -324,7 +399,16 @@ export default function CheckoutPage() {
             <PaymentMethodSelector
               value={paymentMethod}
               onChange={setPaymentMethod}
+              onlineDisabled={!isLoggedIn}
             />
+            {!isLoggedIn ? (
+              <p className="text-[11px] text-dim">
+                پرداخت آنلاین فقط برای کاربران واردشده فعال است.{" "}
+                <Link href={loginHref} className="text-gold">
+                  ورود
+                </Link>
+              </p>
+            ) : null}
 
             <CartItemRow />
             <div className="flex gap-2">

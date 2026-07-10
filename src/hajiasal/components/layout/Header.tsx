@@ -16,6 +16,7 @@ import { useSiteSettings } from "@asal/context/SiteSettingsContext";
 import { cn } from "@asal/lib/utils";
 import { Icon } from "@asal/components/ui/Icon";
 import { UserMenu } from "@asal/components/auth/UserMenu";
+import { CountBadge } from "@asal/components/ui/CountBadge";
 import { MobileMenu } from "./MobileMenu";
 import { SearchModal } from "./SearchModal";
 import { extraNav, resolveNavHref } from "@asal/lib/nav";
@@ -122,15 +123,9 @@ export function Header() {
               onClick={() => setMobileOpen(false)}
             >
               <Icon icon={Heart} size={18} />
-              {wishlistCount > 0 ? (
-                <span className="absolute -top-0.5 -end-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[9px] font-bold text-void">
-                  {wishlistCount}
-                </span>
-              ) : null}
+              {hasHydrated ? <CountBadge count={wishlistCount} /> : null}
             </Link>
-            <div className="hidden sm:block">
-              <UserMenu scrolled={false} isHome />
-            </div>
+            <UserMenu compact />
             <button
               type="button"
               onClick={handleOpenCart}
@@ -138,11 +133,7 @@ export function Header() {
               aria-label="سبد خرید"
             >
               <Icon icon={ShoppingBag} size={18} />
-              {hasHydrated && itemCount > 0 ? (
-                <span className="absolute -top-0.5 -end-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[9px] font-bold text-void">
-                  {itemCount > 9 ? "۹+" : itemCount}
-                </span>
-              ) : null}
+              {hasHydrated ? <CountBadge count={itemCount} /> : null}
             </button>
             <button
               type="button"

@@ -10,9 +10,22 @@ import {
   createSessionToken,
   sessionCookieOptions,
 } from "@asal/lib/auth/session";
+import { checkRateLimit, getClientIp } from "@asal/lib/server/rate-limit";
 
 export async function POST(request: Request) {
   try {
+    const ip = getClientIp(request);
+    const limited = checkRateLimit(`otp-verify:${ip}`, 20, 15 * 60 * 1000);
+    if (!limited.ok) {
+      return NextResponse.json(
+        { success: false, message: "تعداد تلاش زیاد است. کمی بعد دوباره تلاش کنید." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(limited.retryAfterSec) },
+        },
+      );
+    }
+
     const body = await request.json();
     const parsed = otpVerifySchema.safeParse(body);
 

@@ -4,8 +4,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Phone, Question } from "@phosphor-icons/react";
+import {
+  X,
+  Phone,
+  Question,
+  User,
+  Package,
+  SignIn,
+  SignOut,
+} from "@phosphor-icons/react";
 import { useSiteSettings } from "@asal/context/SiteSettingsContext";
+import { useAuth } from "@asal/hooks/useAuth";
 import { extraNav, resolveNavHref } from "@asal/lib/nav";
 import { hajiasalPath } from "@asal/lib/paths";
 import { useBodyScrollLock } from "@asal/hooks/useBodyScrollLock";
@@ -19,6 +28,7 @@ interface MobileMenuProps {
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
   const siteData = useSiteSettings();
   const pathname = usePathname();
+  const { user, isLoggedIn, logout, loading } = useAuth();
   const navItems = [...siteData.nav, ...extraNav];
   const [backdropReady, setBackdropReady] = useState(false);
 
@@ -29,7 +39,6 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
       setBackdropReady(false);
       return;
     }
-    // Prevent the opening tap from immediately closing via the backdrop
     const t = window.setTimeout(() => setBackdropReady(true), 320);
     return () => window.clearTimeout(t);
   }, [open]);
@@ -80,6 +89,54 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 <X size={22} />
               </button>
             </div>
+
+            {!loading ? (
+              <div className="border-b border-white/8 px-3 py-3">
+                {isLoggedIn ? (
+                  <div className="space-y-0.5">
+                    <p className="px-4 pb-2 text-xs text-dim">
+                      {user?.fullName || "حساب کاربری"}
+                    </p>
+                    <Link
+                      href={hajiasalPath("/account")}
+                      onClick={onClose}
+                      className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm text-primary hover:bg-white/5 hover:text-gold"
+                    >
+                      <User size={16} />
+                      حساب من
+                    </Link>
+                    <Link
+                      href={hajiasalPath("/account/orders")}
+                      onClick={onClose}
+                      className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm text-primary hover:bg-white/5 hover:text-gold"
+                    >
+                      <Package size={16} />
+                      سفارش‌های من
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        void logout();
+                      }}
+                      className="flex w-full items-center gap-2 rounded-xl px-4 py-3 text-sm text-dim hover:bg-white/5 hover:text-gold"
+                    >
+                      <SignOut size={16} />
+                      خروج
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    href={hajiasalPath("/login")}
+                    onClick={onClose}
+                    className="flex items-center gap-2 rounded-xl bg-gold/10 px-4 py-3.5 text-sm font-medium text-gold"
+                  >
+                    <SignIn size={16} />
+                    ورود / ثبت‌نام
+                  </Link>
+                )}
+              </div>
+            ) : null}
 
             <ul className="flex flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain px-3 py-4">
               {navItems.map((item) => {

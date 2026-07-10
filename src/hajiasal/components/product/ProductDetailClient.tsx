@@ -21,7 +21,6 @@ import { ProductAccordion } from "@asal/components/product/ProductAccordion";
 import { StickyAddToCart } from "@asal/components/product/StickyAddToCart";
 import { RelatedProducts } from "@asal/components/product/RelatedProducts";
 import { Button } from "@asal/components/ui/Button";
-import { Badge } from "@asal/components/ui/Badge";
 import { PriceDisplay } from "@asal/components/ui/PriceDisplay";
 import { RatingStars } from "@asal/components/ui/RatingStars";
 import { useCartStore } from "@asal/store/cart";
@@ -94,14 +93,16 @@ export function ProductDetailClient({
             <span className="text-secondary">{product.title}</span>
           </nav>
 
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="default">{product.categoryLabel}</Badge>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px]">
+            <span className="text-dim">{product.categoryLabel}</span>
             {product.isBestseller ? (
-              <Badge variant="bestseller">پرفروش</Badge>
+              <span className="text-gold">پرفروش</span>
             ) : null}
-            {product.isNew ? <Badge variant="new">جدید</Badge> : null}
+            {product.isNew && !product.isBestseller ? (
+              <span className="text-primary/75">جدید</span>
+            ) : null}
             {!product.inStock ? (
-              <Badge variant="out-of-stock">ناموجود</Badge>
+              <span className="text-red-400/90">ناموجود</span>
             ) : null}
           </div>
 

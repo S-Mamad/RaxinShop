@@ -9,12 +9,14 @@ import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
 import { ProductGrid } from "@asal/components/product/ProductGrid";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
+import { Pagination } from "@asal/components/ui/Pagination";
 import { ShopEmptyState } from "@asal/components/shop/ShopEmptyState";
 import { cn } from "@asal/lib/utils";
 import { hajiasalPath } from "@asal/lib/paths";
 
 const siteData = site as SiteConfig;
 const priceRange = getPriceRange();
+const PAGE_SIZE = 12;
 
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: "popular", label: "محبوب‌ترین" },
@@ -151,9 +153,10 @@ function ShopContentInner() {
   const sort = (searchParams.get("sort") as SortOption) || "popular";
   const maxPrice = Number(searchParams.get("maxPrice") || priceRange.max);
   const inStockOnly = searchParams.get("inStock") === "1";
+  const pageParam = Number(searchParams.get("page") || "1");
 
   const updateParams = useCallback(
-    (updates: Record<string, string | null>) => {
+    (updates: Record<string, string | null>, options?: { resetPage?: boolean }) => {
       const params = new URLSearchParams(searchParams.toString());
       Object.entries(updates).forEach(([key, value]) => {
         if (value === null || value === "") {
@@ -162,6 +165,9 @@ function ShopContentInner() {
           params.set(key, value);
         }
       });
+      if (options?.resetPage !== false && !("page" in updates)) {
+        params.delete("page");
+      }
       const qs = params.toString();
       router.push(
         qs ? `${hajiasalPath("/shop")}?${qs}` : hajiasalPath("/shop"),
@@ -183,12 +189,35 @@ function ShopContentInner() {
     [category, maxPrice, sort, inStockOnly],
   );
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const page = Math.min(Math.max(1, pageParam || 1), totalPages);
+  const paged = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return filtered.slice(start, start + PAGE_SIZE);
+  }, [filtered, page]);
+
+  const goToPage = useCallback(
+    (next: number) => {
+      const safe = Math.min(Math.max(1, next), totalPages);
+      updateParams(
+        { page: safe <= 1 ? null : String(safe) },
+        { resetPage: false },
+      );
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [totalPages, updateParams],
+  );
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-14">
       <div className="mb-6 flex items-end justify-between gap-4 md:mb-8">
         <SectionHeading
           title="فروشگاه"
-          subtitle={`${filtered.length.toLocaleString("fa-IR")} محصول`}
+          subtitle={
+            filtered.length > PAGE_SIZE
+              ? `${filtered.length.toLocaleString("fa-IR")} محصول · صفحه ${page.toLocaleString("fa-IR")} از ${totalPages.toLocaleString("fa-IR")}`
+              : `${filtered.length.toLocaleString("fa-IR")} محصول`
+          }
         />
         <button
           type="button"
@@ -208,14 +237,21 @@ function ShopContentInner() {
               sort={sort}
               maxPrice={maxPrice}
               inStockOnly={inStockOnly}
-              updateParams={updateParams}
+              updateParams={(u) => updateParams(u)}
             />
           </div>
         </aside>
 
         <div className="min-w-0 flex-1">
           {filtered.length > 0 ? (
-            <ProductGrid products={filtered} />
+            <>
+              <ProductGrid products={paged} />
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onChange={goToPage}
+              />
+            </>
           ) : (
             <ShopEmptyState />
           )}

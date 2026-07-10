@@ -9,11 +9,12 @@ import { hajiasalPath } from "@asal/lib/paths";
 import { cn } from "@asal/lib/utils";
 
 interface UserMenuProps {
-  scrolled?: boolean;
-  isHome?: boolean;
+  className?: string;
+  /** Compact icon-only (header mobile) */
+  compact?: boolean;
 }
 
-export function UserMenu({ scrolled = true, isHome = false }: UserMenuProps) {
+export function UserMenu({ className, compact = false }: UserMenuProps) {
   const { user, loading, logout, isLoggedIn } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -28,16 +29,15 @@ export function UserMenu({ scrolled = true, isHome = false }: UserMenuProps) {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  const iconClass = cn(
-    "flex h-9 items-center justify-center rounded-full transition-colors text-sm gap-1",
-    scrolled || !isHome
-      ? "text-brown hover:bg-cream-dark px-2"
-      : "text-white/90 hover:bg-white/10 px-2",
+  const btnClass = cn(
+    "flex h-11 items-center justify-center gap-1 rounded-xl text-sm text-secondary transition-colors hover:bg-white/5 hover:text-gold active:bg-white/10 touch-manipulation",
+    compact ? "w-11 px-0" : "px-2.5",
+    className,
   );
 
   if (loading) {
     return (
-      <div className={cn(iconClass, "w-9")} aria-hidden>
+      <div className={cn(btnClass, "w-11")} aria-hidden>
         <Icon icon={User} size={18} />
       </div>
     );
@@ -45,9 +45,15 @@ export function UserMenu({ scrolled = true, isHome = false }: UserMenuProps) {
 
   if (!isLoggedIn) {
     return (
-      <Link href={hajiasalPath("/login")} className={iconClass} aria-label="ورود">
+      <Link
+        href={hajiasalPath("/login")}
+        className={btnClass}
+        aria-label="ورود به حساب"
+      >
         <Icon icon={User} size={18} />
-        <span className="hidden sm:inline">ورود</span>
+        {!compact ? (
+          <span className="hidden sm:inline">ورود</span>
+        ) : null}
       </Link>
     );
   }
@@ -57,25 +63,28 @@ export function UserMenu({ scrolled = true, isHome = false }: UserMenuProps) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className={iconClass}
+        className={btnClass}
         aria-expanded={open}
         aria-haspopup="menu"
+        aria-label="حساب کاربری"
       >
         <Icon icon={User} size={18} />
-        <span className="hidden max-w-[5rem] truncate sm:inline">
-          {user?.fullName?.split(" ")[0] ?? "حساب"}
-        </span>
-        <Icon icon={CaretDown} size={12} />
+        {!compact ? (
+          <span className="hidden max-w-[5rem] truncate sm:inline">
+            {user?.fullName?.split(" ")[0] ?? "حساب"}
+          </span>
+        ) : null}
+        <Icon icon={CaretDown} size={12} className="hidden sm:block" />
       </button>
       {open ? (
         <div
           role="menu"
-          className="absolute end-0 top-full z-50 mt-2 min-w-[10rem] rounded-xl border border-border bg-surface py-1 shadow-lg"
+          className="absolute end-0 top-full z-50 mt-2 min-w-[11rem] rounded-xl border border-white/10 bg-surface py-1.5 shadow-2xl"
         >
           <Link
             href={hajiasalPath("/account")}
             role="menuitem"
-            className="flex items-center gap-2 px-4 py-2.5 text-sm text-brown hover:bg-cream-dark"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm text-primary hover:bg-white/5 hover:text-gold"
             onClick={() => setOpen(false)}
           >
             <Icon icon={User} size={16} />
@@ -84,7 +93,7 @@ export function UserMenu({ scrolled = true, isHome = false }: UserMenuProps) {
           <Link
             href={hajiasalPath("/account/orders")}
             role="menuitem"
-            className="flex items-center gap-2 px-4 py-2.5 text-sm text-brown hover:bg-cream-dark"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm text-primary hover:bg-white/5 hover:text-gold"
             onClick={() => setOpen(false)}
           >
             <Icon icon={Package} size={16} />
@@ -93,7 +102,7 @@ export function UserMenu({ scrolled = true, isHome = false }: UserMenuProps) {
           <button
             type="button"
             role="menuitem"
-            className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-muted hover:bg-cream-dark"
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-dim hover:bg-white/5 hover:text-gold"
             onClick={() => void logout()}
           >
             <Icon icon={SignOut} size={16} />

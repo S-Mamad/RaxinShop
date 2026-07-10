@@ -8,10 +8,24 @@ import {
 import {
   getOtpProviderForPhone,
   getTestOtpProvider,
+  isTestOtpAllowed,
 } from "@asal/lib/auth/get-otp-provider";
+import { checkRateLimit, getClientIp } from "@asal/lib/server/rate-limit";
 
 export async function POST(request: Request) {
   try {
+    const ip = getClientIp(request);
+    const ipLimit = checkRateLimit(`otp-send:${ip}`, 10, 15 * 60 * 1000);
+    if (!ipLimit.ok) {
+      return NextResponse.json(
+        { success: false, message: "تعداد درخواست‌ها زیاد است" },
+        {
+          status: 429,
+          headers: { "Retry-After": String(ipLimit.retryAfterSec) },
+        },
+      );
+    }
+
     const body = await request.json();
     const parsed = otpSendSchema.safeParse(body);
 
@@ -33,9 +47,10 @@ export async function POST(request: Request) {
 
     const testProvider = getTestOtpProvider();
     const provider = getOtpProviderForPhone(phone);
-    const fixedCode = testProvider.isTestPhone(phone)
-      ? testProvider.getTestOtp()
-      : undefined;
+    const fixedCode =
+      isTestOtpAllowed() && testProvider.isTestPhone(phone)
+        ? testProvider.getTestOtp()
+        : undefined;
 
     const code = await createOtpChallenge(phone, fixedCode);
     const result = await provider.send(phone, code);

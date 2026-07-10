@@ -10,13 +10,27 @@ import { cn } from "@asal/lib/utils";
 import { GENERAL_REVIEW_PRODUCT_ID } from "@asal/lib/review-constants";
 
 const schema = z.object({
-  author: z.string().min(2, "نام کوتاه است").max(40),
+  author: z.string().min(2, "نام را وارد کنید").max(40),
+  phone: z
+    .string()
+    .min(10, "موبایل سفارش را وارد کنید")
+    .max(15, "شماره نامعتبر است")
+    .refine((v) => {
+      const d = v.replace(/\D/g, "");
+      return (
+        (d.length === 11 && d.startsWith("09")) ||
+        (d.length === 10 && d.startsWith("9"))
+      );
+    }, { message: "موبایل را با ۰۹ وارد کنید" }),
   rating: z.number().min(1).max(5),
-  comment: z.string().min(10, "کمی بیشتر بنویسید").max(400),
+  comment: z.string().min(10, "حداقل چند جمله بنویسید").max(400),
   website: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
+
+const fieldClass =
+  "w-full border-0 border-b border-white/10 bg-transparent py-3 text-sm text-primary outline-none transition-colors placeholder:text-dim/50 focus:border-gold/45";
 
 export function ReviewForm() {
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">(
@@ -33,7 +47,13 @@ export function ReviewForm() {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { author: "", rating: 5, comment: "", website: "" },
+    defaultValues: {
+      author: "",
+      phone: "",
+      rating: 5,
+      comment: "",
+      website: "",
+    },
   });
 
   const rating = watch("rating");
@@ -49,6 +69,7 @@ export function ReviewForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           author: data.author.trim(),
+          phone: data.phone.trim(),
           rating: data.rating,
           productId: GENERAL_REVIEW_PRODUCT_ID,
           comment: data.comment.trim(),
@@ -64,8 +85,16 @@ export function ReviewForm() {
       }
 
       setStatus("done");
-      setMessage("ثبت شد. پس از تأیید نمایش داده می‌شود.");
-      reset({ author: "", rating: 5, comment: "", website: "" });
+      setMessage(
+        result.message ?? "ثبت شد. پس از تأیید ادمین نمایش داده می‌شود.",
+      );
+      reset({
+        author: "",
+        phone: "",
+        rating: 5,
+        comment: "",
+        website: "",
+      });
     } catch {
       setStatus("error");
       setMessage("ارتباط برقرار نشد.");
@@ -73,19 +102,32 @@ export function ReviewForm() {
   };
 
   return (
-    <section className="pb-16 pt-2 md:pb-28 md:pt-4">
-      <div className="mx-auto max-w-sm px-5 md:max-w-md md:px-8">
+    <section className="pb-16 pt-4 md:pb-28 md:pt-6">
+      <div className="mx-auto max-w-md px-5 md:px-8">
         <Reveal>
+          <div className="mb-8 text-center md:mb-10">
+            <p className="mb-2 text-[10px] font-medium tracking-[0.2em] text-gold">
+              ثبت نظر
+            </p>
+            <h2 className="font-display text-xl text-primary md:text-2xl">
+              نظر شما درباره حاجی عسل
+            </h2>
+            <p className="mx-auto mt-2.5 max-w-xs text-[13px] leading-relaxed text-secondary">
+              فرم برای همه باز است. ارسال فقط برای خریداران است و پس از تأیید
+              ادمین نمایش داده می‌شود.
+            </p>
+          </div>
+
           {status === "done" ? (
-            <div className="py-8 text-center">
-              <p className="text-sm text-secondary">{message}</p>
+            <div className="py-10 text-center">
+              <p className="text-sm leading-relaxed text-secondary">{message}</p>
               <button
                 type="button"
                 onClick={() => {
                   setStatus("idle");
                   setMessage("");
                 }}
-                className="mt-4 text-xs tracking-wide text-gold"
+                className="mt-5 text-xs text-gold hover:text-gold-bright"
               >
                 نوشتن نظر دیگر
               </button>
@@ -100,84 +142,120 @@ export function ReviewForm() {
                 className="pointer-events-none absolute -left-[9999px] opacity-0"
                 aria-hidden
               >
-                <input tabIndex={-1} autoComplete="off" {...register("website")} />
+                <input
+                  tabIndex={-1}
+                  autoComplete="off"
+                  {...register("website")}
+                />
               </div>
 
-              <p className="mb-8 text-center text-[11px] tracking-[0.18em] text-dim">
-                نظر شما
-              </p>
-
-              <div
-                className="mb-8 flex items-center justify-center gap-1"
-                role="radiogroup"
-                aria-label="امتیاز"
-              >
-                {[1, 2, 3, 4, 5].map((value) => (
-                  <button
-                    key={value}
-                    type="button"
-                    role="radio"
-                    aria-checked={rating === value}
-                    aria-label={`${value} از ۵`}
-                    onClick={() =>
-                      setValue("rating", value, { shouldValidate: true })
-                    }
-                    className="flex h-8 w-8 items-center justify-center touch-manipulation"
-                  >
-                    <Star
-                      size={18}
-                      weight={value <= rating ? "fill" : "regular"}
-                      className={
-                        value <= rating ? "text-gold" : "text-white/15"
+              <div className="mb-7">
+                <p className="mb-3 text-center text-[11px] text-dim">
+                  امتیاز شما
+                </p>
+                <div
+                  className="flex items-center justify-center gap-1"
+                  role="radiogroup"
+                  aria-label="امتیاز"
+                >
+                  {[1, 2, 3, 4, 5].map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      role="radio"
+                      aria-checked={rating === value}
+                      aria-label={`${value} از ۵`}
+                      onClick={() =>
+                        setValue("rating", value, { shouldValidate: true })
                       }
-                    />
-                  </button>
-                ))}
+                      className="flex h-9 w-9 items-center justify-center touch-manipulation"
+                    >
+                      <Star
+                        size={20}
+                        weight={value <= rating ? "fill" : "regular"}
+                        className={
+                          value <= rating ? "text-gold" : "text-white/15"
+                        }
+                      />
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <input
-                type="text"
-                placeholder="نام"
-                autoComplete="name"
-                className="mb-1 w-full border-0 border-b border-white/8 bg-transparent py-2.5 text-center text-sm text-primary outline-none placeholder:text-dim/60 focus:border-gold/40"
-                {...register("author")}
-              />
-              {errors.author ? (
-                <p className="mb-3 text-center text-[11px] text-red-400/90">
-                  {errors.author.message}
-                </p>
-              ) : (
-                <div className="mb-3" />
-              )}
+              <label className="mb-5 block">
+                <span className="mb-1 block text-[11px] text-dim">نام نمایشی</span>
+                <input
+                  type="text"
+                  autoComplete="name"
+                  placeholder="مثلاً مریم"
+                  className={fieldClass}
+                  {...register("author")}
+                />
+                {errors.author ? (
+                  <p className="mt-1.5 text-[11px] text-red-400/90">
+                    {errors.author.message}
+                  </p>
+                ) : null}
+              </label>
 
-              <textarea
-                rows={2}
-                maxLength={400}
-                placeholder="چند کلمه از تجربه‌تان..."
-                className={cn(
-                  "w-full resize-none border-0 border-b border-white/8 bg-transparent py-2.5 text-center text-sm leading-relaxed text-primary outline-none",
-                  "placeholder:text-dim/60 focus:border-gold/40",
+              <label className="mb-5 block">
+                <span className="mb-1 block text-[11px] text-dim">
+                  موبایل ثبت‌شده در سفارش
+                </span>
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel"
+                  dir="ltr"
+                  placeholder="09xxxxxxxxx"
+                  className={cn(fieldClass, "text-left")}
+                  {...register("phone")}
+                />
+                {errors.phone ? (
+                  <p className="mt-1.5 text-[11px] text-red-400/90">
+                    {errors.phone.message}
+                  </p>
+                ) : (
+                  <p className="mt-1.5 text-[11px] text-dim/80">
+                    فقط با شماره خریدار، نظر به ادمین ارسال می‌شود
+                  </p>
                 )}
-                {...register("comment")}
-              />
-              {errors.comment ? (
-                <p className="mt-2 text-center text-[11px] text-red-400/90">
-                  {errors.comment.message}
-                </p>
-              ) : null}
+              </label>
 
-              <div className="mt-8 flex justify-center">
+              <label className="mb-2 block">
+                <span className="mb-1 block text-[11px] text-dim">متن نظر</span>
+                <textarea
+                  rows={3}
+                  maxLength={400}
+                  placeholder="از کیفیت، طعم یا ارسال بگویید..."
+                  className={cn(
+                    fieldClass,
+                    "resize-none leading-relaxed",
+                  )}
+                  {...register("comment")}
+                />
+                {errors.comment ? (
+                  <p className="mt-1.5 text-[11px] text-red-400/90">
+                    {errors.comment.message}
+                  </p>
+                ) : null}
+              </label>
+
+              <div className="mt-8 flex flex-col items-center gap-3">
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  className="text-sm text-gold transition-opacity disabled:opacity-50 hover:text-gold-bright"
+                  className="text-sm text-gold transition-opacity hover:text-gold-bright disabled:opacity-50"
                 >
-                  {status === "loading" ? "..." : "ارسال"}
+                  {status === "loading" ? "در حال ارسال..." : "ارسال برای تأیید"}
                 </button>
               </div>
 
               {status === "error" && message ? (
-                <p className="mt-4 text-center text-[12px] text-red-400" role="alert">
+                <p
+                  className="mt-5 text-center text-[12px] leading-relaxed text-red-400"
+                  role="alert"
+                >
                   {message}
                 </p>
               ) : null}

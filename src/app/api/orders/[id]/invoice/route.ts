@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { getOrderById } from "@asal/lib/server/orders";
+import { getSessionFromRequest } from "@asal/lib/auth/session";
+import { normalizePhone } from "@asal/lib/auth/phone";
 import site from "@asal/data/site.json";
 import type { SiteConfig } from "@asal/types";
 
@@ -17,9 +19,7 @@ function formatDate(iso: string): string {
   });
 }
 
-function buildInvoiceHtml(order: Awaited<ReturnType<typeof getOrderById>>) {
-  if (!order) return "";
-
+function buildInvoiceHtml(order: NonNullable<Awaited<ReturnType<typeof getOrderById>>>) {
   const rows = order.items
     .map(
       (item) => `
@@ -73,7 +73,13 @@ function buildInvoiceHtml(order: Awaited<ReturnType<typeof getOrderById>>) {
       ${order.discount > 0 ? `<div><span>تخفیف</span><span>-${formatPrice(order.discount)}</span></div>` : ""}
       <div class="total"><span>مبلغ قابل پرداخت</span><span>${formatPrice(order.total)}</span></div>
     </div>
-    <p class="meta" style="margin-top:24px">روش پرداخت: ${order.paymentMethod === "cod" ? "پرداخت در محل" : "کارت به کارت"}</p>
+    <p class="meta" style="margin-top:24px">روش پرداخت: ${
+      order.paymentMethod === "cod"
+        ? "پرداخت در محل"
+        : order.paymentMethod === "online"
+          ? "پرداخت آنلاین"
+          : "کارت به کارت"
+    }</p>
   </div>
   <script>window.onload = () => window.print();</script>
 </body>
@@ -81,7 +87,7 @@ function buildInvoiceHtml(order: Awaited<ReturnType<typeof getOrderById>>) {
 }
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
@@ -89,6 +95,29 @@ export async function GET(
 
   if (!order) {
     return NextResponse.json({ error: "سفارش یافت نشد" }, { status: 404 });
+  }
+
+  const session = getSessionFromRequest(request);
+  const { searchParams } = new URL(request.url);
+  const phoneParam = normalizePhone(searchParams.get("phone") ?? "");
+  const trackingParam = (searchParams.get("tracking") ?? "").toUpperCase();
+
+  const ownsBySession =
+    session &&
+    (order.userId === session.userId ||
+      normalizePhone(order.customer.phone) === normalizePhone(session.phone));
+
+  const ownsByProof =
+    phoneParam &&
+    trackingParam &&
+    normalizePhone(order.customer.phone) === phoneParam &&
+    (order.trackingCode ?? "").toUpperCase() === trackingParam;
+
+  if (!ownsBySession && !ownsByProof) {
+    return NextResponse.json(
+      { error: "دسترسی به فاکتور مجاز نیست" },
+      { status: 403 },
+    );
   }
 
   const html = buildInvoiceHtml(order);

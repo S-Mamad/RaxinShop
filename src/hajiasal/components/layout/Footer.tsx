@@ -11,6 +11,7 @@ const siteData = site as SiteConfig;
 const footerLinks = [
   { label: "فروشگاه", href: hajiasalPath("/shop") },
   { label: "درباره ما", href: hajiasalPath("/about") },
+  { label: "حساب کاربری", href: hajiasalPath("/account") },
   { label: "نظرات مشتریان", href: hajiasalPath("/reviews") },
   { label: "تماس", href: hajiasalPath("/contact") },
   { label: "سوالات", href: hajiasalPath("/faq") },

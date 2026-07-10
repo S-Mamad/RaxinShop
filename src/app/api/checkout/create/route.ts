@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSessionFromRequest } from "@asal/lib/auth/session";
-import { updateOrderStatus } from "@asal/lib/server/orders";
+import { getOrderById, updateOrderStatus } from "@asal/lib/server/orders";
+import { normalizePhone } from "@asal/lib/auth/phone";
 
 const createSchema = z.object({
   orderId: z.string().min(1),
-  amount: z.number().positive(),
   description: z.string().optional(),
 });
 
@@ -38,9 +38,35 @@ export async function POST(request: Request) {
       );
     }
 
+    const order = await getOrderById(parsed.data.orderId);
+    if (!order) {
+      return NextResponse.json(
+        { success: false, message: "سفارش یافت نشد" },
+        { status: 404 },
+      );
+    }
+
+    const owns =
+      order.userId === session.userId ||
+      normalizePhone(order.customer.phone) === normalizePhone(session.phone);
+
+    if (!owns) {
+      return NextResponse.json(
+        { success: false, message: "دسترسی به این سفارش مجاز نیست" },
+        { status: 403 },
+      );
+    }
+
+    if (order.status === "cancelled") {
+      return NextResponse.json(
+        { success: false, message: "این سفارش لغو شده است" },
+        { status: 400 },
+      );
+    }
+
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    const callbackUrl = `${siteUrl}/api/checkout/verify?orderId=${encodeURIComponent(parsed.data.orderId)}`;
-    const amountRial = Math.round(parsed.data.amount * 10);
+    const callbackUrl = `${siteUrl}/api/checkout/verify?orderId=${encodeURIComponent(order.id)}`;
+    const amountRial = Math.round(order.total * 10);
 
     const zarinRes = await fetch(
       "https://api.zarinpal.com/pg/v4/payment/request.json",
@@ -51,8 +77,8 @@ export async function POST(request: Request) {
           merchant_id: merchantId,
           amount: amountRial,
           callback_url: callbackUrl,
-          description: parsed.data.description ?? `سفارش ${parsed.data.orderId}`,
-          metadata: { order_id: parsed.data.orderId, mobile: session.phone },
+          description: parsed.data.description ?? `سفارش ${order.id}`,
+          metadata: { order_id: order.id, mobile: session.phone },
         }),
       },
     );
@@ -67,7 +93,7 @@ export async function POST(request: Request) {
       });
     }
 
-    await updateOrderStatus(parsed.data.orderId, "pending_payment");
+    await updateOrderStatus(order.id, "pending_payment");
 
     return NextResponse.json({
       success: true,

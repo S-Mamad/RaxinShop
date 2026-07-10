@@ -102,6 +102,7 @@ export async function verifyOtpChallenge(
       return { valid: false, message: "کد تأیید نادرست است" };
     }
 
+    await supabase.from("otp_challenges").delete().eq("id", data.id);
     return { valid: true, message: "تأیید شد" };
   }
 

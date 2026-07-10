@@ -217,14 +217,6 @@ export function ReviewsPageClient({
 
       <Reveal delay={0.1}>
         <div className="mt-14 border-t border-white/8 pt-12 md:mt-20 md:pt-16">
-          <div className="mb-10 text-center md:mb-12">
-            <h2 className="font-display text-xl text-primary md:text-2xl">
-              تجربه خود را بنویسید
-            </h2>
-            <p className="mx-auto mt-2 max-w-sm text-sm text-secondary">
-              نظرتان پس از بررسی نمایش داده می‌شود تا اعتماد دیگران حفظ شود.
-            </p>
-          </div>
           <ReviewForm />
           <div className="mt-10 flex justify-center">
             <Button href={hajiasalPath("/shop")} variant="outline" size="lg">

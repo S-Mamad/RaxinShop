@@ -5,7 +5,6 @@ import { motion } from "motion/react";
 import { Heart } from "@phosphor-icons/react";
 import type { Product } from "@asal/types";
 import { getMinPrice } from "@asal/lib/products";
-import { Badge } from "@asal/components/ui/Badge";
 import { PriceDisplay } from "@asal/components/ui/PriceDisplay";
 import { RatingStars } from "@asal/components/ui/RatingStars";
 import { ProductImage } from "@asal/components/ui/ProductImage";
@@ -17,10 +16,36 @@ interface ProductCardProps {
   product: Product;
 }
 
+function ProductMark({ product }: { product: Product }) {
+  if (!product.inStock) {
+    return (
+      <span className="text-[10px] font-medium tracking-wide text-red-400/90 sm:text-[11px]">
+        ناموجود
+      </span>
+    );
+  }
+  if (product.isBestseller) {
+    return (
+      <span className="text-[10px] font-medium tracking-wide text-gold sm:text-[11px]">
+        پرفروش
+      </span>
+    );
+  }
+  if (product.isNew) {
+    return (
+      <span className="text-[10px] font-medium tracking-wide text-primary/75 sm:text-[11px]">
+        جدید
+      </span>
+    );
+  }
+  return null;
+}
+
 export function ProductCard({ product }: ProductCardProps) {
   const minPrice = getMinPrice(product);
   const toggleWishlist = useWishlistStore((s) => s.toggle);
   const isWishlisted = useWishlistStore((s) => s.has(product.id));
+  const mark = <ProductMark product={product} />;
 
   return (
     <motion.article
@@ -41,15 +66,11 @@ export function ProductCard({ product }: ProductCardProps) {
               sizes="(max-width: 768px) 50vw, 33vw"
               className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-110"
             />
-            <div className="absolute start-1.5 top-1.5 flex flex-col gap-1 sm:start-3 sm:top-3 sm:gap-1.5">
-              {product.isBestseller ? (
-                <Badge variant="bestseller">پرفروش</Badge>
-              ) : null}
-              {product.isNew ? <Badge variant="new">جدید</Badge> : null}
-              {!product.inStock ? (
-                <Badge variant="out-of-stock">ناموجود</Badge>
-              ) : null}
-            </div>
+            {mark ? (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-void/80 via-void/35 to-transparent px-2.5 pb-2 pt-8 sm:px-3 sm:pb-2.5">
+                {mark}
+              </div>
+            ) : null}
           </div>
           <div className="p-2.5 sm:p-4">
             <p className="mb-0.5 text-[10px] text-dim sm:mb-1 sm:text-xs">
@@ -77,12 +98,20 @@ export function ProductCard({ product }: ProductCardProps) {
             "absolute end-1.5 top-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-sm transition-all sm:end-3 sm:top-3 sm:h-9 sm:w-9",
             isWishlisted
               ? "bg-gold text-void"
-              : "bg-void/60 text-primary hover:bg-void/80",
+              : "bg-void/55 text-primary hover:bg-void/75",
           )}
           aria-label="علاقه‌مندی"
         >
-          <Heart size={14} weight={isWishlisted ? "fill" : "regular"} className="sm:hidden" />
-          <Heart size={16} weight={isWishlisted ? "fill" : "regular"} className="hidden sm:block" />
+          <Heart
+            size={14}
+            weight={isWishlisted ? "fill" : "regular"}
+            className="sm:hidden"
+          />
+          <Heart
+            size={16}
+            weight={isWishlisted ? "fill" : "regular"}
+            className="hidden sm:block"
+          />
         </button>
       </div>
     </motion.article>
