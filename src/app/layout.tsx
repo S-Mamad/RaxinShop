@@ -3,6 +3,7 @@ import { JetBrains_Mono, Vazirmatn } from "next/font/google";
 import site from "@/data/site.json";
 import type { SiteConfig } from "@/types";
 import { getSiteUrl } from "@/lib/seo";
+import { AppProviders } from "@/components/shell/AppProviders";
 import "./globals.css";
 
 const data = site as SiteConfig;
@@ -49,11 +50,20 @@ export const metadata: Metadata = {
     siteName,
     locale: "fa_IR",
     type: "website",
+    images: [
+      {
+        url: "/og/raxinshop.webp",
+        width: 1200,
+        height: 630,
+        alt: `${siteName} | استودیو توسعه`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${siteName} | استودیو توسعه`,
     description: data.brand.description,
+    images: ["/og/raxinshop.webp"],
   },
   robots: {
     index: true,
@@ -79,7 +89,7 @@ export default function RootLayout({
         >
           پرش به محتوا
         </a>
-        {children}
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

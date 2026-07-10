@@ -2,21 +2,33 @@
 @source "../**/*.{js,ts,jsx,tsx}";
 
 :root {
-  --void: #08080c;
-  --surface: #0e0e14;
-  --elevated: #13131b;
-  --panel: #18181f;
+  --void: #07070a;
+  --surface: #0e0e12;
+  --elevated: #15151b;
+  --panel: #1a1a22;
   --foreground: #ececf1;
   --muted: #8b8b9a;
   --dim: #6e6e7d;
-  --accent: #2dd4bf;
-  --accent-bright: #5eead4;
-  --accent-dim: rgba(45, 212, 191, 0.12);
-  --accent-glow: rgba(45, 212, 191, 0.25);
+  --accent: #3dffa8;
+  --accent-bright: #7dffc4;
+  --accent-dim: rgba(61, 255, 168, 0.1);
+  --accent-glow: rgba(61, 255, 168, 0.22);
+  --cyber: #4db8ff;
+  --cyber-dim: rgba(77, 184, 255, 0.12);
   --signal: #ff3b3b;
+  --gold: #d4a574;
+  --gold-dim: rgba(212, 165, 116, 0.12);
   --border: rgba(255, 255, 255, 0.09);
   --border-bright: rgba(255, 255, 255, 0.16);
   --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+  --z-grain: 1;
+  --z-content: 10;
+  --z-header: 40;
+  --z-progress: 50;
+  --z-toast: 60;
+  --z-panel: 70;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
 }
 
 @theme inline {
@@ -30,7 +42,11 @@
   --color-accent: var(--accent);
   --color-accent-bright: var(--accent-bright);
   --color-accent-dim: var(--accent-dim);
+  --color-cyber: var(--cyber);
+  --color-cyber-dim: var(--cyber-dim);
   --color-signal: var(--signal);
+  --color-gold: var(--gold);
+  --color-gold-dim: var(--gold-dim);
   --color-border: var(--border);
   --color-border-bright: var(--border-bright);
   --font-sans: var(--font-vazirmatn);
@@ -42,6 +58,7 @@ html {
 }
 
 body {
+  position: relative;
   background: var(--void);
   color: var(--foreground);
   font-family: var(--font-vazirmatn), system-ui, sans-serif;
@@ -49,6 +66,18 @@ body {
   line-height: 1.75;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
 }
 
 [id] {
@@ -66,7 +95,7 @@ body {
 }
 
 .font-display {
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
   text-wrap: balance;
@@ -106,12 +135,193 @@ body {
   color: var(--muted);
 }
 
+.glass {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(14, 14, 18, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transform: translateZ(0);
+}
+
+.glass-panel {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    160deg,
+    rgba(26, 26, 34, 0.9),
+    rgba(14, 14, 18, 0.85)
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transform: translateZ(0);
+}
+
+.text-mask-kinetic {
+  background-image: linear-gradient(
+    110deg,
+    #ececf1 0%,
+    #3dffa8 25%,
+    #4db8ff 50%,
+    #ececf1 75%,
+    #3dffa8 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: kinetic-shift 8s linear infinite;
+}
+
+@keyframes kinetic-shift {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: -100% 50%;
+  }
+}
+
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.spotlight-card::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-out);
+  background: radial-gradient(
+    420px circle at var(--mouse-x) var(--mouse-y),
+    rgba(61, 255, 168, 0.12),
+    transparent 55%
+  );
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+
+.spotlight-card::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-out);
+  box-shadow: inset 0 0 0 1px rgba(61, 255, 168, 0.25);
+  background: radial-gradient(
+    280px circle at var(--mouse-x) var(--mouse-y),
+    rgba(61, 255, 168, 0.18),
+    transparent 50%
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  padding: 1px;
+}
+
+.spotlight-card:hover::after {
+  opacity: 1;
+}
+
+html[data-high-contrast="true"] {
+  --foreground: #ffffff;
+  --muted: #c8c8d4;
+  --dim: #a8a8b8;
+  --border: rgba(255, 255, 255, 0.28);
+  --accent: #5cffb5;
+}
+
+html[data-matrix="true"] {
+  --accent: #00ff41;
+  --accent-bright: #39ff14;
+  --void: #000000;
+  --surface: #001100;
+}
+
+html[data-reduce-motion="true"] .text-mask-kinetic,
+html[data-reduce-motion="true"] .arch-pulse,
+html[data-reduce-motion="true"] .status-pulse {
+  animation: none !important;
+}
+
+html[data-reduce-motion="true"] .text-mask-kinetic {
+  background: none;
+  color: var(--foreground);
+  -webkit-background-clip: unset;
+  background-clip: unset;
+}
+
+html[data-heavy-off="true"] .glass,
+html[data-heavy-off="true"] .glass-panel {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+@keyframes arch-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.arch-pulse {
+  animation: arch-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes status-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.status-pulse {
+  animation: status-pulse 1.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
+  .text-mask-kinetic {
+    animation: none;
+    background: none;
+    color: var(--foreground);
+    -webkit-background-clip: unset;
+    background-clip: unset;
+  }
+
   .motion-safe\:active\:scale-\[0\.98\]:active {
     transform: none;
+  }
+
+  .arch-pulse,
+  .status-pulse {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-panel {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--elevated);
   }
 }

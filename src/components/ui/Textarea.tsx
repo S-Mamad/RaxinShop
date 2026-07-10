@@ -12,7 +12,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     return (
       <div className="flex flex-col gap-2">
-        <label htmlFor={inputId} className="text-sm text-muted">
+        <label htmlFor={inputId} className="text-sm font-medium text-foreground/80">
           {label}
         </label>
         <textarea

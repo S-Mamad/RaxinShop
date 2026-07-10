@@ -41,10 +41,13 @@ export function buildPersonJsonLd(member: TeamMember) {
     name: member.name,
     jobTitle: member.role,
     description: member.bio,
-    image: member.image.startsWith("http")
-      ? member.image
-      : `${siteUrl}${member.image}`,
   };
+
+  if (member.image) {
+    jsonLd.image = member.image.startsWith("http")
+      ? member.image
+      : `${siteUrl}${member.image}`;
+  }
 
   if (member.links?.telegram) {
     jsonLd.sameAs = [member.links.telegram];

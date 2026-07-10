@@ -27,7 +27,7 @@ export function TeamLinks({ member }: { member: TeamMember }) {
   if (!items.length) return null;
 
   return (
-    <div className="mt-6 flex gap-3">
+    <div className="mt-auto flex gap-3 pt-2">
       {items.map(({ href, icon: Icon, label }) => (
         <Link
           key={href}

@@ -13,6 +13,8 @@ export interface ServiceItem {
   span?: "wide" | "tall" | "default";
   tags?: string[];
   proof?: string;
+  visual?: string;
+  gradient?: [string, string];
 }
 
 export interface ProjectItem {
@@ -29,6 +31,8 @@ export interface ProjectItem {
   featured?: boolean;
   year?: string;
   comingSoon?: boolean;
+  caseStyle?: "luxury" | "infra" | "default";
+  businessValue?: string[];
 }
 
 export interface TeamMemberLinks {
@@ -58,6 +62,7 @@ export interface LinkItem {
 export interface ClientItem {
   name: string;
   href?: string;
+  logo?: string;
 }
 
 export interface WhyPoint {

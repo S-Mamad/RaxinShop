@@ -19,7 +19,6 @@ export function Contact() {
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <SectionHeading
-              index="05"
               eyebrow="ارتباط"
               title="شروع گفتگو"
               description="فرم را پر کن یا مستقیم پیام بده. معمولاً همان روز جواب می‌دهیم."

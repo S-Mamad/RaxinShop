@@ -5,13 +5,23 @@ import {
   Stack,
   HardDrives,
   PuzzlePiece,
+  GitBranch,
+  Code,
+  PaintBrush,
+  Plugs,
 } from "@phosphor-icons/react";
 
 const iconMap = {
   Monitor,
   Server: HardDrives,
+  server: HardDrives,
   Layers: Stack,
+  architecture: Stack,
   Component: PuzzlePiece,
+  api: Plugs,
+  git: GitBranch,
+  code: Code,
+  design: PaintBrush,
 } as const;
 
 export function ServiceIcon({ name }: { name: string }) {

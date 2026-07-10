@@ -18,7 +18,6 @@ export function Footer() {
           <p className="mt-4 max-w-prose text-sm leading-[1.85] text-muted">
             {data.brand.tagline}
           </p>
-          <p className="mt-3 font-mono text-xs text-dim">{data.brand.version}</p>
           <div className="mt-6">
             <Button href="#contact" size="sm">
               شروع پروژه
@@ -80,6 +79,15 @@ export function Footer() {
                 </a>
               </li>
             ))}
+            <li className="pt-4">
+              <div
+                className="inline-flex items-center gap-2 border border-accent/30 bg-accent/10 px-3 py-2 font-mono text-[11px] text-accent"
+                title="هدف مهندسی: امتیاز کامل Lighthouse"
+              >
+                <span className="status-pulse inline-block h-2 w-2 rounded-full bg-accent" />
+                Lighthouse 100 target
+              </div>
+            </li>
           </ul>
         </div>
       </div>

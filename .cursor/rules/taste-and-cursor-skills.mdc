@@ -58,5 +58,6 @@ This project has two skill libraries. **Before any matching task, read the relev
 - **Brand deck** → `brandkit`
 - **Complete code output** → `full-output-enforcement`
 - **PR / review / automation / hooks / SDK** → matching Cursor skill from Library 2
+- **Engineering process / TDD / specs / architecture** → see always-on rule `elite-agent-skills-stack` (Matt Pocock, Superpowers, Vercel, etc.)
 
 Respond to the user in **Persian** unless they write in another language.

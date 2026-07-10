@@ -1,0 +1,71 @@
+---
+description: Permanent elite Agent Skills stack — always read matching SKILL.md before work
+alwaysApply: true
+---
+
+# Elite Agent Skills Stack (Permanent Memory)
+
+Global skills live in `~/.agents/skills/`. Project taste skills live in `.agents/skills/`.
+**Before any matching task: read that skill's `SKILL.md` and follow it completely.** Do not improvise when a skill exists.
+
+Respond in **Persian** unless the user writes in another language.
+
+## Tier 0 — Always-on routing
+
+| Situation | Skill(s) |
+|---|---|
+| Unsure which skill | `ask-matt` or `find-skills` |
+| New / complex feature before coding | `grilling` → `to-spec` → `to-tickets` → `tdd` / `implement` |
+| First time using Matt kit in a repo | `setup-matt-pocock-skills` once |
+| Done with a change | `verification-before-completion` |
+
+## Tier 1 — Engineering process (Matt Pocock + Superpowers)
+
+| Skill | Use when |
+|---|---|
+| `grilling` / `grill-me` | Stress-test a plan; design-tree interview (one question at a time) |
+| `grill-with-docs` | Same + write ADRs / glossary as you go |
+| `to-spec` | Conversation → PRD/spec (was `to-prd`) |
+| `to-tickets` | Spec → vertical-slice tickets (was `to-issues`) |
+| `tdd` | Red-green implementation; test at agreed seams |
+| `improve-codebase-architecture` | Weekly / after big surges; deepen shallow modules |
+| `codebase-design` / `domain-modeling` | Module depth, seams, ubiquitous language |
+| `diagnosing-bugs` / `systematic-debugging` | Hard bugs, regressions |
+| `brainstorming` / `writing-plans` / `executing-plans` | Explore → plan → execute |
+| `subagent-driven-development` / `dispatching-parallel-agents` | Parallel agent work |
+| `code-review` / `requesting-code-review` | Review vs standards + spec |
+| `triage` / `handoff` / `wayfinder` | Issue flow, handoff, huge multi-session work |
+
+## Tier 2 — Frontend / React quality
+
+| Skill | Use when |
+|---|---|
+| `vercel-react-best-practices` | React/Next performance & patterns |
+| `vercel-composition-patterns` | Component composition |
+| `web-design-guidelines` | Web UI quality checklist |
+| `shadcn` | shadcn/ui components |
+| `ui-ux-pro-max` / `impeccable` / `emil-design-eng` | Polish, critique, motion, design eng |
+| `extract-design-system` | Pull a design system from an existing UI |
+| Project taste skills | See `taste-and-cursor-skills` rule (default for branded sites) |
+
+## Tier 3 — Product / data / auth / ops
+
+| Skill | Use when |
+|---|---|
+| `seo-audit` / `copywriting` / `content-strategy` / `site-architecture` | Marketing site, SEO, copy |
+| `supabase` / `supabase-postgres-best-practices` | Supabase / Postgres |
+| `better-auth-best-practices` (+ related auth skills) | Auth flows |
+| `stripe-best-practices` | Payments / Stripe |
+| `agent-browser` / `playwright-cli` / `webapp-testing` | Browser automation & E2E |
+| `deploy-to-vercel` | Vercel deploy |
+| `firecrawl` / `just-scrape` | Scraping / web data |
+| Anthropic `pdf` / `docx` / `xlsx` / `pptx` | Office document work |
+| `skill-creator` / `writing-great-skills` | Authoring new skills |
+
+## Hard rules
+
+1. **Skill before improvisation** — if a row matches, open `SKILL.md` first.
+2. **Grill before big builds** — do not jump to code on ambiguous features; use `grilling`.
+3. **Vertical slices** — prefer tracer-bullet tickets over horizontal layer tickets.
+4. **Taste wins on visuals** — for Mine Site / branded UI, taste skills override generic UI skills when they conflict.
+5. **Skip junk** — do not auto-load Azure/Lark mega-packs unless the user is on those platforms.

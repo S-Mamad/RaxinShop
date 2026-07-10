@@ -3,52 +3,30 @@
     "name": "راکسین",
     "suffix": "‌شاپ",
     "slug": "raxinshop",
-    "version": "v4.0",
+    "version": "",
     "tagline": "استودیو توسعه · تهران",
-    "description": "برای بنیان‌گذارانی که به‌جای اسکریپت موقت، محصول واقعی می‌خواهند. فرانت، بک‌اند و برند در یک تیم؛ از نسخه اول تا لانچ.",
-    "heroTitle": "استارتاپت را به محصولی بساز",
-    "heroHighlight": "که فردا هم رشد کند."
+    "description": "دو نفر، یک تیم. طراحی، کد و لانچ محصولی که فردا هم قابل نگهداری بماند.",
+    "heroTitle": "محصول دیجیتال",
+    "heroHighlight": "با استاندارد production."
   },
   "heroCta": {
     "primary": "شروع پروژه",
     "secondary": "نمونه‌کارها"
   },
-  "heroStats": [
-    { "value": "۳+", "label": "پروژه زنده" },
-    { "value": "۲", "label": "هم‌بنیان‌گذار" },
-    { "value": "مرحله‌ای", "label": "تحویل شفاف" }
-  ],
   "clients": [
-    { "name": "مرهم", "href": "https://paziresh24.com" },
-    { "name": "پذیرش ۲۴", "href": "https://paziresh24.com" },
-    { "name": "حاجی عسل", "href": "/hajiasal" }
-  ],
-  "whyPoints": [
-    {
-      "pain": "کدی که فقط امروز کار می‌کند",
-      "answer": "معماری تمیز از روز اول. تیمی که بعداً بیاید، گیر نکند."
-    },
-    {
-      "pain": "طراحی جدا، توسعه جدا",
-      "answer": "برند، UI و کد در یک استودیو. یک نقطه تماس، خروجی یکپارچه."
-    },
-    {
-      "pain": "زمان‌بندی مبهم و تحویل دیر",
-      "answer": "فازهای کوتاه، دمو منظم و تحویل مرحله‌ای. همیشه می‌دانید کجایید."
-    }
+    { "name": "مرهم", "href": "https://paziresh24.com", "logo": "/clients/marham.svg" },
+    { "name": "پذیرش ۲۴", "href": "https://paziresh24.com", "logo": "/clients/paziresh24.svg" },
+    { "name": "حاجی عسل", "href": "/hajiasal", "logo": "/clients/hajiasal.svg" }
   ],
   "nav": [
     { "id": "home", "label": "خانه", "href": "#home" },
-    { "id": "expertise", "label": "تخصص", "href": "#expertise" },
+    { "id": "skills", "label": "مهارت‌ها", "href": "#skills" },
     { "id": "work", "label": "کارها", "href": "#work" },
+    { "id": "terminal", "label": "CLI", "href": "#terminal" },
     { "id": "about", "label": "تیم", "href": "#about" },
     { "id": "contact", "label": "ارتباط", "href": "#contact" }
   ],
-  "footerNav": [
-    { "id": "why", "label": "چرا ما", "href": "#why" },
-    { "id": "process", "label": "فرآیند", "href": "#process" },
-    { "id": "faq", "label": "سوالات", "href": "#faq" }
-  ],
+  "footerNav": [],
   "stack": [
     "TypeScript",
     "React",
@@ -56,56 +34,71 @@
     "Node.js",
     "PostgreSQL",
     "Tailwind",
-    "Motion",
     "Vercel"
   ],
   "services": [
     {
-      "id": "frontend",
-      "index": "01",
-      "title": "فرانت‌اند",
-      "description": "رابط type-safe، سریع و دقیق. از سیستم طراحی تا انیمیشن. هر جزئیات با معیار تولید.",
-      "icon": "Monitor",
+      "id": "architecture",
+      "title": "معماری سیستم",
+      "description": "طراحی لایه‌ها، مرزهای ماژول و جریان داده برای مقیاس واقعی.",
+      "icon": "architecture",
       "span": "wide",
-      "tags": ["React", "Next.js"],
-      "proof": "مرهم"
+      "tags": ["DDD seams", "API contracts"],
+      "proof": "مرهم · production"
     },
     {
-      "id": "product",
-      "index": "02",
-      "title": "محصول",
-      "description": "از ایده تا لانچ. MVPای که فردا هم قابل گسترش باشد، نه پروتوتایپی که دور انداخته شود.",
-      "icon": "Layers",
-      "tags": ["SaaS", "MVP"],
-      "proof": "پذیرش ۲۴"
+      "id": "infra",
+      "title": "زیرساخت و مهاجرت",
+      "description": "جابه‌جایی IP، دپلوی بدون قطعی، مانیتورینگ و پایداری.",
+      "icon": "server",
+      "span": "default",
+      "tags": ["zero-downtime", "ops"],
+      "proof": "۹۹.۹٪ هدف uptime"
     },
     {
-      "id": "backend",
-      "index": "03",
-      "title": "بک‌اند",
-      "description": "API امن، مستند و پایدار. دیتابیس، احراز هویت و یکپارچه‌سازی بدون بدهی فنی.",
-      "icon": "Server",
-      "tags": ["Node.js", "PostgreSQL"],
-      "proof": "حاجی عسل"
+      "id": "api",
+      "title": "یکپارچه‌سازی API",
+      "description": "اتصال سرویس‌های پیچیده با error handling و قراردادهای واضح.",
+      "icon": "api",
+      "span": "default",
+      "tags": ["REST", "auth"],
+      "proof": "type-safe clients"
     },
     {
-      "id": "brand",
-      "index": "04",
-      "title": "برند دیجیتال",
-      "description": "لوگو، گرافیک، تلگرام و هویت بصری. کنار کد، نه جدا از آن.",
-      "icon": "Component",
-      "tags": ["Branding", "UI"],
-      "proof": "همگام"
+      "id": "repo",
+      "title": "ستاپ حرفه‌ای GitHub",
+      "description": "ساختار ریپو، CI، و بهداشت کد برای تیم‌های در حال رشد.",
+      "icon": "git",
+      "span": "tall",
+      "tags": ["CI", "reviews"],
+      "proof": "ship-ready repos"
+    },
+    {
+      "id": "frontend",
+      "title": "فرانت‌اند لوکس",
+      "description": "UI دراماتیک با ۶۰fps، تصاویر بهینه و تجربهٔ موبایل بی‌نقص.",
+      "icon": "design",
+      "span": "default",
+      "tags": ["Motion", "a11y"],
+      "proof": "حاجی‌عسل"
+    },
+    {
+      "id": "snippet",
+      "title": "نمونه معماری",
+      "description": "الگوی مرز ماژول و قرارداد API که در پروژه‌های واقعی استفاده می‌کنیم.",
+      "icon": "code",
+      "span": "wide",
+      "tags": ["TypeScript"],
+      "visual": "snippet"
     }
   ],
   "team": [
     {
       "id": "mohammad",
       "name": "محمد محمدی",
-      "role": "هم‌بنیان‌گذار / فرانت‌اند و محصول",
-      "bio": "مهندس محصول در پذیرش ۲۴. سازنده مرهم و چند پلتفرم در مقیاس تولید. معماری فرانت، کارایی و UX دقیق.",
-      "image": "/team/mohammad.svg",
-      "imagePosition": "center 22%",
+      "role": "هم‌بنیان‌گذار · فرانت‌اند و محصول",
+      "bio": "مهندس محصول در پذیرش ۲۴. سازنده مرهم و چند پلتفرم live در مقیاس واقعی.",
+      "image": "",
       "initials": "م‌م",
       "links": {
         "telegram": "https://t.me/Mamad3"
@@ -114,10 +107,9 @@
     {
       "id": "amir",
       "name": "امیر حاجی عابدی",
-      "role": "هم‌بنیان‌گذار / برندینگ و دیجیتال",
-      "bio": "هویت بصری و خروجی دیجیتال راکسین‌شاپ. از لوگو و بنر تا پکیج کامل تلگرام. هر چیزی که مشتری ببیند، حرفه‌ای و آماده تحویل باشد.",
-      "image": "/team/amir.svg",
-      "imagePosition": "center top",
+      "role": "هم‌بنیان‌گذار · برند و دیزاین",
+      "bio": "هویت بصری و خروجی دیجیتال. از لوگو و UI تا پکیج کامل برای مشتری.",
+      "image": "",
       "initials": "ا‌ح",
       "links": {
         "telegram": "https://t.me/RaxinShop"
