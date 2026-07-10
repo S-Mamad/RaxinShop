@@ -97,13 +97,13 @@ export default function AdminOrderDetailPage() {
           <Icon icon={ArrowRight} size={16} />
           بازگشت به سفارش‌ها
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
           <StatusBadge status={order.status} />
           <select
             value={order.status}
             disabled={saving}
             onChange={(e) => void updateStatus(e.target.value as OrderStatus)}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+            className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm sm:w-auto"
             aria-label="تغییر وضعیت سفارش"
           >
             {STATUS_OPTIONS.map((opt) => (

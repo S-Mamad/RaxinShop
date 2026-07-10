@@ -53,6 +53,14 @@ export function StudioBackdrop() {
     let tx = 0.5;
     let ty = 0.35;
 
+    let isMobile = false;
+
+    const syncMobile = () => {
+      isMobile = window.matchMedia(
+        "(max-width: 767px), (hover: none) and (pointer: coarse)",
+      ).matches;
+    };
+
     const seed = () => {
       const count = Math.min(95, Math.max(40, Math.floor((width * height) / 16000)));
       particles = Array.from({ length: count }, (_, i) => ({
@@ -77,10 +85,19 @@ export function StudioBackdrop() {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      syncMobile();
       seed();
+      if (isMobile) {
+        mx = 0.5;
+        my = 0.35;
+        tx = 0.5;
+        ty = 0.35;
+      }
     };
 
     const onMove = (e: PointerEvent) => {
+      if (isMobile) return;
+      if (e.pointerType === "touch") return;
       tx = e.clientX / width;
       ty = e.clientY / height;
     };
@@ -95,8 +112,8 @@ export function StudioBackdrop() {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Cursor aura
-      if (!quiet) {
+      // Cursor aura (desktop only)
+      if (!quiet && !isMobile) {
         const aura = ctx.createRadialGradient(cx, cy, 0, cx, cy, 280);
         aura.addColorStop(0, "rgba(143,164,196,0.14)");
         aura.addColorStop(0.45, "rgba(143,164,196,0.04)");
@@ -118,7 +135,10 @@ export function StudioBackdrop() {
           const midX = (a.x + b.x) / 2;
           const midY = (a.y + b.y) / 2;
           const toCursor = Math.hypot(midX - cx, midY - cy);
-          const boost = quiet ? 0 : Math.max(0, 1 - toCursor / 260) * 0.1;
+          const boost =
+            quiet || isMobile
+              ? 0
+              : Math.max(0, 1 - toCursor / 260) * 0.1;
           const alpha = (1 - dist / 150) * 0.07 + boost;
 
           ctx.beginPath();
@@ -132,13 +152,14 @@ export function StudioBackdrop() {
 
       for (const p of particles) {
         if (!quiet) {
-          // Gentle drift + soft pull toward cursor when near
-          const dx = cx - p.x;
-          const dy = cy - p.y;
-          const d = Math.hypot(dx, dy) || 1;
-          if (d < 220) {
-            p.vx += (dx / d) * 0.004;
-            p.vy += (dy / d) * 0.004;
+          if (!isMobile) {
+            const dx = cx - p.x;
+            const dy = cy - p.y;
+            const d = Math.hypot(dx, dy) || 1;
+            if (d < 220) {
+              p.vx += (dx / d) * 0.004;
+              p.vy += (dy / d) * 0.004;
+            }
           }
 
           p.vx *= 0.992;
@@ -153,9 +174,10 @@ export function StudioBackdrop() {
         }
 
         const breathe = 0.55 + 0.45 * Math.sin(t * p.speed + p.phase);
-        const near = quiet
-          ? 0
-          : Math.max(0, 1 - Math.hypot(p.x - cx, p.y - cy) / 200);
+        const near =
+          quiet || isMobile
+            ? 0
+            : Math.max(0, 1 - Math.hypot(p.x - cx, p.y - cy) / 200);
         const alpha = Math.min(0.95, p.base * breathe + near * 0.45);
         const radius = p.r * (1 + near * 0.7 + p.spark * 0.35);
 

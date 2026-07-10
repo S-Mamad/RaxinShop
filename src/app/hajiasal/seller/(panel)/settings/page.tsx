@@ -55,31 +55,35 @@ export default function SellerSettingsPage() {
           </h3>
           <dl className="space-y-3 text-sm">
             <div className="flex justify-between gap-4 border-b border-stone-100 pb-2">
-              <dt className="text-stone-500">نام فروشگاه</dt>
-              <dd className="font-medium text-stone-900">{seller.shopName}</dd>
+              <dt className="shrink-0 text-stone-500">نام فروشگاه</dt>
+              <dd className="min-w-0 break-words text-end font-medium text-stone-900">
+                {seller.shopName}
+              </dd>
             </div>
             <div className="flex justify-between gap-4 border-b border-stone-100 pb-2">
-              <dt className="text-stone-500">مسئول</dt>
-              <dd className="font-medium text-stone-900">{seller.ownerName}</dd>
+              <dt className="shrink-0 text-stone-500">مسئول</dt>
+              <dd className="min-w-0 break-words text-end font-medium text-stone-900">
+                {seller.ownerName}
+              </dd>
             </div>
             <div className="flex justify-between gap-4 border-b border-stone-100 pb-2">
-              <dt className="text-stone-500">موبایل</dt>
+              <dt className="shrink-0 text-stone-500">موبایل</dt>
               <dd className="font-medium text-stone-900" dir="ltr">
                 {seller.phone}
               </dd>
             </div>
             <div className="flex justify-between gap-4 border-b border-stone-100 pb-2">
-              <dt className="text-stone-500">شهر</dt>
+              <dt className="shrink-0 text-stone-500">شهر</dt>
               <dd className="font-medium text-stone-900">{seller.city}</dd>
             </div>
             <div className="flex justify-between gap-4 border-b border-stone-100 pb-2">
-              <dt className="text-stone-500">وضعیت</dt>
+              <dt className="shrink-0 text-stone-500">وضعیت</dt>
               <dd className="font-medium text-emerald-700">
                 {seller.status === "active" ? "فعال" : seller.status}
               </dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-stone-500">عضویت</dt>
+              <dt className="shrink-0 text-stone-500">عضویت</dt>
               <dd className="font-medium text-stone-900">
                 {new Date(seller.joinedAt).toLocaleDateString("fa-IR")}
               </dd>
@@ -91,11 +95,11 @@ export default function SellerSettingsPage() {
             موجودی از بخش «موجودی» انجام می‌شود.
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mt-6 flex flex-col gap-2 sm:flex-row">
             <AdminButton
               href={hajiasalPath("/shop")}
               variant="outline"
-              className="!border-stone-300"
+              className="w-full !border-stone-300 sm:w-auto"
             >
               مشاهده فروشگاه
             </AdminButton>
@@ -103,6 +107,7 @@ export default function SellerSettingsPage() {
               type="button"
               variant="danger"
               onClick={() => void logout()}
+              className="w-full sm:w-auto"
             >
               خروج از حساب
             </AdminButton>

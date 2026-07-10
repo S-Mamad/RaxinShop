@@ -28,11 +28,15 @@ export function getProductsByCategory(category: ProductCategory): Product[] {
 }
 
 export function getMinPrice(product: Product): number {
-  return Math.min(...product.weightOptions.map((w) => w.price));
+  const prices = product.weightOptions?.map((w) => w.price) ?? [];
+  if (prices.length === 0) return 0;
+  return Math.min(...prices);
 }
 
 export function getMaxPrice(product: Product): number {
-  return Math.max(...product.weightOptions.map((w) => w.price));
+  const prices = product.weightOptions?.map((w) => w.price) ?? [];
+  if (prices.length === 0) return 0;
+  return Math.max(...prices);
 }
 
 export function getAllCategories(): ProductCategory[] {

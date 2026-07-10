@@ -5,9 +5,9 @@ import { useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 const PHRASES = [
-  "فرانت type-safe و قابل نگهداری",
-  "زیرساخت پایدار، بدون قطعی",
-  "از ایده تا لانچ، یک تیم",
+  "سایت، فروشگاه و محصول دیجیتال",
+  "ربات تلگرام، پنل و اتوماسیون",
+  "دیزاین، کد و لانچ در یک تیم",
 ];
 
 export function TypewriterLine({ className }: { className?: string }) {

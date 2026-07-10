@@ -15,9 +15,19 @@ const TITLES: Record<string, string> = {
   [hajiasalPath("/seller/settings")]: "تنظیمات فروشگاه",
 };
 
-export function SellerHeader() {
+interface SellerHeaderProps {
+  compact?: boolean;
+}
+
+export function SellerHeader({ compact = false }: SellerHeaderProps) {
   const pathname = usePathname();
   const title = TITLES[pathname ?? ""] ?? "پنل فروشنده";
+
+  if (compact) {
+    return (
+      <h2 className="truncate text-sm font-semibold text-stone-900">{title}</h2>
+    );
+  }
 
   return (
     <header className="border-b border-stone-200 bg-white/90 px-4 py-4 backdrop-blur sm:px-6">

@@ -79,6 +79,12 @@ export default function AdminReviewsPage() {
             render: (row) => row.author,
           },
           {
+            key: "product",
+            header: "محصول",
+            render: (row) =>
+              row.productId === "general" ? "تجربه کلی" : row.productId,
+          },
+          {
             key: "rating",
             header: "امتیاز",
             render: (row) => `${row.rating.toLocaleString("fa-IR")} / ۵`,
@@ -101,11 +107,11 @@ export default function AdminReviewsPage() {
             render: (row) => (
               <AdminButton
                 type="button"
-                variant="outline"
+                variant={row.verified ? "outline" : "primary"}
+                size="sm"
                 onClick={() => void toggleApproved(row)}
-                className="text-xs"
               >
-                {row.verified ? "تأیید شده" : "در انتظار"}
+                {row.verified ? "لغو تأیید" : "تأیید"}
               </AdminButton>
             ),
           },

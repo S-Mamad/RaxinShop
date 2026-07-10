@@ -165,43 +165,61 @@
       "id": "mountain",
       "label": "عسل کوهستان",
       "description": "از ارتفاعات البرز و زاگرس",
-      "image": "/images/hajiasal/categories/mountain.webp"
+      "image": "/images/hajiasal/categories/mountain.jpg"
     },
     {
       "id": "thyme",
       "label": "عسل آویشن",
       "description": "عطر و طعم منحصربه‌فرد",
-      "image": "/images/hajiasal/categories/thyme.webp"
+      "image": "/images/hajiasal/categories/thyme.jpg"
     },
     {
       "id": "multifloral",
       "label": "عسل چهل‌گیاه",
       "description": "ترکیب گل‌های وحشی",
-      "image": "/images/hajiasal/categories/multifloral.webp"
+      "image": "/images/hajiasal/categories/multifloral.jpg"
     },
     {
       "id": "royal-jelly",
       "label": "ژل رویال",
       "description": "سرشار از انرژی و مواد مغذی",
-      "image": "/images/hajiasal/categories/royal-jelly.webp"
+      "image": "/images/hajiasal/categories/royal-jelly.jpg"
     },
     {
       "id": "honeycomb",
       "label": "شهد با موم",
       "description": "طبیعی و بدون فرآوری",
-      "image": "/images/hajiasal/categories/honeycomb.webp"
+      "image": "/images/hajiasal/categories/honeycomb.jpg"
     },
     {
       "id": "specialty",
       "label": "عسل‌های خاص",
       "description": "سدر، گون، بربط و بیشتر",
-      "image": "/images/hajiasal/categories/specialty.webp"
+      "image": "/images/hajiasal/categories/specialty.jpg"
     },
     {
       "id": "gift-set",
       "label": "ست هدیه",
       "description": "بسته‌های لوکس و آزمایشی",
-      "image": "/images/hajiasal/categories/gift-set.webp"
+      "image": "/images/hajiasal/categories/gift-set.jpg"
+    },
+    {
+      "id": "distillates",
+      "label": "عرقیجات",
+      "description": "عرق و گلاب سنتی خالص",
+      "image": "/images/hajiasal/categories/distillates.jpg"
+    },
+    {
+      "id": "rice",
+      "label": "برنج",
+      "description": "ارقام شمال و باسماتی",
+      "image": "/images/hajiasal/categories/rice.jpg"
+    },
+    {
+      "id": "saffron",
+      "label": "زعفران",
+      "description": "نگین، سرگل و پوشال",
+      "image": "/images/hajiasal/categories/saffron.jpg"
     }
   ]
 }

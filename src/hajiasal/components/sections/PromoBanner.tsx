@@ -7,31 +7,31 @@ import { hajiasalPath } from "@asal/lib/paths";
 
 export function PromoBanner() {
   return (
-    <section className="py-10 md:py-16">
+    <section className="py-8 md:py-16">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
         <Reveal>
-          <div className="relative overflow-hidden rounded-2xl border border-gold/20 bg-surface px-5 py-8 sm:px-8 md:p-12">
+          <div className="relative overflow-hidden rounded-2xl border border-gold/20 bg-surface px-4 py-7 sm:px-8 md:p-12">
             <div
-              className="absolute inset-0 bg-cover bg-center opacity-25"
+              className="absolute inset-0 bg-cover bg-center opacity-20 md:opacity-25"
               style={{
                 backgroundImage: "url(/images/hajiasal/hero-studio.png)",
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-l from-void via-void/85 to-void/55" />
-            <div className="relative flex flex-col items-start gap-5 md:flex-row md:items-center md:justify-between">
+            <div className="absolute inset-0 bg-gradient-to-b from-void/70 via-void/85 to-void md:bg-gradient-to-l md:from-void md:via-void/85 md:to-void/55" />
+            <div className="relative flex flex-col items-stretch gap-5 text-center sm:items-start sm:text-start md:flex-row md:items-center md:justify-between">
               <div>
                 <span className="mb-3 inline-flex items-center gap-1.5 text-xs font-medium tracking-wide text-gold">
                   <Tag size={14} weight="fill" />
                   کد تخفیف: HAJI10
                 </span>
-                <h2 className="font-display text-2xl text-primary md:text-3xl">
+                <h2 className="font-display text-xl text-primary sm:text-2xl md:text-3xl">
                   ۱۰٪ تخفیف اولین خرید
                 </h2>
                 <p className="mt-2 text-sm text-secondary md:text-base">
                   برای سفارش‌های بالای ۳۰۰ هزار تومان
                 </p>
               </div>
-              <Button href={hajiasalPath("/shop")} size="lg">
+              <Button href={hajiasalPath("/shop")} size="lg" className="w-full sm:w-auto">
                 خرید کنید
               </Button>
             </div>

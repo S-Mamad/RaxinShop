@@ -31,7 +31,7 @@ export function ProductImage({
       sizes={sizes}
       priority={priority}
       className={cn(className)}
-      onError={() => setImgSrc("/images/hajiasal/placeholder.webp")}
+      onError={() => setImgSrc("/images/hajiasal/placeholder.svg")}
     />
   );
 }

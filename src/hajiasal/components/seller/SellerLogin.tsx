@@ -87,10 +87,10 @@ export function SellerLogin() {
           </AdminButton>
         </form>
 
-        <p className="mt-5 rounded-xl bg-stone-50 px-3 py-2 text-xs leading-relaxed text-stone-500">
-          دمو: موبایل <span dir="ltr">09121111111</span> یا{" "}
-          <span dir="ltr">09122222222</span> · رمز{" "}
-          <span dir="ltr">seller123</span>
+        <p className="mt-5 text-center text-xs text-stone-400">
+          <a href={hajiasalPath("/")} className="hover:text-stone-600">
+            بازگشت به فروشگاه
+          </a>
         </p>
       </div>
     </div>

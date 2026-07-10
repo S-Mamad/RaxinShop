@@ -31,7 +31,7 @@ export function ProductCard({ product }: ProductCardProps) {
       transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
       className="group"
     >
-      <div className="relative overflow-hidden rounded-2xl border border-white/6 bg-surface transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-8px_rgba(212,160,86,0.15)]">
+      <div className="relative overflow-hidden rounded-xl border border-white/6 bg-surface transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-8px_rgba(212,160,86,0.15)] sm:rounded-2xl">
         <Link href={hajiasalPath(`/product/${product.slug}`)} className="block">
           <div className="relative aspect-square overflow-hidden bg-surface-muted">
             <ProductImage
@@ -41,7 +41,7 @@ export function ProductCard({ product }: ProductCardProps) {
               sizes="(max-width: 768px) 50vw, 33vw"
               className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-110"
             />
-            <div className="absolute start-2 top-2 flex flex-col gap-1 sm:start-3 sm:top-3 sm:gap-1.5">
+            <div className="absolute start-1.5 top-1.5 flex flex-col gap-1 sm:start-3 sm:top-3 sm:gap-1.5">
               {product.isBestseller ? (
                 <Badge variant="bestseller">پرفروش</Badge>
               ) : null}
@@ -51,15 +51,17 @@ export function ProductCard({ product }: ProductCardProps) {
               ) : null}
             </div>
           </div>
-          <div className="p-3 sm:p-4">
-            <p className="mb-1 text-[11px] text-dim sm:text-xs">{product.categoryLabel}</p>
-            <h3 className="mb-2 line-clamp-2 text-xs font-semibold text-primary sm:line-clamp-1 sm:text-sm">
+          <div className="p-2.5 sm:p-4">
+            <p className="mb-0.5 text-[10px] text-dim sm:mb-1 sm:text-xs">
+              {product.categoryLabel}
+            </p>
+            <h3 className="mb-1.5 line-clamp-2 text-xs font-semibold leading-snug text-primary sm:mb-2 sm:line-clamp-1 sm:text-sm">
               {product.title}
             </h3>
             <RatingStars
               rating={product.rating}
               reviewCount={product.reviewCount}
-              className="mb-3"
+              className="mb-2 hidden sm:mb-3 sm:flex"
             />
             <PriceDisplay
               price={minPrice}
@@ -72,14 +74,15 @@ export function ProductCard({ product }: ProductCardProps) {
           type="button"
           onClick={() => toggleWishlist(product.id)}
           className={cn(
-            "absolute end-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full backdrop-blur-sm transition-all sm:end-3 sm:top-3 sm:h-9 sm:w-9",
+            "absolute end-1.5 top-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-sm transition-all sm:end-3 sm:top-3 sm:h-9 sm:w-9",
             isWishlisted
               ? "bg-gold text-void"
               : "bg-void/60 text-primary hover:bg-void/80",
           )}
           aria-label="علاقه‌مندی"
         >
-          <Heart size={16} weight={isWishlisted ? "fill" : "regular"} />
+          <Heart size={14} weight={isWishlisted ? "fill" : "regular"} className="sm:hidden" />
+          <Heart size={16} weight={isWishlisted ? "fill" : "regular"} className="hidden sm:block" />
         </button>
       </div>
     </motion.article>

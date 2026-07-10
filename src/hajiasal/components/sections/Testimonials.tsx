@@ -1,103 +1,124 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { CaretLeft, CaretRight, SealCheck } from "@phosphor-icons/react";
-import reviewsData from "@asal/data/reviews.json";
-import { SectionHeading } from "@asal/components/ui/SectionHeading";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { SealCheck } from "@phosphor-icons/react";
 import { Reveal } from "@asal/components/ui/Reveal";
-import { RatingStars } from "@asal/components/ui/RatingStars";
 import type { Review } from "@asal/lib/server/reviews";
 
-const reviews = reviewsData as Review[];
+interface TestimonialsProps {
+  reviews: Review[];
+}
 
-export function Testimonials() {
+export function Testimonials({ reviews }: TestimonialsProps) {
   const [active, setActive] = useState(0);
-  const review = reviews[active] ?? reviews[0];
+  const list = reviews.length > 0 ? reviews : [];
+  const review = list[active] ?? list[0];
+  const touchX = useRef<number | null>(null);
 
   const go = useCallback(
     (dir: -1 | 1) => {
-      setActive((i) => (i + dir + reviews.length) % reviews.length);
+      if (list.length === 0) return;
+      setActive((i) => (i + dir + list.length) % list.length);
     },
-    [],
+    [list.length],
   );
 
   useEffect(() => {
-    const id = window.setInterval(() => go(1), 7000);
+    if (list.length < 2) return;
+    const id = window.setInterval(() => go(1), 8000);
     return () => window.clearInterval(id);
-  }, [go]);
+  }, [go, list.length]);
+
+  useEffect(() => {
+    if (active >= list.length) setActive(0);
+  }, [active, list.length]);
 
   if (!review) return null;
 
   return (
-    <section className="py-14 md:py-24">
-      <div className="mx-auto max-w-3xl px-4 md:px-8">
-        <Reveal className="mb-8 md:mb-12">
-          <SectionHeading
-            title="نظر مشتریان"
-            subtitle="تجربه واقعی خریداران حاجی عسل"
-            align="center"
-            className="mx-auto"
-          />
+    <section className="py-12 md:py-28">
+      <div className="mx-auto max-w-2xl px-5 md:px-8">
+        <Reveal className="mb-8 text-center md:mb-14">
+          <p className="mb-2 text-[10px] font-medium tracking-[0.22em] text-gold md:mb-3 md:text-[11px]">
+            صدای مشتریان
+          </p>
+          <h2 className="font-display text-[1.35rem] tracking-tight text-primary md:text-3xl">
+            نظر خریداران
+          </h2>
         </Reveal>
 
         <Reveal>
-          <div className="relative">
-            <blockquote className="border-y border-white/8 py-8 text-center md:py-12">
-              <RatingStars
-                rating={review.rating}
-                size="md"
-                showValue={false}
-                className="mb-5 justify-center"
-              />
-              <p className="mx-auto max-w-xl text-base leading-relaxed text-primary text-pretty md:text-xl">
-                «{review.comment}»
-              </p>
-              <footer className="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-center sm:gap-3">
-                <cite className="not-italic text-sm font-medium text-primary">
-                  {review.author}
-                </cite>
-                {review.verified ? (
-                  <span className="inline-flex items-center gap-1 text-xs text-gold">
-                    <SealCheck size={14} weight="fill" />
-                    خرید تأییدشده
+          <div
+            className="relative text-center"
+            onTouchStart={(e) => {
+              touchX.current = e.changedTouches[0]?.clientX ?? null;
+            }}
+            onTouchEnd={(e) => {
+              if (touchX.current == null) return;
+              const end = e.changedTouches[0]?.clientX ?? touchX.current;
+              const delta = end - touchX.current;
+              touchX.current = null;
+              if (Math.abs(delta) < 40) return;
+              // RTL: swipe right (positive) → previous, left → next
+              go(delta > 0 ? -1 : 1);
+            }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.blockquote
+                key={review.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                className="flex flex-col items-center px-1"
+              >
+                <p className="max-w-md text-[0.95rem] leading-[1.85] text-secondary text-pretty md:max-w-xl md:text-lg md:leading-[2]">
+                  <span className="me-1 text-gold/40" aria-hidden>
+                    «
                   </span>
-                ) : null}
-              </footer>
-            </blockquote>
-
-            <div className="mt-6 flex items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => go(-1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-secondary transition-colors hover:border-gold/40 hover:text-gold"
-                aria-label="نظر قبلی"
-              >
-                <CaretRight size={18} />
-              </button>
-              <div className="flex gap-2">
-                {reviews.map((item, i) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setActive(i)}
-                    className={`h-1.5 rounded-full transition-all ${
-                      i === active ? "w-7 bg-gold" : "w-1.5 bg-white/20"
-                    }`}
-                    aria-label={`نظر ${i + 1}`}
-                    aria-current={i === active}
-                  />
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={() => go(1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-secondary transition-colors hover:border-gold/40 hover:text-gold"
-                aria-label="نظر بعدی"
-              >
-                <CaretLeft size={18} />
-              </button>
-            </div>
+                  {review.comment}
+                  <span className="ms-1 text-gold/40" aria-hidden>
+                    »
+                  </span>
+                </p>
+                <footer className="mt-6 flex flex-col items-center gap-1 md:mt-10 md:gap-1.5">
+                  <cite className="not-italic text-[13px] font-medium text-primary md:text-sm">
+                    {review.author}
+                  </cite>
+                  {review.verified ? (
+                    <span className="inline-flex items-center gap-1 text-[10px] text-dim md:text-[11px]">
+                      <SealCheck
+                        size={11}
+                        weight="fill"
+                        className="text-gold/60"
+                      />
+                      تأییدشده
+                    </span>
+                  ) : null}
+                </footer>
+              </motion.blockquote>
+            </AnimatePresence>
           </div>
+
+          {list.length > 1 ? (
+            <div className="mt-7 flex items-center justify-center gap-1.5 md:mt-12 md:gap-2">
+              {list.map((item, i) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setActive(i)}
+                  className={`h-1 rounded-full transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+                    i === active
+                      ? "w-5 bg-gold md:w-6"
+                      : "w-1 bg-white/15 hover:bg-white/30"
+                  }`}
+                  aria-label={`نظر ${i + 1}`}
+                  aria-current={i === active}
+                />
+              ))}
+            </div>
+          ) : null}
         </Reveal>
       </div>
     </section>

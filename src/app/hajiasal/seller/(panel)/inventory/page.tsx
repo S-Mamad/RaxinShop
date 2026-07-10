@@ -81,6 +81,8 @@ export default function SellerInventoryPage() {
         data={products}
         rowKey={(p) => p.id}
         emptyMessage="محصولی نیست"
+        minWidth={false}
+        className="!border-stone-200"
         columns={[
           {
             key: "title",
@@ -108,15 +110,13 @@ export default function SellerInventoryPage() {
               <AdminButton
                 type="button"
                 variant="outline"
+                size="sm"
                 disabled={busyId === p.id}
                 onClick={() => void toggle(p.id, p.inStock)}
-                className="!h-9 !border-stone-300 !px-3 !text-xs"
+                className="!border-stone-300"
+                aria-label={p.inStock ? "ناموجود کردن" : "موجود کردن"}
               >
-                {busyId === p.id
-                  ? "..."
-                  : p.inStock
-                    ? "ناموجود کردن"
-                    : "موجود کردن"}
+                {busyId === p.id ? "..." : p.inStock ? "ناموجود" : "موجود"}
               </AdminButton>
             ),
           },

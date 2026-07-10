@@ -12,18 +12,27 @@ export default function AdminInventoryPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [lowStockCount, setLowStockCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const res = await fetch("/api/admin/inventory");
-    if (res.status === 401) {
-      router.push(hajiasalPath("/admin"));
-      return;
+    setError("");
+    try {
+      const res = await fetch("/api/admin/inventory");
+      if (res.status === 401) {
+        router.push(hajiasalPath("/admin"));
+        return;
+      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "خطا در بارگذاری");
+      setProducts(data.products ?? []);
+      setLowStockCount(data.lowStockCount ?? 0);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "خطا");
+    } finally {
+      setLoading(false);
     }
-    const data = await res.json();
-    setProducts(data.products ?? []);
-    setLowStockCount(data.lowStockCount ?? 0);
-    setLoading(false);
   }, [router]);
 
   useEffect(() => {
@@ -31,41 +40,54 @@ export default function AdminInventoryPage() {
   }, [load]);
 
   const toggleStock = async (product: Product) => {
-    await fetch("/api/admin/inventory", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        productId: product.id,
-        inStock: !product.inStock,
-        reason: "admin_toggle",
-      }),
-    });
-    void load();
+    setBusyId(product.id);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/inventory", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product.id,
+          inStock: !product.inStock,
+          reason: "admin_toggle",
+        }),
+      });
+      if (!res.ok) throw new Error("خطا در تغییر موجودی");
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "خطا");
+    } finally {
+      setBusyId(null);
+    }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <p className="text-sm text-slate-500">
         {lowStockCount.toLocaleString("fa-IR")} محصول ناموجود
       </p>
+      {error ? <p className="text-sm text-red-500">{error}</p> : null}
       {loading ? <p className="text-sm text-slate-500">در حال بارگذاری...</p> : null}
       <DataTable
         data={products}
         rowKey={(r) => r.id}
         emptyMessage="محصولی یافت نشد"
+        minWidth={false}
         columns={[
           { key: "title", header: "محصول", render: (r) => r.title },
           {
             key: "stock",
             header: "موجودی",
+            className: "w-[8rem]",
             render: (r) => (
               <AdminButton
                 type="button"
                 variant="outline"
+                size="sm"
+                disabled={busyId === r.id}
                 onClick={() => void toggleStock(r)}
-                className="text-xs"
               >
-                {r.inStock ? "موجود" : "ناموجود"}
+                {busyId === r.id ? "..." : r.inStock ? "موجود" : "ناموجود"}
               </AdminButton>
             ),
           },

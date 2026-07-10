@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Funnel, MagnifyingGlass } from "@phosphor-icons/react";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
-import { StatusBadge } from "@asal/components/admin/ui/StatusBadge";
 import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import { Icon } from "@asal/components/ui/Icon";
 import type { OrderStatus } from "@asal/lib/server/orders";
@@ -96,22 +95,34 @@ export default function AdminOrdersPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-slate-500">
           {filteredOrders.length.toLocaleString("fa-IR")} سفارش
         </p>
-        <div className="flex flex-wrap gap-2">
-          <AdminButton type="button" variant="outline" onClick={() => void loadOrders()}>
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+          <AdminButton
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => void loadOrders()}
+            className="w-full sm:w-auto"
+          >
             بروزرسانی
           </AdminButton>
-          <AdminButton href="/api/admin/orders/export" variant="outline">
+          <AdminButton
+            href="/api/admin/orders/export"
+            variant="outline"
+            size="sm"
+            external
+            className="w-full sm:w-auto"
+          >
             خروجی CSV
           </AdminButton>
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 sm:flex-row sm:items-center sm:p-4">
         <label className="relative flex-1">
           <Icon
             icon={MagnifyingGlass}
@@ -122,18 +133,18 @@ export default function AdminOrdersPage() {
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="جستجو بر اساس شناسه، نام یا تلفن..."
-            className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pe-3 ps-9 text-sm outline-none focus:border-slate-400"
+            placeholder="جستجو شناسه، نام یا تلفن..."
+            className="h-11 w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pe-3 ps-9 text-sm outline-none focus:border-slate-400"
           />
         </label>
         <label className="flex items-center gap-2 text-sm text-slate-600">
-          <Icon icon={Funnel} size={16} className="text-slate-400" />
+          <Icon icon={Funnel} size={16} className="shrink-0 text-slate-400" />
           <select
             value={statusFilter}
             onChange={(e) =>
               setStatusFilter(e.target.value as OrderStatus | "all")
             }
-            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none focus:border-slate-400"
+            className="h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm outline-none focus:border-slate-400 sm:w-auto"
             aria-label="فیلتر وضعیت"
           >
             {STATUS_OPTIONS.map((opt) => (
@@ -148,79 +159,132 @@ export default function AdminOrdersPage() {
       {error ? <p className="text-sm text-red-500">{error}</p> : null}
       {loading ? <p className="text-sm text-slate-500">در حال بارگذاری...</p> : null}
 
-      <DataTable
-        data={filteredOrders}
-        rowKey={(row) => row.id}
-        emptyMessage="سفارشی یافت نشد"
-        columns={[
-          {
-            key: "id",
-            header: "شناسه",
-            render: (row) => (
+      {/* Mobile cards */}
+      <ul className="space-y-3 md:hidden">
+        {filteredOrders.map((row) => (
+          <li
+            key={row.id}
+            className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+          >
+            <div className="mb-3 flex items-start justify-between gap-2">
               <Link
                 href={hajiasalPath(`/admin/orders/${row.id}`)}
-                className="font-mono text-xs text-sky-700 hover:underline"
+                className="font-mono text-xs text-sky-700"
                 dir="ltr"
               >
                 {row.id}
               </Link>
-            ),
-          },
-          {
-            key: "customer",
-            header: "مشتری",
-            render: (row) => (
-              <div>
-                <p className="font-medium">{row.customer.fullName}</p>
-                <p className="text-xs text-slate-400" dir="ltr">
-                  {row.customer.phone}
-                </p>
-              </div>
-            ),
-          },
-          {
-            key: "city",
-            header: "شهر",
-            render: (row) => row.customer.city,
-          },
-          {
-            key: "total",
-            header: "مبلغ",
-            render: (row) => `${row.total.toLocaleString("fa-IR")} تومان`,
-          },
-          {
-            key: "date",
-            header: "تاریخ",
-            render: (row) =>
-              new Date(row.createdAt).toLocaleDateString("fa-IR"),
-          },
-          {
-            key: "status",
-            header: "وضعیت",
-            render: (row) => (
-              <select
-                value={row.status}
-                onChange={(e) =>
-                  void updateStatus(row.id, e.target.value as OrderStatus)
-                }
-                className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs"
-                aria-label={`وضعیت سفارش ${row.id}`}
-              >
-                {STATUS_OPTIONS.filter((o) => o.value !== "all").map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            ),
-          },
-          {
-            key: "badge",
-            header: "",
-            render: (row) => <StatusBadge status={row.status} />,
-          },
-        ]}
-      />
+              <span className="text-xs text-slate-400">
+                {new Date(row.createdAt).toLocaleDateString("fa-IR")}
+              </span>
+            </div>
+            <p className="font-medium text-slate-900">{row.customer.fullName}</p>
+            <p className="mt-0.5 text-xs text-slate-500">
+              {row.customer.city}
+              <span className="mx-1.5 text-slate-300">·</span>
+              <span dir="ltr">{row.customer.phone}</span>
+            </p>
+            <p className="mt-2 text-sm font-semibold text-slate-800">
+              {row.total.toLocaleString("fa-IR")} تومان
+            </p>
+            <select
+              value={row.status}
+              onChange={(e) =>
+                void updateStatus(row.id, e.target.value as OrderStatus)
+              }
+              className="mt-3 h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm"
+              aria-label={`وضعیت سفارش ${row.id}`}
+            >
+              {STATUS_OPTIONS.filter((o) => o.value !== "all").map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </li>
+        ))}
+        {!loading && filteredOrders.length === 0 ? (
+          <li className="rounded-xl border border-dashed border-slate-200 py-10 text-center text-sm text-slate-400">
+            سفارشی یافت نشد
+          </li>
+        ) : null}
+      </ul>
+
+      <div className="hidden md:block">
+        <DataTable
+          data={filteredOrders}
+          rowKey={(row) => row.id}
+          emptyMessage="سفارشی یافت نشد"
+          minWidth={720}
+          columns={[
+            {
+              key: "id",
+              header: "شناسه",
+              render: (row) => (
+                <Link
+                  href={hajiasalPath(`/admin/orders/${row.id}`)}
+                  className="font-mono text-xs text-sky-700 hover:underline"
+                  dir="ltr"
+                >
+                  {row.id}
+                </Link>
+              ),
+            },
+            {
+              key: "customer",
+              header: "مشتری",
+              render: (row) => (
+                <div>
+                  <p className="font-medium">{row.customer.fullName}</p>
+                  <p className="text-xs text-slate-400" dir="ltr">
+                    {row.customer.phone}
+                  </p>
+                </div>
+              ),
+            },
+            {
+              key: "city",
+              header: "شهر",
+              hideOnMobile: true,
+              render: (row) => row.customer.city,
+            },
+            {
+              key: "total",
+              header: "مبلغ",
+              render: (row) => `${row.total.toLocaleString("fa-IR")} تومان`,
+            },
+            {
+              key: "date",
+              header: "تاریخ",
+              hideOnMobile: true,
+              render: (row) =>
+                new Date(row.createdAt).toLocaleDateString("fa-IR"),
+            },
+            {
+              key: "status",
+              header: "وضعیت",
+              render: (row) => (
+                <select
+                  value={row.status}
+                  onChange={(e) =>
+                    void updateStatus(row.id, e.target.value as OrderStatus)
+                  }
+                  className="h-10 min-w-[9rem] rounded-lg border border-slate-200 bg-white px-2 text-sm"
+                  aria-label={`وضعیت سفارش ${row.id}`}
+                >
+                  {STATUS_OPTIONS.filter((o) => o.value !== "all").map(
+                    (opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ),
+                  )}
+                </select>
+              ),
+            },
+          ]}
+        />
+      </div>
     </div>
   );
 }

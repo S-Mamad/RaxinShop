@@ -15,30 +15,33 @@ const icons = {
 
 export function TrustBar() {
   return (
-    <section className="border-y border-white/5 bg-surface py-8 md:py-12">
-      <div className="mx-auto max-w-7xl px-4 md:px-8">
-        <div className="flex gap-4 overflow-x-auto pb-1 scrollbar-hide md:grid md:grid-cols-3 md:gap-8 md:overflow-visible md:pb-0">
-          {siteData.trustItems.map((item, i) => {
-            const Icon = icons[item.id as keyof typeof icons] ?? ShieldCheck;
-            return (
-              <Reveal key={item.id} delay={i * 0.08} className="min-w-[220px] shrink-0 md:min-w-0">
-                <div className="flex items-center gap-3 md:flex-col md:items-center md:text-center">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold-dim md:mb-3 md:h-12 md:w-12">
-                    <Icon size={22} weight="light" className="text-gold" />
-                  </div>
-                  <div>
-                    <h3 className="mb-0.5 text-sm font-semibold text-primary">
-                      {item.title}
-                    </h3>
-                    <p className="text-xs text-secondary md:text-sm">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
+    <section className="border-y border-white/5 py-7 md:py-12">
+      <div className="mx-auto max-w-5xl px-3 sm:px-4 md:px-8">
+        <Reveal>
+          <ul className="grid grid-cols-3 divide-x divide-white/8">
+            {siteData.trustItems.map((item) => {
+              const Icon = icons[item.id as keyof typeof icons] ?? ShieldCheck;
+              return (
+                <li
+                  key={item.id}
+                  className="flex flex-col items-center px-2 text-center sm:px-4 md:px-6"
+                >
+                  <Icon
+                    size={18}
+                    weight="thin"
+                    className="mb-2.5 text-gold/80 md:mb-3 md:h-5 md:w-5"
+                  />
+                  <h3 className="text-[11px] font-medium leading-snug text-primary sm:text-sm md:text-[15px]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1 max-w-[9.5rem] text-[10px] leading-relaxed text-dim sm:mt-1.5 sm:max-w-none sm:text-xs md:text-[13px] md:text-secondary">
+                    {item.description}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        </Reveal>
       </div>
     </section>
   );

@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
@@ -158,12 +157,14 @@ export default function AdminProductsPage() {
             render: (row) => (
               <AdminButton
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => void toggleStock(row)}
-                className={`rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${
+                className={
                   row.inStock
-                    ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
-                    : "bg-rose-50 text-rose-700 ring-rose-200"
-                }`}
+                    ? "!text-emerald-700 hover:!bg-emerald-50"
+                    : "!text-rose-700 hover:!bg-rose-50"
+                }
               >
                 {row.inStock ? "موجود" : "ناموجود"}
               </AdminButton>
@@ -173,20 +174,23 @@ export default function AdminProductsPage() {
             key: "actions",
             header: "",
             render: (row) => (
-              <div className="flex gap-2">
-                <Link
+              <div className="flex flex-wrap gap-1">
+                <AdminButton
                   href={hajiasalPath(`/admin/products/${row.id}`)}
-                  className="text-xs text-sky-700 hover:underline"
+                  variant="ghost"
+                  size="sm"
                 >
                   ویرایش
-                </Link>
-                <Link
+                </AdminButton>
+                <AdminButton
                   href={hajiasalPath(`/product/${row.slug}`)}
-                  className="text-xs text-slate-500 hover:underline"
-                  target="_blank"
+                  variant="ghost"
+                  size="sm"
+                  external
+                  className="!text-slate-500"
                 >
                   مشاهده
-                </Link>
+                </AdminButton>
               </div>
             ),
           },

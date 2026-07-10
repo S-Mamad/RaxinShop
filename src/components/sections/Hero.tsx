@@ -61,13 +61,13 @@ export function Hero() {
               href="#contact"
               className={`${ctaBase} group border border-accent/35 bg-accent text-void hover:bg-accent-bright`}
             >
+              {copy.hero.primaryCta}
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-void/10 transition-transform duration-300 group-hover:-translate-x-0.5">
                 <ArrowLeft className="h-3.5 w-3.5" weight="bold" />
               </span>
-              {copy.hero.primaryCta}
             </Link>
             <Link
-              href="#work"
+              href="/work"
               className={`${ctaBase} border border-border-bright text-foreground hover:border-accent/40 hover:text-accent`}
             >
               {copy.hero.secondaryCta}

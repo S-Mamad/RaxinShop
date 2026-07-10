@@ -42,7 +42,7 @@ export function SellerSidebar({
   };
 
   return (
-    <aside className="flex h-full w-60 shrink-0 flex-col border-e border-amber-900/20 bg-[#1c1714] text-[#f8f6f3]">
+    <aside className="flex h-full w-60 shrink-0 flex-col border-e border-amber-900/20 bg-[#1c1714] text-[#f8f6f3] pb-[env(safe-area-inset-bottom)]">
       <div className="border-b border-white/10 px-5 py-5">
         <p className="text-[11px] font-medium tracking-wider text-amber-200/70">
           پنل فروشنده

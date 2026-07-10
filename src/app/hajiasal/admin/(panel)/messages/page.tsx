@@ -107,18 +107,23 @@ export default function AdminMessagesPage() {
               key: "name",
               header: "فرستنده",
               render: (row) => (
-                <AdminButton
+                <button
                   type="button"
                   onClick={() => {
                     setSelected(row);
                     setNote(row.adminNote ?? "");
                     if (!row.readAt) void markRead(row);
+                    window.setTimeout(() => {
+                      document
+                        .getElementById("message-detail")
+                        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }, 50);
                   }}
-                  className="text-start hover:text-sky-700"
+                  className="min-h-10 w-full rounded-lg px-1 py-1 text-start hover:bg-slate-50"
                 >
-                  <p className="font-medium">{row.name}</p>
+                  <p className="font-medium text-slate-800">{row.name}</p>
                   <p className="text-xs text-slate-400">{row.subject}</p>
-                </AdminButton>
+                </button>
               ),
             },
             {
@@ -143,7 +148,10 @@ export default function AdminMessagesPage() {
           ]}
         />
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
+        <div
+          id="message-detail"
+          className="rounded-xl border border-slate-200 bg-white p-5 scroll-mt-20"
+        >
           {selected ? (
             <div className="space-y-4">
               <div>

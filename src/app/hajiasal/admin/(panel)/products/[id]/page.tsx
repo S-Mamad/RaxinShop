@@ -27,28 +27,32 @@ export default function AdminProductEditPage() {
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
-    const res = await fetch(`/api/admin/products/${id}`);
-    if (res.status === 401) {
-      router.push(hajiasalPath("/admin"));
-      return;
-    }
-    if (!res.ok) {
-      setError("محصول یافت نشد");
+    try {
+      const res = await fetch(`/api/admin/products/${id}`);
+      if (res.status === 401) {
+        router.push(hajiasalPath("/admin"));
+        return;
+      }
+      if (!res.ok) {
+        setError("محصول یافت نشد");
+        return;
+      }
+      const data = await res.json();
+      const p = data.product as Product;
+      setTitle(p.title);
+      setSlug(p.slug);
+      setShortDescription(p.shortDescription);
+      setLongDescription(p.longDescription);
+      setImagesText(p.images.join("\n"));
+      setWeightJson(JSON.stringify(p.weightOptions, null, 2));
+      setInStock(p.inStock);
+      setIsBestseller(Boolean(p.isBestseller));
+      setIsNew(Boolean(p.isNew));
+    } catch {
+      setError("خطا در بارگذاری محصول");
+    } finally {
       setLoading(false);
-      return;
     }
-    const data = await res.json();
-    const p = data.product as Product;
-    setTitle(p.title);
-    setSlug(p.slug);
-    setShortDescription(p.shortDescription);
-    setLongDescription(p.longDescription);
-    setImagesText(p.images.join("\n"));
-    setWeightJson(JSON.stringify(p.weightOptions, null, 2));
-    setInStock(p.inStock);
-    setIsBestseller(Boolean(p.isBestseller));
-    setIsNew(Boolean(p.isNew));
-    setLoading(false);
   }, [id, router]);
 
   useEffect(() => {
@@ -102,13 +106,12 @@ export default function AdminProductEditPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold text-slate-900">ویرایش محصول</h2>
+      <div className="flex items-center justify-end">
         <Link
           href={hajiasalPath("/admin/products")}
           className="text-sm text-sky-700 hover:underline"
         >
-          بازگشت
+          بازگشت به لیست
         </Link>
       </div>
 

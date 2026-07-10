@@ -57,10 +57,10 @@ const sharedExtras = {
 export const copyByMode: Record<AudienceMode, LandingCopy> = {
   dev: {
     hero: {
-      title: "محصول دیجیتال",
-      highlight: "با استاندارد production.",
+      title: "از ایده تا محصول زنده",
+      highlight: "با کیفیت production.",
       description:
-        "فرانت type-safe، زیرساخت پایدار، و لانچ محصولی که فردا هم قابل نگهداری بماند.",
+        "طراحی، فرانت و زیرساخت؛ خروجی واقعی که بعد از لانچ هم قابل نگهداری بماند.",
       primaryCta: "شروع پروژه",
       secondaryCta: "نمونه‌کارها",
     },

@@ -8,6 +8,7 @@ import {
   List,
   MagnifyingGlass,
   Heart,
+  X,
 } from "@phosphor-icons/react";
 import { useCartStore } from "@asal/store/cart";
 import { useWishlistStore } from "@asal/store/wishlist";
@@ -33,7 +34,7 @@ export function Header() {
   const wishlistCount = useWishlistStore((s) => s.count());
 
   const iconBtn =
-    "flex h-10 w-10 items-center justify-center rounded-xl text-secondary transition-colors hover:bg-white/5 hover:text-gold active:scale-95";
+    "flex h-11 w-11 items-center justify-center rounded-xl text-secondary transition-colors hover:bg-white/5 hover:text-gold active:bg-white/10 touch-manipulation";
 
   useEffect(() => {
     setMobileOpen(false);
@@ -46,10 +47,10 @@ export function Header() {
     setSearchOpen(true);
   };
 
-  const openMobile = () => {
+  const toggleMobile = () => {
     setSearchOpen(false);
     closeCart();
-    setMobileOpen(true);
+    setMobileOpen((v) => !v);
   };
 
   const handleOpenCart = () => {
@@ -67,11 +68,17 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 h-14 border-b border-white/5 bg-[#141414]/95 backdrop-blur-xl sm:h-16">
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 h-14 border-b border-white/5 bg-[#141414]/95 backdrop-blur-xl sm:h-16",
+          mobileOpen ? "z-[100]" : "z-50",
+        )}
+      >
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-2 px-3 sm:px-4 md:px-8">
           <Link
             href={hajiasalPath()}
             className="min-w-0 truncate text-sm font-bold tracking-tight text-primary sm:text-base md:text-lg"
+            onClick={() => setMobileOpen(false)}
           >
             {siteData.brand.name}
           </Link>
@@ -112,6 +119,7 @@ export function Header() {
               href={hajiasalPath("/wishlist")}
               className={cn("relative", iconBtn)}
               aria-label="علاقه‌مندی‌ها"
+              onClick={() => setMobileOpen(false)}
             >
               <Icon icon={Heart} size={18} />
               {wishlistCount > 0 ? (
@@ -138,12 +146,13 @@ export function Header() {
             </button>
             <button
               type="button"
-              onClick={openMobile}
+              onClick={toggleMobile}
               className={cn(iconBtn, "lg:hidden")}
-              aria-label="منو"
+              aria-label={mobileOpen ? "بستن منو" : "منو"}
               aria-expanded={mobileOpen}
+              aria-controls="mobile-nav"
             >
-              <Icon icon={List} size={18} />
+              <Icon icon={mobileOpen ? X : List} size={20} />
             </button>
           </div>
         </div>

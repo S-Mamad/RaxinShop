@@ -7,6 +7,7 @@ const hajiasalRoutes = [
   "",
   "/shop",
   "/about",
+  "/reviews",
   "/contact",
   "/faq",
   "/track-order",

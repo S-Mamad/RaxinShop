@@ -26,9 +26,9 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
   };
 
   return (
-    <section className="py-14 md:py-24">
+    <section className="py-12 md:py-24">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
-        <Reveal className="mb-6 flex items-end justify-between gap-4 md:mb-8">
+        <Reveal className="mb-5 flex items-end justify-between gap-4 md:mb-8">
           <SectionHeading
             title="پرفروش‌ترین‌ها"
             subtitle="محبوب‌ترین عسل‌های حاجی عسل"
@@ -52,21 +52,30 @@ export function BestsellersCarousel({ products }: BestsellersCarouselProps) {
             </button>
           </div>
         </Reveal>
+
+        {/* Mobile: clean 2-col grid. Desktop: horizontal carousel */}
+        <div className="grid grid-cols-2 gap-3 sm:hidden">
+          {products.slice(0, 4).map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+
         <div
           ref={scrollRef}
-          className="scrollbar-hide -mx-4 flex gap-3 overflow-x-auto snap-x snap-mandatory px-4 pb-4 sm:mx-0 sm:gap-4 sm:px-0 md:gap-6"
+          className="scrollbar-hide hidden gap-4 overflow-x-auto snap-x snap-mandatory pb-4 sm:flex md:gap-6"
         >
           {products.map((product) => (
             <div
               key={product.id}
-              className="w-[min(72vw,260px)] shrink-0 snap-start sm:w-[240px] md:w-[280px]"
+              className="w-[240px] shrink-0 snap-start md:w-[280px]"
             >
               <ProductCard product={product} />
             </div>
           ))}
         </div>
+
         <div className="mt-6 text-center md:mt-8">
-          <Button href={hajiasalPath("/shop")} variant="outline">
+          <Button href={hajiasalPath("/shop")} variant="outline" className="w-full sm:w-auto">
             مشاهده همه محصولات
           </Button>
         </div>

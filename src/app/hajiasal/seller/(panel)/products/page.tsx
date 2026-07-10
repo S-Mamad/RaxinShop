@@ -59,6 +59,8 @@ export default function SellerProductsPage() {
         data={products}
         rowKey={(p) => p.id}
         emptyMessage="محصولی تخصیص داده نشده"
+        minWidth={false}
+        className="!border-stone-200"
         columns={[
           {
             key: "title",
@@ -73,8 +75,11 @@ export default function SellerProductsPage() {
           {
             key: "price",
             header: "شروع قیمت",
-            render: (p) =>
-              `${Math.min(...p.weightOptions.map((w) => w.price)).toLocaleString("fa-IR")} تومان`,
+            render: (p) => {
+              const prices = p.weightOptions?.map((w) => w.price) ?? [];
+              if (prices.length === 0) return "—";
+              return `${Math.min(...prices).toLocaleString("fa-IR")} تومان`;
+            },
           },
           {
             key: "stock",

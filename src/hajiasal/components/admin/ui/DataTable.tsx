@@ -5,6 +5,8 @@ export interface DataTableColumn<T> {
   key: string;
   header: string;
   className?: string;
+  /** Hide this column below md breakpoint */
+  hideOnMobile?: boolean;
   render: (row: T) => ReactNode;
 }
 
@@ -14,6 +16,8 @@ interface DataTableProps<T> {
   rowKey: (row: T) => string;
   emptyMessage?: string;
   className?: string;
+  /** Table min-width. Pass false for auto (no forced scroll). Default 640. */
+  minWidth?: number | false;
 }
 
 export function DataTable<T>({
@@ -22,21 +26,33 @@ export function DataTable<T>({
   rowKey,
   emptyMessage = "داده‌ای یافت نشد",
   className,
+  minWidth = 640,
 }: DataTableProps<T>) {
   return (
     <div
       className={cn(
-        "overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm",
+        "overflow-x-auto overscroll-x-contain rounded-xl border border-slate-200 bg-white shadow-sm",
         className,
       )}
     >
-      <table className="w-full min-w-[640px] text-sm">
-        <thead className="bg-slate-50 text-start text-slate-500">
+      <table
+        className="w-full text-sm"
+        style={
+          minWidth === false
+            ? undefined
+            : { minWidth: typeof minWidth === "number" ? minWidth : 640 }
+        }
+      >
+        <thead className="sticky top-0 z-[1] bg-slate-50 text-start text-slate-500">
           <tr>
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={cn("px-4 py-3 font-medium", col.className)}
+                className={cn(
+                  "whitespace-nowrap px-3 py-3 font-medium sm:px-4",
+                  col.hideOnMobile && "hidden md:table-cell",
+                  col.className,
+                )}
               >
                 {col.header}
               </th>
@@ -62,7 +78,11 @@ export function DataTable<T>({
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    className={cn("px-4 py-3 text-slate-700", col.className)}
+                    className={cn(
+                      "px-3 py-3 text-slate-700 sm:px-4",
+                      col.hideOnMobile && "hidden md:table-cell",
+                      col.className,
+                    )}
                   >
                     {col.render(row)}
                   </td>

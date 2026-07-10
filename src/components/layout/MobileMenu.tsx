@@ -1,61 +1,37 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import site from "@/data/site.json";
 import type { SiteConfig } from "@/types";
 import { cn } from "@/lib/utils";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { BrandLogo } from "@/components/ui/BrandLogo";
 
 const data = site as SiteConfig;
 const sectionIds = data.nav.map((n) => n.id);
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const activeId = useScrollSpy(sectionIds);
-  const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const titleId = useId();
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;
 
-    const panel = panelRef.current;
-    if (!panel) return;
-
-    const focusable = panel.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
-    );
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    first?.focus();
-
-    function onKeyDown(e: KeyboardEvent) {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false);
         triggerRef.current?.focus();
-        return;
       }
-
-      if (e.key !== "Tab" || focusable.length === 0) return;
-
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last?.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first?.focus();
-      }
-    }
-
-    document.addEventListener("keydown", onKeyDown);
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = "";
     };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
   return (
@@ -67,111 +43,88 @@ export function MobileMenu() {
         aria-expanded={open}
         aria-controls="mobile-menu-panel"
         onClick={() => setOpen((v) => !v)}
-        className="relative z-[60] flex h-10 w-10 items-center justify-center rounded-full border border-border bg-elevated/50"
+        className="relative z-[61] flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]"
       >
         <span
           className={cn(
-            "absolute h-px w-5 bg-foreground transition-all duration-500",
+            "absolute h-px w-5 bg-foreground transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
             open ? "translate-y-0 rotate-45" : "-translate-y-[3px]",
           )}
+          aria-hidden
         />
         <span
           className={cn(
-            "absolute h-px w-5 bg-foreground transition-all duration-500",
+            "absolute h-px w-5 bg-foreground transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
             open ? "translate-y-0 -rotate-45" : "translate-y-[3px]",
           )}
+          aria-hidden
         />
       </button>
 
-      <AnimatePresence>
-        {open ? (
-          <motion.div
-            ref={panelRef}
-            id="mobile-menu-panel"
-            role="dialog"
-            aria-modal="true"
-            aria-label="منوی موبایل"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-void/96 backdrop-blur-3xl"
-            onClick={(e) => {
-              if (e.target === e.currentTarget) setOpen(false);
-            }}
-          >
-            <div className="flex h-full flex-col items-center justify-center gap-8 px-6">
-              <BrandLogo className="mb-2 text-lg" />
-              {data.nav.map((item, i) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    delay: 0.05 + i * 0.04,
-                    ease: [0.32, 0.72, 0, 1],
-                  }}
-                >
-                  <Link
-                    href={item.href}
+      {mounted
+        ? createPortal(
+            <AnimatePresence>
+              {open ? (
+                <>
+                  <motion.button
+                    key="mobile-menu-scrim"
+                    type="button"
+                    aria-label="بستن منو"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="fixed inset-0 z-[78] bg-black/45"
                     onClick={() => setOpen(false)}
-                    className={cn(
-                      "text-2xl font-semibold transition-colors",
-                      activeId === item.id
-                        ? "text-accent"
-                        : "text-foreground",
-                    )}
+                  />
+                  <motion.div
+                    key="mobile-menu-panel"
+                    id="mobile-menu-panel"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby={titleId}
+                    initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                    transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
+                    className="fixed inset-x-3 top-[4.25rem] z-[79] mx-auto max-w-sm overflow-hidden rounded-2xl border border-white/10 bg-[#0e0e12]/96 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.85)] backdrop-blur-xl sm:inset-x-auto sm:end-4 sm:start-auto sm:w-[280px]"
                   >
-                    {item.label}
-                  </Link>
-                </motion.div>
-              ))}
-              {(data.footerNav ?? []).map((item, i) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    delay: 0.05 + (data.nav.length + i) * 0.04,
-                    ease: [0.32, 0.72, 0, 1],
-                  }}
-                >
-                  <Link
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="text-lg text-muted transition-colors hover:text-foreground"
-                  >
-                    {item.label}
-                  </Link>
-                </motion.div>
-              ))}
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 }}
-                className="mt-4 flex gap-6"
-              >
-                {data.links.map((link) => {
-                  const isMailto = link.href.startsWith("mailto:");
-                  return (
-                    <a
-                      key={link.id}
-                      href={link.href}
-                      {...(isMailto
-                        ? {}
-                        : { target: "_blank", rel: "noopener noreferrer" })}
-                      dir="ltr"
-                      onClick={() => setOpen(false)}
-                      className="font-mono text-sm text-muted transition-colors hover:text-accent"
-                    >
-                      {link.label}
-                    </a>
-                  );
-                })}
-              </motion.div>
-            </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+                    <p id={titleId} className="sr-only">
+                      منوی موبایل
+                    </p>
+                    <nav className="flex flex-col p-2">
+                      {data.nav.map((item) => (
+                        <Link
+                          key={item.id}
+                          href={item.href}
+                          onClick={() => setOpen(false)}
+                          className={cn(
+                            "rounded-xl px-3.5 py-3 text-[15px] transition-colors",
+                            activeId === item.id
+                              ? "bg-white/[0.06] text-accent"
+                              : "text-foreground/90 hover:bg-white/[0.04]",
+                          )}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                      <div className="mt-1 border-t border-white/8 px-1 pt-2">
+                        <Link
+                          href="/#contact"
+                          onClick={() => setOpen(false)}
+                          className="flex h-10 items-center justify-center rounded-xl bg-accent text-[13px] font-medium text-void"
+                        >
+                          شروع پروژه
+                        </Link>
+                      </div>
+                    </nav>
+                  </motion.div>
+                </>
+              ) : null}
+            </AnimatePresence>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }

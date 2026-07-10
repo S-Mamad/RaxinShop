@@ -140,10 +140,12 @@ export default function AdminSettingsPage() {
           {(Object.keys(LABELS) as Array<keyof typeof LABELS>).map((key) => (
             <div
               key={key}
-              className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3"
+              className="flex min-w-0 items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3"
             >
-              <span className="text-sm text-slate-700">{LABELS[key]}</span>
-              <span className="flex items-center gap-1.5 text-sm">
+              <span className="min-w-0 truncate text-sm text-slate-700">
+                {LABELS[key]}
+              </span>
+              <span className="flex shrink-0 items-center gap-1.5 text-sm">
                 <Icon
                   icon={env[key] ? CheckCircle : XCircle}
                   size={18}
@@ -164,7 +166,7 @@ export default function AdminSettingsPage() {
 
       <div className="rounded-xl border border-slate-200 bg-white p-5">
         <h3 className="mb-3 font-semibold text-slate-900">ارسال</h3>
-        <div className="flex flex-wrap gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
           <label className="space-y-1 text-sm">
             <span>آستانه ارسال رایگان (تومان)</span>
             <Input
@@ -172,7 +174,7 @@ export default function AdminSettingsPage() {
               type="number"
               value={freeShippingThreshold}
               onChange={(e) => setFreeShippingThreshold(e.target.value)}
-              className="max-w-xs"
+              className="w-full"
             />
           </label>
           <label className="space-y-1 text-sm">
@@ -182,12 +184,12 @@ export default function AdminSettingsPage() {
               type="number"
               value={shippingCost}
               onChange={(e) => setShippingCost(e.target.value)}
-              className="max-w-xs"
+              className="w-full"
             />
           </label>
           <AdminButton
             type="button"
-            className="self-end"
+            className="w-full lg:w-auto"
             onClick={() => void saveShipping()}
             disabled={savingShipping}
           >

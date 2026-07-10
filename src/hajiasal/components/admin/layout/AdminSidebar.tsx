@@ -52,7 +52,7 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
   };
 
   return (
-    <aside className="flex h-full w-60 shrink-0 flex-col border-e border-slate-200 bg-slate-900 text-slate-100">
+    <aside className="flex h-full w-60 shrink-0 flex-col border-e border-slate-200 bg-slate-900 text-slate-100 pb-[env(safe-area-inset-bottom)]">
       <div className="border-b border-slate-700 px-5 py-5">
         <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
           حاجی‌عسل

@@ -21,6 +21,8 @@ type MemoryRoot = {
   stockOverrides: Record<string, boolean>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   orders: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reviews: any[];
 };
 
 const globalKey = "__hajiasal_memory_store__";
@@ -33,6 +35,7 @@ function root(): MemoryRoot {
       sellerSessions: [],
       stockOverrides: {},
       orders: [],
+      reviews: [],
     };
   }
   return g[globalKey]!;
@@ -82,6 +85,30 @@ export function memoryUpdateOrder<T extends { id: string }>(
     ...patch,
     updatedAt: new Date().toISOString(),
   } as T;
+  list[idx] = next;
+  return next;
+}
+
+export function memoryGetReviews<T = unknown>(): T[] {
+  return root().reviews as T[];
+}
+
+export function memoryPushReview(review: unknown): void {
+  root().reviews.unshift(review);
+}
+
+export function memorySetReviews(reviews: unknown[]): void {
+  root().reviews = reviews;
+}
+
+export function memoryUpdateReview<T extends { id: string }>(
+  id: string,
+  patch: Partial<T>,
+): T | null {
+  const list = root().reviews as T[];
+  const idx = list.findIndex((r) => r.id === id);
+  if (idx < 0) return null;
+  const next = { ...list[idx]!, ...patch } as T;
   list[idx] = next;
   return next;
 }

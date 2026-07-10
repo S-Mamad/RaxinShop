@@ -5,7 +5,10 @@
   | "royal-jelly"
   | "honeycomb"
   | "specialty"
-  | "gift-set";
+  | "gift-set"
+  | "distillates"
+  | "rice"
+  | "saffron";
 
 export interface WeightOption {
   label: string;

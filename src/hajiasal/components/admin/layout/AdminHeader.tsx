@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { CaretLeft } from "@phosphor-icons/react";
 import { Icon } from "@asal/components/ui/Icon";
 import { hajiasalPath } from "@asal/lib/paths";
+import { cn } from "@asal/lib/utils";
 
 const PAGE_TITLES: Record<string, string> = {
   [hajiasalPath("/admin/dashboard")]: "داشبورد",
@@ -73,16 +74,30 @@ function getPageTitle(pathname: string): string {
 
 interface AdminHeaderProps {
   title?: string;
+  /** Single-line title for mobile top bar */
+  compact?: boolean;
 }
 
-export function AdminHeader({ title }: AdminHeaderProps) {
+export function AdminHeader({ title, compact = false }: AdminHeaderProps) {
   const pathname = usePathname();
   const breadcrumbs = getBreadcrumbs(pathname);
   const pageTitle = title ?? getPageTitle(pathname);
 
+  if (compact) {
+    return (
+      <h2 className="truncate text-sm font-semibold text-slate-900">
+        {pageTitle}
+      </h2>
+    );
+  }
+
   return (
     <header className="border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
-      <nav className="mb-2 flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
+      <nav
+        className={cn(
+          "mb-2 flex flex-wrap items-center gap-1.5 text-xs text-slate-500",
+        )}
+      >
         {breadcrumbs.map((crumb, index) => (
           <span
             key={`${crumb.label}-${index}`}

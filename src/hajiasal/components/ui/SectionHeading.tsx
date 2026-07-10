@@ -49,11 +49,11 @@ export function SectionHeading({
         className,
       )}
     >
-      <h2 className="text-2xl font-bold tracking-tight text-primary md:text-3xl">
+      <h2 className="text-lg font-bold tracking-tight text-primary sm:text-2xl md:text-3xl">
         {title}
       </h2>
       {subtitle ? (
-        <p className="max-w-xl text-sm text-secondary md:text-base">
+        <p className="max-w-xl text-xs leading-relaxed text-secondary sm:text-sm md:text-base">
           {subtitle}
         </p>
       ) : null}

@@ -87,19 +87,19 @@ export default function AdminCouponsPage() {
     <div className="space-y-6">
       <div className="rounded-xl border border-slate-200 bg-white p-4">
         <p className="mb-3 text-sm font-medium text-slate-700">کوپن جدید</p>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:flex lg:flex-wrap">
           <Input
             placeholder="کد"
             dir="ltr"
             value={code}
             onChange={(e) => setCode(e.target.value.toUpperCase())}
-            className="max-w-[120px]"
+            className="w-full lg:max-w-[120px]"
           />
           <Input
             placeholder="توضیح"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            className="max-w-xs"
+            className="w-full sm:col-span-2 lg:max-w-xs"
           />
           <Input
             placeholder="درصد"
@@ -107,7 +107,7 @@ export default function AdminCouponsPage() {
             type="number"
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            className="max-w-[80px]"
+            className="w-full lg:max-w-[80px]"
           />
           <Input
             placeholder="حداقل سفارش"
@@ -115,9 +115,13 @@ export default function AdminCouponsPage() {
             type="number"
             value={minOrder}
             onChange={(e) => setMinOrder(e.target.value)}
-            className="max-w-[120px]"
+            className="w-full lg:max-w-[120px]"
           />
-          <AdminButton type="button" onClick={() => void createCoupon()}>
+          <AdminButton
+            type="button"
+            onClick={() => void createCoupon()}
+            className="w-full sm:col-span-2 lg:w-auto"
+          >
             افزودن
           </AdminButton>
         </div>
@@ -174,10 +178,12 @@ export default function AdminCouponsPage() {
             render: (row) => (
               <AdminButton
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => void toggleActive(row)}
-                className={row.active ? "text-green-600" : "text-slate-400"}
+                className={row.active ? "!text-emerald-700" : "!text-slate-400"}
               >
-                {row.active ? "بله" : "خیر"}
+                {row.active ? "فعال" : "غیرفعال"}
               </AdminButton>
             ),
           },
@@ -187,8 +193,10 @@ export default function AdminCouponsPage() {
             render: (row) => (
               <AdminButton
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => void deleteCoupon(row.code)}
-                className="text-xs text-red-600 hover:underline"
+                className="!text-red-600"
               >
                 حذف
               </AdminButton>
