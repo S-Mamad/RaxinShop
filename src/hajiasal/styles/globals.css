@@ -33,6 +33,10 @@
   --color-success: var(--success);
   --color-border: var(--border);
   --color-border-bright: var(--border-bright);
+  --color-brown: var(--text-primary);
+  --color-muted: var(--text-secondary);
+  --color-amber: var(--gold);
+  --color-cream-dark: var(--surface-elevated);
   --font-sans: var(--font-vazirmatn);
   --font-display: var(--font-lalezar);
   --shadow-gold-glow: 0 4px 24px -4px var(--gold-glow);

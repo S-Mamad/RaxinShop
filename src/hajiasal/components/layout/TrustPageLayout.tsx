@@ -8,16 +8,24 @@ interface TrustPageLayoutProps {
 
 export function TrustPageLayout({ content }: TrustPageLayoutProps) {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-24 md:px-6 md:py-32">
+    <div className="mx-auto max-w-3xl px-4 py-14 md:px-6 md:py-24">
       <Reveal>
-        <SectionHeading title={content.title} subtitle={content.intro} className="mb-10" />
+        <SectionHeading
+          title={content.title}
+          subtitle={content.intro}
+          className="mb-8 md:mb-10"
+        />
       </Reveal>
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-5 md:gap-6">
         {content.sections.map((section, i) => (
-          <Reveal key={section.heading} delay={i * 0.08}>
-            <article className="rounded-2xl border border-border bg-surface p-6">
-              <h2 className="mb-3 text-lg font-semibold text-brown">{section.heading}</h2>
-              <p className="text-base leading-relaxed text-muted">{section.body}</p>
+          <Reveal key={section.heading} delay={i * 0.06}>
+            <article className="border-b border-white/8 pb-5 last:border-0 md:pb-6">
+              <h2 className="mb-2 text-base font-semibold text-primary md:text-lg">
+                {section.heading}
+              </h2>
+              <p className="text-sm leading-relaxed text-secondary md:text-base">
+                {section.body}
+              </p>
             </article>
           </Reveal>
         ))}

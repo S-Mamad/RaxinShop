@@ -36,7 +36,7 @@ export function HeroShowcase() {
         aria-hidden
       />
       <motion.div style={reduceMotion ? undefined : { y }}>
-        <BrowserFrame label="hajiasal · live preview" className="relative">
+        <BrowserFrame label="حاجی‌عسل" className="relative">
           <div className="relative aspect-[16/10] w-full">
             <Image
               src="/portfolio/hero-showcase.webp"

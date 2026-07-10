@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { SpeakerHigh, SpeakerSlash } from "@phosphor-icons/react";
+import { ArrowLeft, GithubLogo, TelegramLogo } from "@phosphor-icons/react";
 import { useMotionValueEvent, useScroll } from "motion/react";
 import { useState } from "react";
 import site from "@/data/site.json";
@@ -9,46 +9,44 @@ import type { SiteConfig } from "@/types";
 import { cn } from "@/lib/utils";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { BrandLink } from "@/components/ui/BrandLogo";
-import { ModeToggle } from "@/components/ui/ModeToggle";
-import { A11yPanel } from "@/components/ui/A11yPanel";
-import { usePrefs } from "@/context/PrefsContext";
 import { MobileMenu } from "./MobileMenu";
 
 const data = site as SiteConfig;
 const sectionIds = data.nav.map((n) => n.id);
+const telegram = data.links.find((l) => l.id === "telegram");
+const github = data.links.find((l) => l.id === "github");
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const activeId = useScrollSpy(sectionIds);
-  const { muted, setMuted } = usePrefs();
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    setScrolled(latest > 20);
+    setScrolled(latest > 16);
   });
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[var(--z-header)] border-b border-transparent px-4 pt-4 md:px-8">
+    <header className="fixed inset-x-0 top-0 z-[var(--z-header)] px-2.5 pt-2.5 sm:px-3 sm:pt-3 md:px-6 md:pt-4">
       <nav
         className={cn(
-          "mx-auto flex h-13 max-w-7xl items-center justify-between gap-3 border px-3 transition-colors duration-300 md:px-5",
+          "mx-auto flex h-12 max-w-6xl items-center gap-2 rounded-full border px-2 pe-1.5 ps-3 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] sm:h-14 sm:px-2 sm:pe-2 sm:ps-4 md:gap-3 md:px-3 md:pe-3",
           scrolled
-            ? "border-border bg-void/90 backdrop-blur-xl"
-            : "border-border/60 bg-void/70 backdrop-blur-md",
+            ? "border-white/12 bg-void/85 shadow-[0_20px_60px_rgba(0,0,0,0.4)] backdrop-blur-2xl"
+            : "border-white/10 bg-void/45 backdrop-blur-xl",
         )}
         aria-label="ناوبری اصلی"
       >
         <BrandLink className="shrink-0" />
 
-        <ul className="hidden items-center gap-0 xl:flex">
+        <ul className="mx-auto hidden items-center lg:flex">
           {data.nav.map((item) => (
             <li key={item.id}>
               <Link
                 href={item.href}
                 className={cn(
-                  "px-3 py-3 text-sm transition-colors duration-300",
+                  "rounded-full px-3.5 py-2 text-[13px] transition-colors duration-300",
                   activeId === item.id
-                    ? "text-accent"
+                    ? "bg-white/[0.07] text-foreground"
                     : "text-dim hover:text-foreground",
                 )}
               >
@@ -58,22 +56,38 @@ export function Header() {
           ))}
         </ul>
 
-        <div className="flex items-center gap-2">
-          <ModeToggle className="hidden sm:inline-flex" />
-          <button
-            type="button"
-            aria-label={muted ? "فعال‌سازی صدا" : "بی‌صدا"}
-            aria-pressed={muted}
-            onClick={() => setMuted(!muted)}
-            className="hidden h-9 w-9 items-center justify-center border border-border bg-surface/80 text-muted transition-colors hover:text-accent md:inline-flex"
+        <div className="ms-auto flex items-center gap-1.5 md:gap-2">
+          {github ? (
+            <a
+              href={github.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden h-9 w-9 items-center justify-center rounded-full border border-white/10 text-muted transition-colors hover:border-accent/40 hover:text-accent sm:inline-flex"
+              aria-label="گیت‌هاب"
+            >
+              <GithubLogo className="h-4 w-4" weight="fill" />
+            </a>
+          ) : null}
+          {telegram ? (
+            <a
+              href={telegram.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden h-9 w-9 items-center justify-center rounded-full border border-white/10 text-muted transition-colors hover:border-accent/40 hover:text-accent sm:inline-flex"
+              aria-label="تلگرام"
+            >
+              <TelegramLogo className="h-4 w-4" weight="fill" />
+            </a>
+          ) : null}
+          <Link
+            href="/#contact"
+            className="group hidden items-center gap-2 rounded-full bg-accent px-4 py-2 text-[13px] font-medium text-void transition-colors hover:bg-accent-bright md:inline-flex"
           >
-            {muted ? (
-              <SpeakerSlash className="h-4 w-4" weight="bold" />
-            ) : (
-              <SpeakerHigh className="h-4 w-4" weight="bold" />
-            )}
-          </button>
-          <A11yPanel />
+            شروع پروژه
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-void/10 transition-transform duration-300 group-hover:-translate-x-0.5">
+              <ArrowLeft className="h-3.5 w-3.5" weight="bold" />
+            </span>
+          </Link>
           <MobileMenu />
         </div>
       </nav>

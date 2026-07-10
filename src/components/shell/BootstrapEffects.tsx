@@ -7,12 +7,13 @@ import { useCopy } from "@/hooks/useCopy";
 import { useToast } from "@/components/ui/Toast";
 import { installConsoleArt, installKonami } from "@/lib/easter-eggs";
 
+const WELCOME_KEY = "raxinshop.welcome.session";
+
 export function BootstrapEffects() {
-  const { hydrated, returningVisitor, markWelcomeSeen, mode } = usePrefs();
+  const { hydrated, returningVisitor } = usePrefs();
   const { lowBattery, slowNetwork } = useContextAware();
   const copy = useCopy();
   const { pushToast } = useToast();
-  const welcomed = useRef(false);
   const batteryTold = useRef(false);
   const networkTold = useRef(false);
 
@@ -22,24 +23,15 @@ export function BootstrapEffects() {
   }, []);
 
   useEffect(() => {
-    if (!hydrated || welcomed.current) return;
-    if (returningVisitor) {
-      welcomed.current = true;
-      pushToast(
-        mode === "executive"
-          ? copy.welcomeBack
-          : copy.welcomeBack,
-      );
-      markWelcomeSeen();
+    if (!hydrated || !returningVisitor) return;
+    try {
+      if (sessionStorage.getItem(WELCOME_KEY)) return;
+      sessionStorage.setItem(WELCOME_KEY, "1");
+      pushToast(copy.welcomeBack);
+    } catch {
+      /* ignore */
     }
-  }, [
-    hydrated,
-    returningVisitor,
-    mode,
-    copy.welcomeBack,
-    pushToast,
-    markWelcomeSeen,
-  ]);
+  }, [hydrated, returningVisitor, copy.welcomeBack, pushToast]);
 
   useEffect(() => {
     if (!hydrated) return;

@@ -13,21 +13,21 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
     return (
       <div className="flex flex-col gap-2">
-        <label htmlFor={selectId} className="text-sm text-muted">
+        <label htmlFor={selectId} className="text-[13px] text-muted">
           {label}
         </label>
         <select
           ref={ref}
           id={selectId}
           className={cn(
-            "h-11 border border-border bg-elevated px-4 font-mono text-sm text-foreground transition-colors focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20",
+            "h-12 rounded-xl border border-border/80 bg-void/60 px-4 text-sm text-foreground transition-colors focus:border-accent/45 focus:outline-none focus:ring-2 focus:ring-accent/15",
             error && "border-signal/50",
             className,
           )}
           {...props}
         >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
+            <option key={opt.value || "empty"} value={opt.value}>
               {opt.label}
             </option>
           ))}

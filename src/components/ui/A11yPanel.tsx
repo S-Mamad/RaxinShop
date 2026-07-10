@@ -11,10 +11,8 @@ export function A11yPanel() {
   const {
     highContrast,
     forceReducedMotion,
-    muted,
     setHighContrast,
     setForceReducedMotion,
-    setMuted,
   } = usePrefs();
 
   useEffect(() => {
@@ -70,7 +68,6 @@ export function A11yPanel() {
               checked={forceReducedMotion}
               onChange={setForceReducedMotion}
             />
-            <ToggleRow label="بی‌صدا" checked={muted} onChange={setMuted} />
           </ul>
         </div>
       ) : null}

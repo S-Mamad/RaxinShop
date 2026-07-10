@@ -27,12 +27,22 @@ export interface ProjectItem {
   category: "web" | "saas" | "api" | "oss";
   tech: string[];
   image?: string;
+  /** Live site URL rendered as scaled iframe preview */
+  previewUrl?: string;
   metrics?: string[];
   featured?: boolean;
   year?: string;
   comingSoon?: boolean;
   caseStyle?: "luxury" | "infra" | "default";
   businessValue?: string[];
+}
+
+export interface CapabilityItem {
+  id: string;
+  title: string;
+  description: string;
+  tag: string;
+  icon: string;
 }
 
 export interface TeamMemberLinks {

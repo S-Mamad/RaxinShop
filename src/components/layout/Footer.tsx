@@ -1,102 +1,70 @@
+"use client";
+
 import Link from "next/link";
+import { GithubLogo, TelegramLogo } from "@phosphor-icons/react";
 import site from "@/data/site.json";
 import type { SiteConfig } from "@/types";
 import { BrandLogo } from "@/components/ui/BrandLogo";
-import { Button } from "@/components/ui/Button";
 
 const data = site as SiteConfig;
+const github = data.links.find((l) => l.id === "github");
+const telegram = data.links.find((l) => l.id === "telegram");
+const email = data.links.find((l) => l.id === "email");
 
 export function Footer() {
   const year = new Date().getFullYear();
-  const footerNav = data.footerNav ?? [];
 
   return (
-    <footer className="border-t border-border">
-      <div className="mx-auto flex max-w-7xl flex-col gap-10 px-5 py-14 md:flex-row md:items-start md:justify-between md:px-10">
-        <div className="max-w-sm">
-          <BrandLogo className="text-lg" />
-          <p className="mt-4 max-w-prose text-sm leading-[1.85] text-muted">
-            {data.brand.tagline}
+    <footer className="border-t border-border/80">
+      <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-7 sm:px-6 sm:py-8 md:flex-row md:items-center md:justify-between md:px-10">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <BrandLogo className="text-[15px]" />
+          <span className="hidden h-3 w-px bg-border sm:block" aria-hidden />
+          <p className="text-[12px] text-dim sm:text-[13px]">
+            © {year} {data.brand.name}
+            {data.brand.suffix}
           </p>
-          <div className="mt-6">
-            <Button href="#contact" size="sm">
-              شروع پروژه
-            </Button>
-          </div>
-          <div className="mt-8">
-            <p className="label-mono mb-3 text-dim">فناوری</p>
-            <div className="flex flex-wrap gap-1.5">
-              {data.stack.map((tech) => (
-                <span
-                  key={tech}
-                  dir="ltr"
-                  className="border border-border px-2 py-0.5 font-mono text-[10px] text-dim"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
 
-        <div className="flex flex-col gap-8 sm:flex-row sm:gap-16">
-          <ul className="flex flex-col gap-3">
-            <li className="label-mono text-dim">ناوبری</li>
-            {data.nav.map((item) => (
-              <li key={item.id}>
-                <Link
-                  href={item.href}
-                  className="text-sm text-muted transition-colors hover:text-foreground"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-            {footerNav.map((item) => (
-              <li key={item.id}>
-                <Link
-                  href={item.href}
-                  className="text-sm text-muted transition-colors hover:text-foreground"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <ul className="flex flex-col gap-3">
-            <li className="label-mono text-dim">ارتباط</li>
-            {data.links.map((link) => (
-              <li key={link.id}>
-                <a
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  dir="ltr"
-                  className="text-sm text-muted transition-colors hover:text-accent"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-            <li className="pt-4">
-              <div
-                className="inline-flex items-center gap-2 border border-accent/30 bg-accent/10 px-3 py-2 font-mono text-[11px] text-accent"
-                title="هدف مهندسی: امتیاز کامل Lighthouse"
-              >
-                <span className="status-pulse inline-block h-2 w-2 rounded-full bg-accent" />
-                Lighthouse 100 target
-              </div>
-            </li>
-          </ul>
+        <div className="flex items-center gap-3 sm:gap-4">
+          {github ? (
+            <a
+              href={github.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="گیت‌هاب"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-muted transition-colors hover:border-accent/40 hover:text-accent"
+            >
+              <GithubLogo className="h-4 w-4" weight="fill" />
+            </a>
+          ) : null}
+          {telegram ? (
+            <a
+              href={telegram.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="تلگرام"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-muted transition-colors hover:border-accent/40 hover:text-accent"
+            >
+              <TelegramLogo className="h-4 w-4" weight="fill" />
+            </a>
+          ) : null}
+          {email ? (
+            <a
+              href={email.href}
+              dir="ltr"
+              className="hidden text-[12px] text-dim transition-colors hover:text-accent sm:inline md:text-[13px]"
+            >
+              {email.label}
+            </a>
+          ) : null}
+          <Link
+            href="/#contact"
+            className="ms-1 rounded-full border border-accent/30 bg-accent/10 px-3.5 py-1.5 text-[12px] text-accent transition-colors hover:bg-accent/20 hover:text-accent-bright sm:text-[13px]"
+          >
+            شروع پروژه
+          </Link>
         </div>
-      </div>
-
-      <div className="border-t border-border py-6 text-center">
-        <p className="text-xs text-dim">
-          © {year} {data.brand.name}
-          {data.brand.suffix} · تمامی حقوق محفوظ است
-        </p>
       </div>
     </footer>
   );

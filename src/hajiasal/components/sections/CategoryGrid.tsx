@@ -4,49 +4,62 @@ import type { SiteConfig } from "@asal/types";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
 import { Reveal } from "@asal/components/ui/Reveal";
 import { ProductImage } from "@asal/components/ui/ProductImage";
+import { hajiasalPath } from "@asal/lib/paths";
 
 const siteData = site as SiteConfig;
 
 export function CategoryGrid() {
   return (
-    <section className="bg-surface py-16 md:py-24">
+    <section className="bg-surface py-14 md:py-24">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
-        <Reveal className="mb-10">
+        <Reveal className="mb-8 md:mb-10">
           <SectionHeading
             title="دسته‌بندی محصولات"
-            subtitle="عسل مورد علاقه خود را از میان دسته‌های متنوع انتخاب کنید"
-            align="center"
-            className="mx-auto"
+            subtitle="عسل مورد علاقه خود را انتخاب کنید"
+            className="max-w-lg"
           />
         </Reveal>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
-          {siteData.categories.map((cat, i) => (
-            <Reveal key={cat.id} delay={i * 0.05}>
-              <Link
-                href={`/shop?category=${cat.id}`}
-                className="group block overflow-hidden rounded-2xl border border-white/6 bg-surface-elevated transition-all duration-500 hover:border-gold/30 hover:shadow-[0_8px_24px_-8px_rgba(212,160,86,0.15)]"
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5">
+          {siteData.categories.map((cat, i) => {
+            const featured = i === 0 || i === 3;
+            return (
+              <Reveal
+                key={cat.id}
+                delay={i * 0.04}
+                className={featured ? "md:col-span-1 lg:row-span-1" : undefined}
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <ProductImage
-                    src={cat.image}
-                    alt={cat.label}
-                    fill
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-void/80 to-transparent" />
-                  <div className="absolute inset-x-0 bottom-0 p-4">
-                    <h3 className="text-sm font-bold text-primary md:text-base">
-                      {cat.label}
-                    </h3>
-                    <p className="mt-0.5 text-xs text-secondary">
-                      {cat.description}
-                    </p>
+                <Link
+                  href={`${hajiasalPath("/shop")}?category=${cat.id}`}
+                  className="group relative block overflow-hidden rounded-2xl border border-white/6 bg-surface-elevated transition-all duration-500 hover:border-gold/30"
+                >
+                  <div
+                    className={
+                      featured
+                        ? "relative aspect-[4/5] sm:aspect-[4/3]"
+                        : "relative aspect-[4/3]"
+                    }
+                  >
+                    <ProductImage
+                      src={cat.image}
+                      alt={cat.label}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-void via-void/20 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4">
+                      <h3 className="text-sm font-bold text-primary sm:text-base">
+                        {cat.label}
+                      </h3>
+                      <p className="mt-0.5 line-clamp-1 text-xs text-secondary">
+                        {cat.description}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
+                </Link>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>

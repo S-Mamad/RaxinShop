@@ -35,7 +35,7 @@ export function TeamLinks({ member }: { member: TeamMember }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={label}
-          className="flex h-9 w-9 items-center justify-center border border-border text-muted transition-colors hover:border-accent/40 hover:text-accent"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted transition-colors hover:border-accent/40 hover:text-accent"
         >
           <Icon className="h-4 w-4" weight="bold" />
         </Link>

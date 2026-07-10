@@ -14,16 +14,18 @@ import { Textarea } from "@/components/ui/Textarea";
 
 const data = site as SiteConfig;
 
-const schema = z.object({
-  name: z.string().min(2, "نام الزامی است"),
-  contact: z.string().min(3, "تلگرام یا موبایل الزامی است"),
-  projectType: z.string().min(1, "نوع پروژه را انتخاب کنید"),
-  message: z.string().min(10, "توضیح باید حداقل ۱۰ کاراکتر باشد"),
-  website: z.string().max(0).optional(),
-}).refine((form) => form.projectType !== "", {
-  message: "نوع پروژه را انتخاب کنید",
-  path: ["projectType"],
-});
+const schema = z
+  .object({
+    name: z.string().min(2, "نام الزامی است"),
+    contact: z.string().min(3, "تلگرام یا موبایل الزامی است"),
+    projectType: z.string().min(1, "نوع پروژه را انتخاب کنید"),
+    message: z.string().min(10, "توضیح باید حداقل ۱۰ کاراکتر باشد"),
+    website: z.string().max(0).optional(),
+  })
+  .refine((form) => form.projectType !== "", {
+    message: "نوع پروژه را انتخاب کنید",
+    path: ["projectType"],
+  });
 
 type FormData = z.infer<typeof schema>;
 
@@ -58,9 +60,7 @@ function openMailto(form: FormData) {
 }
 
 export function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "api" | "fallback" | "error">(
-    "idle",
-  );
+  const [status, setStatus] = useState<"idle" | "mailto" | "error">("idle");
   const [statusMessage, setStatusMessage] = useState("");
 
   const {
@@ -80,47 +80,34 @@ export function ContactForm() {
   });
 
   async function onSubmit(form: FormData) {
+    if (form.website) return;
     setStatus("idle");
     setStatusMessage("");
 
     try {
-      const res = await fetch("/api/lead", {
+      await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name,
+          contact: form.contact,
+          message: `${form.projectType}\n\n${form.message}`,
+        }),
       });
-
-      const json = (await res.json()) as {
-        success: boolean;
-        message: string;
-        fallback?: boolean;
-      };
-
-      if (json.success && !json.fallback) {
-        setStatus("api");
-        setStatusMessage(json.message);
-        reset();
-        return;
-      }
-
-      if (json.fallback || !res.ok) {
-        openMailto(form);
-        setStatus("fallback");
-        setStatusMessage("ارسال مستقیم از طریق ایمیل باز شد.");
-        return;
-      }
-
-      setStatus("error");
-      setStatusMessage(json.message ?? "خطا در ارسال");
     } catch {
-      openMailto(form);
-      setStatus("fallback");
-      setStatusMessage("ارسال مستقیم از طریق ایمیل باز شد.");
+      /* lead is best-effort; mailto is the real delivery */
     }
+
+    openMailto(form);
+    setStatus("mailto");
+    setStatusMessage(
+      "ایمیل شما باز شد. اگر باز نشد، به hello@raxinshop.ir پیام بدهید.",
+    );
+    reset();
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <input
         type="text"
         tabIndex={-1}
@@ -130,20 +117,22 @@ export function ContactForm() {
         {...register("website")}
       />
 
-      <Input
-        label="نام"
-        placeholder="نام شما"
-        error={errors.name?.message}
-        {...register("name")}
-      />
-      <Input
-        label="تلگرام / موبایل"
-        placeholder="@username یا 09..."
-        dir="ltr"
-        className="text-end"
-        error={errors.contact?.message}
-        {...register("contact")}
-      />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Input
+          label="نام"
+          placeholder="نام شما"
+          error={errors.name?.message}
+          {...register("name")}
+        />
+        <Input
+          label="تلگرام / موبایل"
+          placeholder="@username یا 09..."
+          dir="ltr"
+          className="text-start"
+          error={errors.contact?.message}
+          {...register("contact")}
+        />
+      </div>
       <Select
         label="نوع پروژه"
         options={projectTypes}
@@ -153,30 +142,33 @@ export function ContactForm() {
       <Textarea
         label="توضیح کوتاه"
         placeholder="پروژه‌ات چیست؟ چه زمانی نیاز داری؟"
+        rows={4}
         error={errors.message?.message}
         {...register("message")}
       />
 
-      <Button type="submit" size="lg" className="w-full md:w-auto" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        size="lg"
+        className="mt-1 w-full rounded-full"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? "در حال ارسال..." : "ارسال درخواست"}
       </Button>
 
       <p className="text-xs leading-relaxed text-dim">
         اطلاعات شما فقط برای پاسخ‌گویی استفاده می‌شود.{" "}
-        <Link href="/hajiasal/privacy" className="text-muted underline hover:text-accent">
+        <Link
+          href="/hajiasal/privacy"
+          className="text-muted underline hover:text-accent"
+        >
           حریم خصوصی
         </Link>
       </p>
 
       {status !== "idle" ? (
         <p
-          className={`text-sm ${
-            status === "api"
-              ? "text-accent"
-              : status === "fallback"
-                ? "text-muted"
-                : "text-signal"
-          }`}
+          className={`text-sm ${status === "mailto" ? "text-muted" : "text-signal"}`}
           role="status"
         >
           {statusMessage}

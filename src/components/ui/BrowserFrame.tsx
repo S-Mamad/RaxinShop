@@ -11,7 +11,7 @@ export function BrowserFrame({ children, label, className }: BrowserFrameProps) 
   return (
     <div
       className={cn(
-        "overflow-hidden border border-border-bright bg-elevated shadow-[0_32px_80px_-24px_rgba(0,0,0,0.75)]",
+        "overflow-hidden rounded-[1.35rem] border border-border-bright bg-elevated shadow-[0_32px_80px_-24px_rgba(0,0,0,0.75)]",
         className,
       )}
     >

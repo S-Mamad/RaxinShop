@@ -12,14 +12,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="flex flex-col gap-2">
-        <label htmlFor={inputId} className="text-sm font-medium text-foreground/80">
+        <label htmlFor={inputId} className="text-[13px] text-muted">
           {label}
         </label>
         <input
           ref={ref}
           id={inputId}
           className={cn(
-            "h-11 border border-border bg-elevated px-4 font-mono text-sm text-foreground transition-colors placeholder:text-dim focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20",
+            "h-12 rounded-xl border border-border/80 bg-void/60 px-4 text-sm text-foreground transition-colors placeholder:text-dim/80 focus:border-accent/45 focus:outline-none focus:ring-2 focus:ring-accent/15",
             error && "border-signal/50",
             className,
           )}

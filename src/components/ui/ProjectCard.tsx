@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
 import type { ProjectItem } from "@/types";
 import { cn } from "@/lib/utils";
+import { LiveSitePreview } from "@/components/ui/LiveSitePreview";
 
 interface ProjectCardProps {
   project: ProjectItem;
@@ -33,7 +34,9 @@ export function ProjectCard({
           featured ? "aspect-[16/9]" : "aspect-[4/3]",
         )}
       >
-        {project.image ? (
+        {project.previewUrl ? (
+          <LiveSitePreview src={project.previewUrl} title={project.title} />
+        ) : project.image ? (
           <Image
             src={project.image}
             alt={project.title}
@@ -50,7 +53,9 @@ export function ProjectCard({
             }}
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent" />
+        {!project.previewUrl ? (
+          <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent" />
+        ) : null}
       </div>
 
       <div className="flex flex-1 flex-col gap-4 p-5 md:p-6">

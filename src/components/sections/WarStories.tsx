@@ -1,75 +1,116 @@
 "use client";
 
+import { useState } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { useCopy } from "@/hooks/useCopy";
 import { Reveal } from "@/components/ui/Reveal";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { cn } from "@/lib/utils";
 
 const stories = [
   {
     id: "ip-shift",
-    title: "مهاجرت IP بدون قطعی",
-    context: "مرهم · سامانه خدمات سلامت",
-    body: "انتقال از رنج قدیمی سرور به زیرساخت جدید، با هماهنگی DNS، health-check و rollback آماده؛ بدون downtime برای کاربران.",
-    tags: ["zero-downtime", "DNS", "ops"],
+    title: "مهاجرت زیرساخت بدون قطعی",
+    context: "مرهم · سامانه سلامت",
+    body: "انتقال سرور و رنج IP با هماهنگی DNS و health-check، بدون downtime برای کاربران.",
   },
   {
     id: "gov",
-    title: "مکاتبه فنی با نهاد رسمی",
-    context: "تایید زیرساخت · وزارت تعاون، کار و رفاه اجتماعی",
-    body: "مستندسازی نیازمندی‌ها، پاسخ به الزامات امنیتی، و پیگیری تایید زیرساخت برای پلتفرم خدماتی حساس.",
-    tags: ["compliance", "docs", "trust"],
+    title: "مستندسازی و تایید نهاد رسمی",
+    context: "الزامات زیرساخت · نهاد دولتی",
+    body: "پاسخ به نیازمندی‌های امنیتی و پیگیری تایید زیرساخت برای پلتفرم خدماتی حساس.",
   },
   {
     id: "catalog",
-    title: "کاتالوگ حجیم، UI لوکس",
-    context: "حاجی‌عسل · e-commerce",
-    body: "ده‌ها محصول با دیتای واقعی، تصاویر بهینه، و اسکرول هدف ۶۰fps بدون قربانی کردن حس لوکس فروشگاه.",
-    tags: ["perf", "images", "UX"],
+    title: "کاتالوگ واقعی، تجربهٔ روان",
+    context: "حاجی‌عسل · فروشگاه",
+    body: "محصولات با دیتای واقعی و تصاویر بهینه، بدون قربانی کردن حس لوکس فروشگاه.",
   },
 ];
 
 export function WarStories() {
   const copy = useCopy();
+  const reduceMotion = useReducedMotion();
+  const [active, setActive] = useState(0);
 
   return (
-    <section id="war-stories" className="border-b border-border py-28 md:py-36">
+    <section id="war-stories" className="border-b border-border py-28 md:py-40">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
-        <Reveal className="mb-12">
-          <SectionHeading
-            eyebrow={copy.warStories.eyebrow}
-            title={copy.warStories.title}
-            description={copy.warStories.description}
-          />
+        <Reveal className="mb-14 max-w-2xl">
+          <h2 className="font-display text-[2rem] text-foreground md:text-[2.75rem]">
+            {copy.warStories.title}
+          </h2>
+          <p className="mt-5 max-w-xl text-[15px] leading-[1.85] text-muted md:text-base">
+            {copy.warStories.description}
+          </p>
         </Reveal>
 
-        <ol className="relative space-y-4 border-s border-border ps-6 md:ps-8">
-          {stories.map((story, index) => (
-            <Reveal key={story.id} delay={index * 0.05}>
-              <li className="relative">
-                <span className="absolute -start-[1.9rem] top-6 h-3 w-3 rounded-full border border-accent bg-void md:-start-[2.4rem]" />
-                <SpotlightCard className="rounded-2xl p-5 md:p-6">
-                  <p className="label-mono text-accent/80">{story.context}</p>
-                  <h3 className="mt-2 font-display text-xl text-foreground">
-                    {story.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-muted">
-                    {story.body}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {story.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        dir="ltr"
-                        className="border border-border px-2 py-0.5 font-mono text-[10px] text-dim"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+        <div className="hidden gap-3 md:flex md:min-h-[340px]">
+          {stories.map((story, index) => {
+            const isOpen = active === index;
+            return (
+              <motion.button
+                key={story.id}
+                type="button"
+                onMouseEnter={() => setActive(index)}
+                onFocus={() => setActive(index)}
+                onClick={() => setActive(index)}
+                layout
+                className={cn(
+                  "group relative overflow-hidden rounded-[1.5rem] border text-start transition-colors duration-500",
+                  isOpen
+                    ? "flex-[2.4] border-accent/30 bg-elevated"
+                    : "flex-[0.85] border-border bg-surface/40 hover:border-border-bright",
+                )}
+                transition={{ duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
+              >
+                <div
+                  className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(143,164,196,0.14),transparent_50%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  aria-hidden
+                />
+                <div className="relative flex h-full flex-col justify-between p-6 md:p-7">
+                  <p className="label-mono text-dim">{story.context}</p>
+                  <div>
+                    <h3
+                      className={cn(
+                        "font-display text-foreground transition-all duration-500",
+                        isOpen ? "text-2xl md:text-3xl" : "text-base leading-snug",
+                      )}
+                    >
+                      {story.title}
+                    </h3>
+                    <AnimatePresence mode="wait">
+                      {isOpen ? (
+                        <motion.p
+                          key="body"
+                          initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={reduceMotion ? undefined : { opacity: 0, y: 8 }}
+                          transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+                          className="mt-4 max-w-md text-sm leading-[1.9] text-muted md:text-[15px]"
+                        >
+                          {story.body}
+                        </motion.p>
+                      ) : null}
+                    </AnimatePresence>
                   </div>
-                </SpotlightCard>
-              </li>
-            </Reveal>
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+
+        <ol className="space-y-4 md:hidden">
+          {stories.map((story) => (
+            <li
+              key={story.id}
+              className="rounded-2xl border border-border bg-surface/30 p-5"
+            >
+              <p className="label-mono text-dim">{story.context}</p>
+              <h3 className="mt-2 font-display text-xl text-foreground">
+                {story.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted">{story.body}</p>
+            </li>
           ))}
         </ol>
       </div>

@@ -2,51 +2,32 @@
 
 import site from "@/data/site.json";
 import type { SiteConfig, TeamMember } from "@/types";
-import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
 import { TeamImage } from "@/components/ui/TeamImage";
 import { TeamLinks } from "@/components/ui/TeamLinks";
+import { AmbientField } from "@/components/ui/AmbientField";
 import { useCopy } from "@/hooks/useCopy";
 
 const data = site as SiteConfig;
 
-function TeamCard({
-  member,
-  featured = false,
-}: {
-  member: TeamMember;
-  featured?: boolean;
-}) {
+function TeamCard({ member }: { member: TeamMember }) {
   return (
-    <article
-      className={cn(
-        "group relative overflow-hidden bg-surface/30",
-        featured ? "lg:row-span-2" : "",
-      )}
-    >
-      <div
-        className={cn(
-          "relative overflow-hidden bg-void",
-          featured ? "aspect-[4/5] lg:aspect-auto lg:min-h-[520px]" : "aspect-[5/4]",
-        )}
-      >
+    <article className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-1 sm:rounded-[1.5rem] sm:p-1.5">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-[calc(1rem-2px)] bg-void sm:aspect-[3/4] sm:rounded-[calc(1.5rem-0.375rem)]">
         <TeamImage member={member} />
-        <div className="absolute inset-0 bg-gradient-to-t from-void via-void/30 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
-          <p className="text-sm text-accent">{member.role}</p>
-          <h3
-            className={cn(
-              "mt-2 font-display text-foreground",
-              featured ? "text-3xl md:text-4xl" : "text-2xl",
-            )}
-          >
-            {member.name}
-          </h3>
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-void/90 via-void/15 to-transparent" />
       </div>
 
-      <div className="p-6 md:p-8">
-        <p className="max-w-prose text-[15px] leading-[1.9] text-muted">{member.bio}</p>
+      <div className="space-y-2.5 p-4 sm:space-y-3 sm:p-5 md:p-6">
+        <div>
+          <h3 className="font-display text-lg text-foreground sm:text-xl md:text-2xl">
+            {member.name}
+          </h3>
+          <p className="mt-1 text-[13px] text-accent sm:text-sm">{member.role}</p>
+        </div>
+        <p className="text-[13.5px] leading-[1.8] text-muted sm:text-sm">
+          {member.bio}
+        </p>
         <TeamLinks member={member} />
       </div>
     </article>
@@ -55,30 +36,26 @@ function TeamCard({
 
 export function About() {
   const copy = useCopy();
-  const featured = data.team.find((m) => m.featured) ?? data.team[0];
-  const others = data.team.filter((m) => m.id !== featured?.id);
 
   return (
-    <section id="about" className="border-b border-border py-28 md:py-36">
-      <div className="mx-auto max-w-7xl px-5 md:px-10">
-        <Reveal className="mb-16 max-w-2xl">
-          <p className="label-mono mb-3 text-dim">{copy.about.eyebrow}</p>
-          <h2 className="font-display text-[2rem] text-foreground md:text-[2.75rem]">
+    <section
+      id="about"
+      className="relative overflow-hidden border-b border-border py-20 sm:py-24 md:py-32"
+    >
+      <AmbientField tone="gold" className="opacity-30 sm:opacity-40" />
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 md:px-10">
+        <Reveal className="mb-10 max-w-xl sm:mb-12 md:mb-14">
+          <h2 className="font-display text-[clamp(1.65rem,5vw,2.4rem)] leading-[1.15] text-foreground">
             {copy.about.title}
           </h2>
-          <p className="mt-5 max-w-xl text-[15px] leading-[1.85] text-muted md:text-base">
+          <p className="mt-4 text-[14px] leading-[1.85] text-muted sm:text-[15px]">
             {copy.about.description}
           </p>
         </Reveal>
 
-        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:grid-rows-2">
-          {featured ? (
-            <Reveal className="lg:row-span-2">
-              <TeamCard member={featured} featured />
-            </Reveal>
-          ) : null}
-          {others.map((member, i) => (
-            <Reveal key={member.id} delay={0.06 + i * 0.04}>
+        <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2 sm:gap-5 md:gap-6">
+          {data.team.map((member, i) => (
+            <Reveal key={member.id} delay={i * 0.05}>
               <TeamCard member={member} />
             </Reveal>
           ))}

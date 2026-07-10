@@ -2,16 +2,9 @@
 
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { X } from "lucide-react";
-import site from "@asal/data/site.json";
-import type { SiteConfig } from "@asal/types";
-
-const siteData = site as SiteConfig;
-
-const extraNav = [
-  { id: "faq", label: "سوالات", href: "/faq" },
-  { id: "contact", label: "تماس", href: "/contact" },
-];
+import { X } from "@phosphor-icons/react";
+import { useSiteSettings } from "@asal/context/SiteSettingsContext";
+import { extraNav, resolveNavHref } from "@asal/lib/nav";
 
 interface MobileMenuProps {
   open: boolean;
@@ -19,6 +12,7 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const siteData = useSiteSettings();
   const navItems = [...siteData.nav, ...extraNav];
 
   return (
@@ -29,44 +23,53 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-void/95 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-[60] bg-void/80 backdrop-blur-sm lg:hidden"
             onClick={onClose}
           />
           <motion.nav
-            initial={{ x: "-100%" }}
+            initial={{ x: "100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
+            exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-            className="fixed end-0 top-0 z-50 flex h-full w-72 flex-col bg-surface p-6 shadow-2xl md:hidden"
+            className="fixed inset-y-0 end-0 z-[70] flex w-[min(100vw-3rem,20rem)] flex-col border-s border-white/8 bg-surface p-6 shadow-2xl lg:hidden"
+            aria-label="منوی موبایل"
           >
             <div className="mb-8 flex items-center justify-between">
-              <span className="font-bold text-primary">{siteData.brand.name}</span>
+              <span className="font-display text-lg text-primary">
+                {siteData.brand.name}
+              </span>
               <button
                 type="button"
                 onClick={onClose}
-                className="text-secondary hover:text-gold"
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-secondary hover:bg-white/5 hover:text-gold"
                 aria-label="بستن"
               >
-                <X size={22} strokeWidth={1.5} />
+                <X size={22} />
               </button>
             </div>
-            <ul className="flex flex-col gap-4">
-              {navItems.map((item, i) => (
-                <motion.li
-                  key={item.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <Link
-                    href={item.href}
-                    onClick={onClose}
-                    className="text-lg text-primary hover:text-gold"
+            <ul className="flex flex-col gap-1">
+              {navItems.map((item, i) => {
+                const href =
+                  "href" in item && item.href.startsWith("/hajiasal")
+                    ? item.href
+                    : resolveNavHref(item.href);
+                return (
+                  <motion.li
+                    key={item.id}
+                    initial={{ opacity: 0, x: 16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.04 }}
                   >
-                    {item.label}
-                  </Link>
-                </motion.li>
-              ))}
+                    <Link
+                      href={href}
+                      onClick={onClose}
+                      className="block rounded-xl px-3 py-3 text-base text-primary transition-colors hover:bg-white/5 hover:text-gold"
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.li>
+                );
+              })}
             </ul>
           </motion.nav>
         </>

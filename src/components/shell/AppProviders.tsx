@@ -5,7 +5,7 @@ import { PrefsProvider } from "@/context/PrefsContext";
 import { ContextAwareProvider } from "@/context/ContextAwareContext";
 import { ToastProvider } from "@/components/ui/Toast";
 import { BootstrapEffects } from "@/components/shell/BootstrapEffects";
-import { FloatingAssistant } from "@/components/sections/FloatingAssistant";
+import { StudioBackdrop } from "@/components/shell/StudioBackdrop";
 
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
@@ -13,8 +13,8 @@ export function AppProviders({ children }: { children: ReactNode }) {
       <ContextAwareProvider>
         <ToastProvider>
           <BootstrapEffects />
-          {children}
-          <FloatingAssistant />
+          <StudioBackdrop />
+          <div className="relative z-[1]">{children}</div>
         </ToastProvider>
       </ContextAwareProvider>
     </PrefsProvider>

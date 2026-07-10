@@ -14,17 +14,15 @@
     "secondary": "نمونه‌کارها"
   },
   "clients": [
-    { "name": "مرهم", "href": "https://paziresh24.com", "logo": "/clients/marham.svg" },
+    { "name": "مرهم", "href": "https://marham.paziresh24.com", "logo": "/clients/marham.svg" },
     { "name": "پذیرش ۲۴", "href": "https://paziresh24.com", "logo": "/clients/paziresh24.svg" },
     { "name": "حاجی عسل", "href": "/hajiasal", "logo": "/clients/hajiasal.svg" }
   ],
   "nav": [
-    { "id": "home", "label": "خانه", "href": "#home" },
-    { "id": "skills", "label": "مهارت‌ها", "href": "#skills" },
-    { "id": "work", "label": "کارها", "href": "#work" },
-    { "id": "terminal", "label": "CLI", "href": "#terminal" },
-    { "id": "about", "label": "تیم", "href": "#about" },
-    { "id": "contact", "label": "ارتباط", "href": "#contact" }
+    { "id": "home", "label": "خانه", "href": "/" },
+    { "id": "work", "label": "کارها", "href": "/#work" },
+    { "id": "about", "label": "تیم", "href": "/#about" },
+    { "id": "contact", "label": "ارتباط", "href": "/#contact" }
   ],
   "footerNav": [],
   "stack": [
@@ -40,56 +38,26 @@
     {
       "id": "architecture",
       "title": "معماری سیستم",
-      "description": "طراحی لایه‌ها، مرزهای ماژول و جریان داده برای مقیاس واقعی.",
-      "icon": "architecture",
-      "span": "wide",
-      "tags": ["DDD seams", "API contracts"],
-      "proof": "مرهم · production"
+      "description": "لایه‌ها، مرز ماژول و جریان داده طوری چیده می‌شود که بعداً نشکنید.",
+      "icon": "architecture"
     },
     {
       "id": "infra",
       "title": "زیرساخت و مهاجرت",
-      "description": "جابه‌جایی IP، دپلوی بدون قطعی، مانیتورینگ و پایداری.",
-      "icon": "server",
-      "span": "default",
-      "tags": ["zero-downtime", "ops"],
-      "proof": "۹۹.۹٪ هدف uptime"
-    },
-    {
-      "id": "api",
-      "title": "یکپارچه‌سازی API",
-      "description": "اتصال سرویس‌های پیچیده با error handling و قراردادهای واضح.",
-      "icon": "api",
-      "span": "default",
-      "tags": ["REST", "auth"],
-      "proof": "type-safe clients"
-    },
-    {
-      "id": "repo",
-      "title": "ستاپ حرفه‌ای GitHub",
-      "description": "ساختار ریپو، CI، و بهداشت کد برای تیم‌های در حال رشد.",
-      "icon": "git",
-      "span": "tall",
-      "tags": ["CI", "reviews"],
-      "proof": "ship-ready repos"
+      "description": "دپلوی، جابه‌جایی سرور و مانیتورینگ بدون قطعی برای کاربر.",
+      "icon": "server"
     },
     {
       "id": "frontend",
-      "title": "فرانت‌اند لوکس",
-      "description": "UI دراماتیک با ۶۰fps، تصاویر بهینه و تجربهٔ موبایل بی‌نقص.",
-      "icon": "design",
-      "span": "default",
-      "tags": ["Motion", "a11y"],
-      "proof": "حاجی‌عسل"
+      "title": "فرانت‌اند محصول",
+      "description": "UI سریع، خوانا و موبایل‌محور؛ حس لوکس بدون سنگینی.",
+      "icon": "design"
     },
     {
-      "id": "snippet",
-      "title": "نمونه معماری",
-      "description": "الگوی مرز ماژول و قرارداد API که در پروژه‌های واقعی استفاده می‌کنیم.",
-      "icon": "code",
-      "span": "wide",
-      "tags": ["TypeScript"],
-      "visual": "snippet"
+      "id": "repo",
+      "title": "تحویل و ریپو",
+      "description": "ساختار GitHub، CI و کد تمیز که تیمتان بتواند ادامه دهد.",
+      "icon": "git"
     }
   ],
   "team": [
@@ -98,10 +66,13 @@
       "name": "محمد محمدی",
       "role": "هم‌بنیان‌گذار · فرانت‌اند و محصول",
       "bio": "مهندس محصول در پذیرش ۲۴. سازنده مرهم و چند پلتفرم live در مقیاس واقعی.",
-      "image": "",
+      "image": "/team/mohammad.svg",
+      "imagePosition": "center center",
       "initials": "م‌م",
+      "featured": true,
       "links": {
-        "telegram": "https://t.me/Mamad3"
+        "telegram": "https://t.me/Mamad3",
+        "github": "https://github.com/S-Mamad"
       }
     },
     {
@@ -109,7 +80,7 @@
       "name": "امیر حاجی عابدی",
       "role": "هم‌بنیان‌گذار · برند و دیزاین",
       "bio": "هویت بصری و خروجی دیجیتال. از لوگو و UI تا پکیج کامل برای مشتری.",
-      "image": "",
+      "image": "/team/amir.svg",
       "initials": "ا‌ح",
       "links": {
         "telegram": "https://t.me/RaxinShop"
@@ -118,6 +89,7 @@
   ],
   "links": [
     { "id": "telegram", "label": "@Mamad3", "href": "https://t.me/Mamad3" },
+    { "id": "github", "label": "S-Mamad", "href": "https://github.com/S-Mamad" },
     { "id": "channel", "label": "@RaxinShop", "href": "https://t.me/RaxinShop" },
     { "id": "email", "label": "hello@raxinshop.ir", "href": "mailto:hello@raxinshop.ir" }
   ]

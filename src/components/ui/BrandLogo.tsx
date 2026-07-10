@@ -30,7 +30,7 @@ export function BrandLogo({ className, mono = false }: BrandLogoProps) {
 
 export function BrandLink({ className }: { className?: string }) {
   return (
-    <Link href="#home" className={className}>
+    <Link href="/" className={className}>
       <BrandLogo />
     </Link>
   );

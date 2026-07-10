@@ -150,19 +150,23 @@ export function MobileMenu() {
                 transition={{ delay: 0.35 }}
                 className="mt-4 flex gap-6"
               >
-                {data.links.map((link) => (
-                  <a
-                    key={link.id}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    dir="ltr"
-                    onClick={() => setOpen(false)}
-                    className="font-mono text-sm text-muted transition-colors hover:text-accent"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                {data.links.map((link) => {
+                  const isMailto = link.href.startsWith("mailto:");
+                  return (
+                    <a
+                      key={link.id}
+                      href={link.href}
+                      {...(isMailto
+                        ? {}
+                        : { target: "_blank", rel: "noopener noreferrer" })}
+                      dir="ltr"
+                      onClick={() => setOpen(false)}
+                      className="font-mono text-sm text-muted transition-colors hover:text-accent"
+                    >
+                      {link.label}
+                    </a>
+                  );
+                })}
               </motion.div>
             </div>
           </motion.div>

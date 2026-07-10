@@ -82,7 +82,7 @@ export default function RootLayout({
       dir="rtl"
       className={`${vazirmatn.variable} ${jetbrains.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-void text-foreground">
+      <body className="relative min-h-full bg-transparent text-foreground">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[100] focus:rounded focus:border focus:border-accent focus:bg-void focus:px-4 focus:py-2 focus:text-sm focus:text-foreground"

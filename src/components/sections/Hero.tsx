@@ -1,102 +1,87 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { ArrowLeft } from "@phosphor-icons/react";
-import { motion, useReducedMotion } from "motion/react";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "motion/react";
+import { useRef } from "react";
+import Link from "next/link";
 import { useCopy } from "@/hooks/useCopy";
 import { usePrefs } from "@/context/PrefsContext";
-import { useContextAware } from "@/context/ContextAwareContext";
-import { MagneticButton } from "@/components/ui/MagneticButton";
-import { Button } from "@/components/ui/Button";
-import { HeroGrid } from "@/components/sections/HeroGrid";
-import { cn } from "@/lib/utils";
+import { TypewriterLine } from "@/components/ui/TypewriterLine";
+import { AmbientField } from "@/components/ui/AmbientField";
+import { HeroCodeStage } from "@/components/sections/HeroCodeStage";
 
 const ease = [0.32, 0.72, 0, 1] as const;
 
-function FadeUp({
-  children,
-  delay = 0,
-  className,
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const reduceMotion = useReducedMotion();
-  const { forceReducedMotion } = usePrefs();
-  const { heavyEffectsOff } = useContextAware();
-  const reduce = reduceMotion || forceReducedMotion || heavyEffectsOff;
-
-  if (reduce) {
-    return <div className={className}>{children}</div>;
-  }
-
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, delay, ease }}
-    >
-      {children}
-    </motion.div>
-  );
-}
+const ctaBase =
+  "inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-[13px] font-medium transition-colors duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-void active:scale-[0.98] sm:h-12 sm:w-auto sm:gap-2.5 sm:px-6 sm:text-sm";
 
 export function Hero() {
   const copy = useCopy();
-  const { mode } = usePrefs();
+  const { forceReducedMotion } = usePrefs();
+  const reduceMotion = useReducedMotion() || forceReducedMotion;
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0.55]);
 
   return (
     <section
+      ref={sectionRef}
       id="home"
-      className="relative flex min-h-[100dvh] items-center overflow-hidden border-b border-border pt-24 pb-20 md:pb-28"
+      className="relative z-[1] flex min-h-[100dvh] items-center overflow-hidden"
     >
-      <HeroGrid />
+      <AmbientField tone="mixed" className="opacity-40 sm:opacity-55" />
 
-      <div className="relative z-[var(--z-content)] mx-auto w-full max-w-5xl px-5 text-center md:px-10">
-        <FadeUp>
-          <p className="label-mono mb-6 text-dim">{copy.hero.brandLine}</p>
-        </FadeUp>
-
-        <FadeUp delay={0.06}>
-          <p className="font-display text-[clamp(2.8rem,8vw,5.5rem)] tracking-tight text-foreground">
-            راکسین‌شاپ
-          </p>
-        </FadeUp>
-
-        <FadeUp delay={0.12} key={mode}>
-          <h1 className="mt-4 font-display text-[clamp(1.6rem,4vw,2.75rem)]">
-            <span className="text-mask-kinetic">{copy.hero.title}</span>
-            <span className="mt-2 block text-accent">{copy.hero.highlight}</span>
-          </h1>
-        </FadeUp>
-
-        <FadeUp delay={0.18} key={`desc-${mode}`}>
-          <p
-            className={cn(
-              "mx-auto mt-6 max-w-prose text-[15px] leading-[1.85] text-muted md:text-base",
-            )}
-          >
-            {copy.hero.description}
-          </p>
-        </FadeUp>
-
-        <FadeUp
-          delay={0.24}
-          className="mt-10 flex flex-wrap items-center justify-center gap-3"
+      <motion.div
+        style={reduceMotion ? undefined : { opacity: contentOpacity }}
+        className="relative z-[var(--z-content)] mx-auto grid w-full max-w-7xl items-center gap-8 px-4 pb-14 pt-24 sm:gap-10 sm:px-6 sm:pb-16 sm:pt-28 md:grid-cols-2 md:gap-10 md:px-10 md:pb-20 lg:gap-14"
+      >
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease }}
+          className="mx-auto w-full max-w-xl text-center md:mx-0 md:text-start"
         >
-          <MagneticButton
-            href="#contact"
-            trailingIcon={<ArrowLeft className="h-4 w-4" weight="bold" />}
-          >
-            {copy.hero.primaryCta}
-          </MagneticButton>
-          <Button href="#work" variant="outline" size="lg">
-            {copy.hero.secondaryCta}
-          </Button>
-        </FadeUp>
-      </div>
+          <h1 className="font-display text-[clamp(2.15rem,9vw,4.75rem)] leading-[1.08] tracking-tight text-foreground">
+            راکسین‌شاپ
+          </h1>
+
+          <p className="mt-4 font-display text-[clamp(1.05rem,3.8vw,1.65rem)] leading-[1.3] text-accent-bright sm:mt-5">
+            {copy.hero.title} {copy.hero.highlight}
+          </p>
+
+          <TypewriterLine className="mx-auto mt-4 max-w-[28ch] sm:mt-5 sm:max-w-[34ch] md:mx-0" />
+
+          <div className="mt-8 flex flex-col gap-2.5 sm:mt-9 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3 md:justify-start">
+            <Link
+              href="#contact"
+              className={`${ctaBase} group border border-accent/35 bg-accent text-void hover:bg-accent-bright`}
+            >
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-void/10 transition-transform duration-300 group-hover:-translate-x-0.5">
+                <ArrowLeft className="h-3.5 w-3.5" weight="bold" />
+              </span>
+              {copy.hero.primaryCta}
+            </Link>
+            <Link
+              href="#work"
+              className={`${ctaBase} border border-border-bright text-foreground hover:border-accent/40 hover:text-accent`}
+            >
+              {copy.hero.secondaryCta}
+            </Link>
+          </div>
+        </motion.div>
+
+        <div className="relative w-full">
+          <HeroCodeStage />
+        </div>
+      </motion.div>
     </section>
   );
 }

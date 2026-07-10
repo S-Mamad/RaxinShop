@@ -30,7 +30,7 @@ export default function Home() {
       />
       <ScrollProgress />
       <Header />
-      <main id="main">
+      <main id="main" className="w-full max-w-full overflow-x-hidden">
         <HomeSections />
       </main>
       <Footer />

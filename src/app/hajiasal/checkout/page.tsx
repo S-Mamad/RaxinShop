@@ -1,18 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check } from "lucide-react";
-import { checkoutSchema, type CheckoutSchemaType } from "@asal/lib/validations/checkout";
+import { Check } from "@phosphor-icons/react";
+import {
+  checkoutSchema,
+  type CheckoutSchemaType,
+} from "@asal/lib/validations/checkout";
 import { Input } from "@asal/components/ui/Input";
 import { Button } from "@asal/components/ui/Button";
 import { CartSummary } from "@asal/components/cart/CartSummary";
 import { CartItemRow } from "@asal/components/cart/CartItem";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
+import { PaymentMethodSelector } from "@asal/components/checkout/PaymentMethodSelector";
+import type { PaymentMethod } from "@asal/components/checkout/PaymentMethodSelector";
+import {
+  ShippingMethodSelector,
+  type ShippingMethod,
+  type ShippingOption,
+} from "@asal/components/checkout/ShippingMethodSelector";
 import { useCartStore } from "@asal/store/cart";
 import { cn } from "@asal/lib/utils";
+import { hajiasalPath } from "@asal/lib/paths";
+import site from "@asal/data/site.json";
+import type { SiteConfig } from "@asal/types";
+
+const siteData = site as SiteConfig;
 
 const steps = [
   { id: 1, title: "اطلاعات تماس" },
@@ -28,12 +43,48 @@ export default function CheckoutPage() {
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
+  const [shippingMethod, setShippingMethod] =
+    useState<ShippingMethod>("standard");
 
   const items = useCartStore((s) => s.items);
   const subtotal = useCartStore((s) => s.getSubtotal());
-  const shipping = useCartStore((s) => s.getShippingCost());
-  const total = subtotal + shipping - discount;
   const clearCart = useCartStore((s) => s.clearCart);
+
+  const shippingOptions: ShippingOption[] = useMemo(() => {
+    const free =
+      subtotal >= siteData.freeShippingThreshold
+        ? 0
+        : siteData.shippingCost;
+    return [
+      {
+        id: "standard",
+        label: "ارسال عادی",
+        description: "پست پیشتاز با بسته‌بندی ضدضربه",
+        cost: free,
+        eta: "۲ تا ۵ روز کاری",
+      },
+      {
+        id: "express",
+        label: "ارسال سریع",
+        description: "پیک یا تیپاکس در مراکز استان",
+        cost: free === 0 ? 0 : siteData.shippingCost + 35000,
+        eta: "۱ تا ۲ روز کاری",
+      },
+      {
+        id: "pickup",
+        label: "تحویل حضوری",
+        description: "مراجعه به آدرس فروشگاه پس از هماهنگی",
+        cost: 0,
+        eta: "هماهنگی تلفنی",
+      },
+    ];
+  }, [subtotal]);
+
+  const shipping =
+    shippingOptions.find((o) => o.id === shippingMethod)?.cost ??
+    siteData.shippingCost;
+  const total = Math.max(0, subtotal + shipping - discount);
 
   const {
     register,
@@ -58,7 +109,7 @@ export default function CheckoutPage() {
     return (
       <div className="mx-auto max-w-lg px-4 py-20 text-center">
         <p className="mb-6 text-secondary">سبد خرید شما خالی است.</p>
-        <Button href="/hajiasal/shop">رفتن به فروشگاه</Button>
+        <Button href={hajiasalPath("/shop")}>رفتن به فروشگاه</Button>
       </div>
     );
   }
@@ -68,7 +119,12 @@ export default function CheckoutPage() {
       const valid = await trigger(["fullName", "phone"]);
       if (valid) setStep(2);
     } else if (step === 2) {
-      const valid = await trigger(["province", "city", "address", "postalCode"]);
+      const valid = await trigger([
+        "province",
+        "city",
+        "address",
+        "postalCode",
+      ]);
       if (valid) setStep(3);
     }
   };
@@ -109,6 +165,8 @@ export default function CheckoutPage() {
           shipping,
           total,
           couponCode: discount > 0 ? couponCode : undefined,
+          paymentMethod,
+          shippingMethod,
         }),
       });
 
@@ -118,12 +176,29 @@ export default function CheckoutPage() {
         throw new Error(result.message || "خطا در پردازش سفارش");
       }
 
+      if (paymentMethod === "online" && result.orderId) {
+        const payRes = await fetch("/api/checkout/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: result.orderId }),
+        });
+        const pay = await payRes.json();
+        if (payRes.ok && pay.redirectUrl) {
+          clearCart();
+          window.location.href = pay.redirectUrl as string;
+          return;
+        }
+        throw new Error(
+          pay.message || "انتقال به درگاه پرداخت ممکن نشد. روش دیگری انتخاب کنید.",
+        );
+      }
+
       clearCart();
       const params = new URLSearchParams({
         orderId: result.orderId,
         tracking: result.trackingCode ?? "",
       });
-      router.push(`/checkout/success?${params.toString()}`);
+      router.push(`${hajiasalPath("/checkout/success")}?${params.toString()}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "خطای ناشناخته");
     } finally {
@@ -132,10 +207,10 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 md:px-8 md:py-14">
-      <SectionHeading title="تکمیل خرید" className="mb-8" />
+    <div className="mx-auto max-w-3xl px-4 py-8 md:px-8 md:py-14">
+      <SectionHeading title="تکمیل خرید" className="mb-6 md:mb-8" />
 
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between md:mb-8">
         {steps.map((s, i) => (
           <div key={s.id} className="flex flex-1 items-center">
             <div className="flex flex-col items-center gap-1">
@@ -148,7 +223,7 @@ export default function CheckoutPage() {
                 )}
               >
                 {step > s.id ? (
-                  <Check size={16} strokeWidth={2} />
+                  <Check size={16} weight="bold" />
                 ) : (
                   s.id.toLocaleString("fa-IR")
                 )}
@@ -171,7 +246,7 @@ export default function CheckoutPage() {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="rounded-2xl border border-white/6 bg-surface p-5 md:p-8"
+        className="rounded-2xl border border-white/6 bg-surface p-4 sm:p-5 md:p-8"
       >
         {step === 1 ? (
           <div className="flex flex-col gap-4">
@@ -239,6 +314,18 @@ export default function CheckoutPage() {
                 {getValues("address")}
               </p>
             </div>
+
+            <ShippingMethodSelector
+              options={shippingOptions}
+              value={shippingMethod}
+              onChange={setShippingMethod}
+            />
+
+            <PaymentMethodSelector
+              value={paymentMethod}
+              onChange={setPaymentMethod}
+            />
+
             <CartItemRow />
             <div className="flex gap-2">
               <Input
@@ -253,20 +340,14 @@ export default function CheckoutPage() {
               </Button>
             </div>
             {couponMessage ? (
-              <p className={`text-xs ${discount > 0 ? "text-gold" : "text-secondary"}`}>
+              <p
+                className={`text-xs ${discount > 0 ? "text-gold" : "text-secondary"}`}
+              >
                 {couponMessage}
               </p>
             ) : null}
-            <CartSummary />
-            {discount > 0 ? (
-              <p className="text-sm text-gold">
-                تخفیف: {discount.toLocaleString("fa-IR")} تومان، مجموع:{" "}
-                {total.toLocaleString("fa-IR")} تومان
-              </p>
-            ) : null}
-            {error ? (
-              <p className="text-sm text-red-500">{error}</p>
-            ) : null}
+            <CartSummary shippingOverride={shipping} discount={discount} />
+            {error ? <p className="text-sm text-red-400">{error}</p> : null}
           </div>
         ) : null}
 
@@ -285,12 +366,12 @@ export default function CheckoutPage() {
               بعدی
             </Button>
           ) : (
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex-1"
-            >
-              {isSubmitting ? "در حال پردازش..." : "پرداخت و ثبت سفارش"}
+            <Button type="submit" disabled={isSubmitting} className="flex-1">
+              {isSubmitting
+                ? "در حال پردازش..."
+                : paymentMethod === "online"
+                  ? "پرداخت آنلاین"
+                  : "ثبت سفارش"}
             </Button>
           )}
         </div>
