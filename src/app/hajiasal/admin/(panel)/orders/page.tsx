@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Funnel, MagnifyingGlass } from "@phosphor-icons/react";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
 import { StatusBadge } from "@asal/components/admin/ui/StatusBadge";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import { Icon } from "@asal/components/ui/Icon";
 import type { OrderStatus } from "@asal/lib/server/orders";
 import { hajiasalPath } from "@asal/lib/paths";
@@ -102,12 +102,12 @@ export default function AdminOrdersPage() {
           {filteredOrders.length.toLocaleString("fa-IR")} سفارش
         </p>
         <div className="flex flex-wrap gap-2">
-          <Button type="button" variant="outline" onClick={() => void loadOrders()}>
+          <AdminButton type="button" variant="outline" onClick={() => void loadOrders()}>
             بروزرسانی
-          </Button>
-          <Button href="/api/admin/orders/export" variant="outline">
+          </AdminButton>
+          <AdminButton href="/api/admin/orders/export" variant="outline">
             خروجی CSV
-          </Button>
+          </AdminButton>
         </div>
       </div>
 

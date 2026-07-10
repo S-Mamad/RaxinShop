@@ -1,5 +1,9 @@
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { readJsonFile, writeJsonFile } from "./db";
+import {
+  memoryGetAdminSessions,
+  memorySetAdminSessions,
+} from "./memory-store";
 import { canUseFilesystemPersistence } from "./production";
 import { getSupabaseAdmin } from "./supabase";
 
@@ -59,13 +63,17 @@ export async function createAdminSession(meta?: {
     return { sessionId, token };
   }
 
-  if (!canUseFilesystemPersistence()) {
-    return null;
+  if (canUseFilesystemPersistence()) {
+    const sessions = await readJsonFile<AdminSession[]>(SESSIONS_FILE, []);
+    sessions.push(session);
+    await writeJsonFile(SESSIONS_FILE, sessions);
+    return { sessionId, token };
   }
 
-  const sessions = await readJsonFile<AdminSession[]>(SESSIONS_FILE, []);
-  sessions.push(session);
-  await writeJsonFile(SESSIONS_FILE, sessions);
+  // Demo / single-instance production without Supabase
+  const mem = memoryGetAdminSessions();
+  mem.push(session);
+  memorySetAdminSessions(mem);
   return { sessionId, token };
 }
 
@@ -89,10 +97,17 @@ export async function validateAdminSessionToken(
     return true;
   }
 
-  if (!canUseFilesystemPersistence()) return false;
+  if (canUseFilesystemPersistence()) {
+    const sessions = await readJsonFile<AdminSession[]>(SESSIONS_FILE, []);
+    const session = sessions.find(
+      (s) => s.tokenHash === tokenHash && !s.revokedAt,
+    );
+    if (!session) return false;
+    if (new Date(session.expiresAt).getTime() < Date.now()) return false;
+    return true;
+  }
 
-  const sessions = await readJsonFile<AdminSession[]>(SESSIONS_FILE, []);
-  const session = sessions.find(
+  const session = memoryGetAdminSessions().find(
     (s) => s.tokenHash === tokenHash && !s.revokedAt,
   );
   if (!session) return false;
@@ -112,15 +127,24 @@ export async function revokeAdminSession(token: string): Promise<void> {
     return;
   }
 
-  if (!canUseFilesystemPersistence()) return;
+  if (canUseFilesystemPersistence()) {
+    const sessions = await readJsonFile<AdminSession[]>(SESSIONS_FILE, []);
+    const updated = sessions.map((s) =>
+      s.tokenHash === tokenHash
+        ? { ...s, revokedAt: new Date().toISOString() }
+        : s,
+    );
+    await writeJsonFile(SESSIONS_FILE, updated);
+    return;
+  }
 
-  const sessions = await readJsonFile<AdminSession[]>(SESSIONS_FILE, []);
-  const updated = sessions.map((s) =>
-    s.tokenHash === tokenHash
-      ? { ...s, revokedAt: new Date().toISOString() }
-      : s,
+  memorySetAdminSessions(
+    memoryGetAdminSessions().map((s) =>
+      s.tokenHash === tokenHash
+        ? { ...s, revokedAt: new Date().toISOString() }
+        : s,
+    ),
   );
-  await writeJsonFile(SESSIONS_FILE, updated);
 }
 
 export function safeCompareTokens(a: string, b: string): boolean {

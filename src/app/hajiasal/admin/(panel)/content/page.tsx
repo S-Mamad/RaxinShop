@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@asal/components/ui/Input";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import type { SiteConfig } from "@asal/types";
 import { hajiasalPath } from "@asal/lib/paths";
 
@@ -123,9 +123,9 @@ export default function AdminContentPage() {
               })
             }
           />
-          <Button type="button" onClick={() => void save()} disabled={saving}>
+          <AdminButton type="button" onClick={() => void save()} disabled={saving}>
             {saving ? "در حال ذخیره..." : "ذخیره تغییرات"}
-          </Button>
+          </AdminButton>
         </div>
       ) : null}
     </div>

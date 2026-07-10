@@ -1,6 +1,11 @@
 import type { CartItem, CheckoutFormData } from "@asal/types";
 import { readJsonFile, writeJsonFile } from "./db";
-import { requireSupabaseInProduction } from "./production";
+import {
+  memoryGetOrders,
+  memoryPushOrder,
+  memoryUpdateOrder,
+} from "./memory-store";
+import { canUseFilesystemPersistence } from "./production";
 import { getSupabaseAdmin, isSupabaseConfigured } from "./supabase";
 
 export type OrderStatus =
@@ -76,10 +81,11 @@ export async function createOrder(input: {
 }): Promise<StoredOrder> {
   const discount = input.discount ?? 0;
   const now = new Date().toISOString();
+  const paymentMethod = input.paymentMethod ?? "cod";
   const order: StoredOrder = {
     id: generateOrderId(),
-    status: "pending_payment",
-    paymentMethod: input.paymentMethod ?? "cod",
+    status: paymentMethod === "cod" ? "confirmed" : "pending_payment",
+    paymentMethod,
     customer: input.customer,
     items: input.items,
     subtotal: input.subtotal,
@@ -117,11 +123,14 @@ export async function createOrder(input: {
     return order;
   }
 
-  requireSupabaseInProduction();
+  if (canUseFilesystemPersistence()) {
+    const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
+    orders.push(order);
+    await writeJsonFile(ORDERS_FILE, orders);
+    return order;
+  }
 
-  const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
-  orders.push(order);
-  await writeJsonFile(ORDERS_FILE, orders);
+  memoryPushOrder(order);
   return order;
 }
 
@@ -137,8 +146,12 @@ export async function getOrderById(orderId: string): Promise<StoredOrder | null>
     return mapRowToOrder(data);
   }
 
-  const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
-  return orders.find((o) => o.id === orderId) ?? null;
+  if (canUseFilesystemPersistence()) {
+    const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
+    return orders.find((o) => o.id === orderId) ?? null;
+  }
+
+  return memoryGetOrders<StoredOrder>().find((o) => o.id === orderId) ?? null;
 }
 
 export async function getOrderByTracking(
@@ -155,9 +168,17 @@ export async function getOrderByTracking(
     return mapRowToOrder(data);
   }
 
-  const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
+  if (canUseFilesystemPersistence()) {
+    const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
+    return (
+      orders.find(
+        (o) => o.trackingCode?.toUpperCase() === trackingCode.toUpperCase(),
+      ) ?? null
+    );
+  }
+
   return (
-    orders.find(
+    memoryGetOrders<StoredOrder>().find(
       (o) => o.trackingCode?.toUpperCase() === trackingCode.toUpperCase(),
     ) ?? null
   );
@@ -183,7 +204,10 @@ export async function getAllOrders(): Promise<StoredOrder[]> {
     if (error || !data) return [];
     return data.map(mapRowToOrder);
   }
-  return readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
+  if (canUseFilesystemPersistence()) {
+    return readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
+  }
+  return memoryGetOrders<StoredOrder>();
 }
 
 export async function getOrdersByUserId(userId: string): Promise<StoredOrder[]> {
@@ -198,8 +222,12 @@ export async function getOrdersByUserId(userId: string): Promise<StoredOrder[]> 
     return data.map(mapRowToOrder);
   }
 
-  const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
-  return orders.filter((o) => o.userId === userId);
+  if (canUseFilesystemPersistence()) {
+    const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
+    return orders.filter((o) => o.userId === userId);
+  }
+
+  return memoryGetOrders<StoredOrder>().filter((o) => o.userId === userId);
 }
 
 export async function updateOrderStatus(
@@ -219,14 +247,20 @@ export async function updateOrderStatus(
     return mapRowToOrder(data);
   }
 
-  const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
-  const idx = orders.findIndex((o) => o.id === orderId);
-  if (idx === -1) return null;
-  orders[idx] = { ...orders[idx], status, updatedAt: now };
-  await writeJsonFile(ORDERS_FILE, orders);
-  return orders[idx];
+  if (canUseFilesystemPersistence()) {
+    const orders = await readJsonFile<StoredOrder[]>(ORDERS_FILE, []);
+    const idx = orders.findIndex((o) => o.id === orderId);
+    if (idx === -1) return null;
+    orders[idx] = { ...orders[idx]!, status, updatedAt: now };
+    await writeJsonFile(ORDERS_FILE, orders);
+    return orders[idx]!;
+  }
+
+  return memoryUpdateOrder<StoredOrder>(orderId, { status, updatedAt: now });
 }
 
-export function getPersistenceMode(): "supabase" | "file" {
-  return isSupabaseConfigured() ? "supabase" : "file";
+export function getPersistenceMode(): "supabase" | "file" | "memory" {
+  if (isSupabaseConfigured()) return "supabase";
+  if (canUseFilesystemPersistence()) return "file";
+  return "memory";
 }

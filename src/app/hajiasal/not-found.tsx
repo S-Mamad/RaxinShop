@@ -1,4 +1,5 @@
 import { Button } from "@asal/components/ui/Button";
+import { hajiasalPath } from "@asal/lib/paths";
 
 export default function NotFound() {
   return (
@@ -9,8 +10,8 @@ export default function NotFound() {
         ممکن است آدرس اشتباه باشد یا صفحه حذف شده باشد.
       </p>
       <div className="flex gap-3">
-        <Button href="/">خانه</Button>
-        <Button href="/hajiasal/shop" variant="outline">
+        <Button href={hajiasalPath("/")}>خانه</Button>
+        <Button href={hajiasalPath("/shop")} variant="outline">
           فروشگاه
         </Button>
       </div>

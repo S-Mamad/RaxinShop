@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import { Input } from "@asal/components/ui/Input";
 import { hajiasalPath } from "@asal/lib/paths";
 
@@ -71,9 +71,9 @@ export default function AdminCategoriesPage() {
           onChange={(e) => setSlug(e.target.value)}
           className="max-w-xs"
         />
-        <Button type="button" onClick={() => void save()}>
+        <AdminButton type="button" onClick={() => void save()}>
           افزودن / ذخیره
-        </Button>
+        </AdminButton>
       </div>
 
       {loading ? <p className="text-sm text-slate-500">در حال بارگذاری...</p> : null}

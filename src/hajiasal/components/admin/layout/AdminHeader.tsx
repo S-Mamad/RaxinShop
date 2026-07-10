@@ -27,7 +27,19 @@ function getBreadcrumbs(pathname: string): { label: string; href?: string }[] {
     { label: "مدیریت", href: hajiasalPath("/admin/dashboard") },
   ];
 
-  if (pathname.includes("/admin/orders/") && pathname !== hajiasalPath("/admin/orders")) {
+  if (
+    pathname.includes("/admin/products/") &&
+    pathname !== hajiasalPath("/admin/products")
+  ) {
+    crumbs.push({ label: "محصولات", href: hajiasalPath("/admin/products") });
+    crumbs.push({ label: "ویرایش محصول" });
+    return crumbs;
+  }
+
+  if (
+    pathname.includes("/admin/orders/") &&
+    pathname !== hajiasalPath("/admin/orders")
+  ) {
     crumbs.push({ label: "سفارش‌ها", href: hajiasalPath("/admin/orders") });
     crumbs.push({ label: "جزئیات سفارش" });
     return crumbs;
@@ -44,8 +56,17 @@ function getBreadcrumbs(pathname: string): { label: string; href?: string }[] {
 }
 
 function getPageTitle(pathname: string): string {
-  if (pathname.includes("/admin/orders/") && pathname !== hajiasalPath("/admin/orders")) {
+  if (
+    pathname.includes("/admin/orders/") &&
+    pathname !== hajiasalPath("/admin/orders")
+  ) {
     return "جزئیات سفارش";
+  }
+  if (
+    pathname.includes("/admin/products/") &&
+    pathname !== hajiasalPath("/admin/products")
+  ) {
+    return "ویرایش محصول";
   }
   return PAGE_TITLES[pathname] ?? "پنل مدیریت";
 }
@@ -60,10 +81,13 @@ export function AdminHeader({ title }: AdminHeaderProps) {
   const pageTitle = title ?? getPageTitle(pathname);
 
   return (
-    <header className="border-b border-slate-200 bg-white px-6 py-4">
+    <header className="border-b border-slate-200 bg-white px-4 py-4 sm:px-6">
       <nav className="mb-2 flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
         {breadcrumbs.map((crumb, index) => (
-          <span key={`${crumb.label}-${index}`} className="flex items-center gap-1.5">
+          <span
+            key={`${crumb.label}-${index}`}
+            className="flex items-center gap-1.5"
+          >
             {index > 0 ? (
               <Icon icon={CaretLeft} size={12} className="text-slate-400" />
             ) : null}
@@ -77,7 +101,9 @@ export function AdminHeader({ title }: AdminHeaderProps) {
           </span>
         ))}
       </nav>
-      <h2 className="text-xl font-semibold text-slate-900">{pageTitle}</h2>
+      <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">
+        {pageTitle}
+      </h2>
     </header>
   );
 }

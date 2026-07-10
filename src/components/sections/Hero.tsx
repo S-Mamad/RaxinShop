@@ -12,7 +12,6 @@ import Link from "next/link";
 import { useCopy } from "@/hooks/useCopy";
 import { usePrefs } from "@/context/PrefsContext";
 import { TypewriterLine } from "@/components/ui/TypewriterLine";
-import { AmbientField } from "@/components/ui/AmbientField";
 import { HeroCodeStage } from "@/components/sections/HeroCodeStage";
 
 const ease = [0.32, 0.72, 0, 1] as const;
@@ -37,8 +36,6 @@ export function Hero() {
       id="home"
       className="relative z-[1] flex min-h-[100dvh] items-center overflow-hidden"
     >
-      <AmbientField tone="mixed" className="opacity-40 sm:opacity-55" />
-
       <motion.div
         style={reduceMotion ? undefined : { opacity: contentOpacity }}
         className="relative z-[var(--z-content)] mx-auto grid w-full max-w-7xl items-center gap-8 px-4 pb-14 pt-24 sm:gap-10 sm:px-6 sm:pb-16 sm:pt-28 md:grid-cols-2 md:gap-10 md:px-10 md:pb-20 lg:gap-14"

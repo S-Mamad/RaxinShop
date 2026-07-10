@@ -8,12 +8,6 @@ import { normalizePhone } from "@asal/lib/auth/phone";
 export async function POST(request: Request) {
   try {
     const session = getSessionFromRequest(request);
-    if (!session) {
-      return NextResponse.json(
-        { success: false, message: "برای ثبت سفارش باید وارد شوید" },
-        { status: 401 },
-      );
-    }
 
     const body = await request.json();
     const parsed = checkoutApiSchema.safeParse(body);
@@ -32,11 +26,24 @@ export async function POST(request: Request) {
     const { customer, items, subtotal, shipping, total } = parsed.data;
 
     const customerPhone = normalizePhone(customer.phone);
-    if (!customerPhone || customerPhone !== session.phone) {
+    if (!customerPhone) {
       return NextResponse.json(
-        { success: false, message: "شماره موبایل باید با حساب کاربری یکسان باشد" },
+        { success: false, message: "شماره موبایل نامعتبر است" },
         { status: 400 },
       );
+    }
+
+    if (session) {
+      const sessionPhone = normalizePhone(session.phone);
+      if (sessionPhone && customerPhone !== sessionPhone) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "شماره موبایل باید با حساب کاربری یکسان باشد",
+          },
+          { status: 400 },
+        );
+      }
     }
 
     const extra = body as {
@@ -73,7 +80,7 @@ export async function POST(request: Request) {
     // Never log or expose payment credentials
 
     const order = await createOrder({
-      customer,
+      customer: { ...customer, phone: customerPhone },
       items,
       subtotal,
       shipping,
@@ -81,7 +88,7 @@ export async function POST(request: Request) {
       couponCode,
       paymentMethod,
       shippingMethod,
-      userId: session.userId,
+      userId: session?.userId,
     });
 
     return NextResponse.json({

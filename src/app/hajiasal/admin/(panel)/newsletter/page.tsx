@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import type { NewsletterSubscriber } from "@asal/lib/server/newsletter";
 import { hajiasalPath } from "@asal/lib/paths";
 
@@ -58,12 +58,12 @@ export default function AdminNewsletterPage() {
           {subscribers.length.toLocaleString("fa-IR")} مشترک
         </p>
         <div className="flex gap-2">
-          <Button type="button" variant="outline" onClick={exportCsv}>
+          <AdminButton type="button" variant="outline" onClick={exportCsv}>
             خروجی CSV
-          </Button>
-          <Button type="button" variant="outline" onClick={() => void loadSubscribers()}>
+          </AdminButton>
+          <AdminButton type="button" variant="outline" onClick={() => void loadSubscribers()}>
             بروزرسانی
-          </Button>
+          </AdminButton>
         </div>
       </div>
 

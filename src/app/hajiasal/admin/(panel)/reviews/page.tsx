@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import type { Review } from "@asal/lib/server/reviews";
 import { hajiasalPath } from "@asal/lib/paths";
 
@@ -60,9 +60,9 @@ export default function AdminReviewsPage() {
         <p className="text-sm text-slate-500">
           {reviews.length.toLocaleString("fa-IR")} نظر
         </p>
-        <Button type="button" variant="outline" onClick={() => void loadReviews()}>
+        <AdminButton type="button" variant="outline" onClick={() => void loadReviews()}>
           بروزرسانی
-        </Button>
+        </AdminButton>
       </div>
 
       {error ? <p className="text-sm text-red-500">{error}</p> : null}
@@ -99,14 +99,14 @@ export default function AdminReviewsPage() {
             key: "status",
             header: "وضعیت",
             render: (row) => (
-              <Button
+              <AdminButton
                 type="button"
                 variant="outline"
                 onClick={() => void toggleApproved(row)}
                 className="text-xs"
               >
                 {row.verified ? "تأیید شده" : "در انتظار"}
-              </Button>
+              </AdminButton>
             ),
           },
         ]}

@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Input } from "@asal/components/ui/Input";
-import { Button } from "@asal/components/ui/Button";
-import { SectionHeading } from "@asal/components/ui/SectionHeading";
+import { ShieldCheck } from "@phosphor-icons/react";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import { hajiasalPath } from "@asal/lib/paths";
 
 export function AdminLogin() {
@@ -42,29 +41,39 @@ export function AdminLogin() {
   };
 
   return (
-    <div className="mx-auto max-w-md px-4 py-24 md:px-6 md:py-32">
-      <SectionHeading
-        title="پنل مدیریت"
-        subtitle="ورود با رمز عبور ادمین"
-        className="mb-8"
-      />
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6"
-      >
-        <Input
-          label="رمز عبور"
-          type="password"
-          dir="ltr"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          autoComplete="current-password"
-        />
-        {error ? <p className="text-sm text-red-500">{error}</p> : null}
-        <Button type="submit" disabled={loading || !password}>
-          {loading ? "در حال ورود..." : "ورود"}
-        </Button>
-      </form>
+    <div className="flex min-h-[100dvh] items-center justify-center bg-slate-100 px-4 py-16">
+      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <div className="mb-6 flex items-center gap-3">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+            <ShieldCheck size={22} weight="fill" />
+          </span>
+          <div>
+            <h1 className="text-xl font-semibold text-slate-900">پنل مدیریت</h1>
+            <p className="text-sm text-slate-500">حاجی عسل · ورود ادمین</p>
+          </div>
+        </div>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium text-slate-700">رمز عبور</span>
+            <input
+              type="password"
+              dir="ltr"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              className="h-11 rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-900 outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+            />
+          </label>
+          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+          <AdminButton
+            type="submit"
+            disabled={loading || !password}
+            className="w-full"
+          >
+            {loading ? "در حال ورود..." : "ورود"}
+          </AdminButton>
+        </form>
+      </div>
     </div>
   );
 }

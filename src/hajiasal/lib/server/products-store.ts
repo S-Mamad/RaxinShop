@@ -158,13 +158,19 @@ export async function searchProductsAsync(query: string): Promise<Product[]> {
   const q = query.trim().toLowerCase();
   if (!q) return [];
   const catalog = await getAllProductsAsync();
-  return catalog.filter(
-    (p) =>
-      p.title.toLowerCase().includes(q) ||
-      p.shortDescription.toLowerCase().includes(q) ||
-      p.categoryLabel.toLowerCase().includes(q) ||
-      p.longDescription.toLowerCase().includes(q),
-  );
+  return catalog.filter((p) => {
+    const haystack = [
+      p.title,
+      p.slug,
+      p.shortDescription,
+      p.categoryLabel,
+      p.longDescription,
+      p.category,
+    ]
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(q);
+  });
 }
 
 export async function updateProductAsync(

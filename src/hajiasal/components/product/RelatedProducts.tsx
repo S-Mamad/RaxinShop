@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import type { Product } from "@asal/types";
 import { getMinPrice } from "@asal/lib/products";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
@@ -38,7 +38,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-secondary transition-colors hover:border-gold/50 hover:text-gold"
               aria-label="قبلی"
             >
-              <ChevronRight size={18} strokeWidth={1.5} />
+              <CaretRight size={18} />
             </button>
             <button
               type="button"
@@ -46,7 +46,7 @@ export function RelatedProducts({ products }: RelatedProductsProps) {
               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-secondary transition-colors hover:border-gold/50 hover:text-gold"
               aria-label="بعدی"
             >
-              <ChevronLeft size={18} strokeWidth={1.5} />
+              <CaretLeft size={18} />
             </button>
           </div>
         </div>

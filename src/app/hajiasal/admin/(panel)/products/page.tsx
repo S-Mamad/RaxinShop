@@ -1,11 +1,11 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import { Icon } from "@asal/components/ui/Icon";
 import { getMinPrice } from "@asal/lib/products";
 import { hajiasalPath } from "@asal/lib/paths";
@@ -84,9 +84,9 @@ export default function AdminProductsPage() {
         <p className="text-sm text-slate-500">
           {filteredProducts.length.toLocaleString("fa-IR")} محصول
         </p>
-        <Button type="button" variant="outline" onClick={() => void loadProducts()}>
+        <AdminButton type="button" variant="outline" onClick={() => void loadProducts()}>
           بروزرسانی
-        </Button>
+        </AdminButton>
       </div>
 
       <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
@@ -156,7 +156,7 @@ export default function AdminProductsPage() {
             key: "stock",
             header: "موجودی",
             render: (row) => (
-              <button
+              <AdminButton
                 type="button"
                 onClick={() => void toggleStock(row)}
                 className={`rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${
@@ -166,7 +166,7 @@ export default function AdminProductsPage() {
                 }`}
               >
                 {row.inStock ? "موجود" : "ناموجود"}
-              </button>
+              </AdminButton>
             ),
           },
           {

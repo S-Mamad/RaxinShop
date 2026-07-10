@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import type { Product } from "@asal/types";
 import { hajiasalPath } from "@asal/lib/paths";
 
@@ -59,14 +59,14 @@ export default function AdminInventoryPage() {
             key: "stock",
             header: "موجودی",
             render: (r) => (
-              <Button
+              <AdminButton
                 type="button"
                 variant="outline"
                 onClick={() => void toggleStock(r)}
                 className="text-xs"
               >
                 {r.inStock ? "موجود" : "ناموجود"}
-              </Button>
+              </AdminButton>
             ),
           },
         ]}

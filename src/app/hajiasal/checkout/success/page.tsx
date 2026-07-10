@@ -2,8 +2,9 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle } from "@phosphor-icons/react";
 import { Button } from "@asal/components/ui/Button";
+import { hajiasalPath } from "@asal/lib/paths";
 
 function SuccessContent() {
   const searchParams = useSearchParams();
@@ -13,7 +14,7 @@ function SuccessContent() {
   return (
     <div className="mx-auto flex max-w-lg flex-col items-center px-4 py-20 text-center">
       <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gold-dim">
-        <CheckCircle size={32} strokeWidth={1.5} className="text-success" />
+        <CheckCircle size={32} weight="fill" className="text-success" />
       </div>
       <h1 className="mb-2 text-2xl font-bold text-primary">
         سفارش شما ثبت شد
@@ -39,12 +40,12 @@ function SuccessContent() {
       </p>
       <div className="mb-8 flex flex-col gap-2 sm:flex-row">
         {trackingCode ? (
-          <Button href={`/track-order`} variant="outline">
+          <Button href={hajiasalPath("/track-order")} variant="outline">
             پیگیری سفارش
           </Button>
         ) : null}
-        <Button href="/hajiasal/shop">ادامه خرید</Button>
-        <Button href="/" variant="outline">
+        <Button href={hajiasalPath("/shop")}>ادامه خرید</Button>
+        <Button href={hajiasalPath("/")} variant="outline">
           بازگشت به خانه
         </Button>
       </div>

@@ -12,7 +12,7 @@ import {
 import { StatCard } from "@asal/components/admin/ui/StatCard";
 import { StatusBadge } from "@asal/components/admin/ui/StatusBadge";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import type { OrderStatus } from "@asal/lib/server/orders";
 import type { ContactMessage } from "@asal/lib/server/newsletter";
 import { hajiasalPath } from "@asal/lib/paths";
@@ -71,9 +71,9 @@ export default function AdminDashboardPage() {
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-slate-500">نمای کلی فروشگاه</p>
-        <Button type="button" variant="outline" onClick={() => void loadData()}>
+        <AdminButton type="button" variant="outline" onClick={() => void loadData()}>
           بروزرسانی
-        </Button>
+        </AdminButton>
       </div>
 
       {error ? <p className="text-sm text-red-500">{error}</p> : null}

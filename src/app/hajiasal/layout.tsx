@@ -86,7 +86,8 @@ export default async function HajiasalLayout({
 
   return (
     <div
-      className={`${vazirmatn.variable} ${lalezar.variable} hajiasal-root flex min-h-full flex-col bg-void text-primary antialiased`}
+      className={`${vazirmatn.variable} ${lalezar.variable} hajiasal-root flex min-h-full flex-col overflow-x-hidden bg-void text-primary antialiased`}
+      dir="rtl"
     >
       <script
         type="application/ld+json"

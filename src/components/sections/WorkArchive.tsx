@@ -15,11 +15,6 @@ const capabilityData = capabilities as CapabilityItem[];
 export function WorkArchive() {
   return (
     <div className="relative overflow-hidden pb-20 pt-28 sm:pb-28 sm:pt-32 md:pb-36 md:pt-36">
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(143,164,196,0.12),transparent_55%)]"
-        aria-hidden
-      />
-
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 md:px-10">
         <Reveal className="mb-10 max-w-2xl sm:mb-14">
           <Link

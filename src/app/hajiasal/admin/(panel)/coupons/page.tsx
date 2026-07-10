@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import { Input } from "@asal/components/ui/Input";
 import type { Coupon } from "@asal/lib/server/coupons";
 import { hajiasalPath } from "@asal/lib/paths";
@@ -117,9 +117,9 @@ export default function AdminCouponsPage() {
             onChange={(e) => setMinOrder(e.target.value)}
             className="max-w-[120px]"
           />
-          <Button type="button" onClick={() => void createCoupon()}>
+          <AdminButton type="button" onClick={() => void createCoupon()}>
             افزودن
-          </Button>
+          </AdminButton>
         </div>
       </div>
 
@@ -127,9 +127,9 @@ export default function AdminCouponsPage() {
         <p className="text-sm text-slate-500">
           {coupons.length.toLocaleString("fa-IR")} کد تخفیف
         </p>
-        <Button type="button" variant="outline" onClick={() => void loadCoupons()}>
+        <AdminButton type="button" variant="outline" onClick={() => void loadCoupons()}>
           بروزرسانی
-        </Button>
+        </AdminButton>
       </div>
 
       {error ? <p className="text-sm text-red-500">{error}</p> : null}
@@ -172,26 +172,26 @@ export default function AdminCouponsPage() {
             key: "active",
             header: "فعال",
             render: (row) => (
-              <button
+              <AdminButton
                 type="button"
                 onClick={() => void toggleActive(row)}
                 className={row.active ? "text-green-600" : "text-slate-400"}
               >
                 {row.active ? "بله" : "خیر"}
-              </button>
+              </AdminButton>
             ),
           },
           {
             key: "actions",
             header: "",
             render: (row) => (
-              <button
+              <AdminButton
                 type="button"
                 onClick={() => void deleteCoupon(row.code)}
                 className="text-xs text-red-600 hover:underline"
               >
                 حذف
-              </button>
+              </AdminButton>
             ),
           },
         ]}

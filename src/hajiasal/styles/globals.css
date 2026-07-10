@@ -105,6 +105,15 @@ main {
     radial-gradient(at 0% 50%, rgba(212, 160, 86, 0.05) 0px, transparent 50%);
 }
 
+.hajiasal-root {
+  overflow-x: clip;
+}
+
+.hajiasal-root input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .gallery-frame {
   border-radius: 1rem;
   overflow: hidden;

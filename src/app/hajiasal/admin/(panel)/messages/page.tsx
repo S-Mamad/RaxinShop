@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import type { ContactMessage } from "@asal/lib/server/newsletter";
 import { hajiasalPath } from "@asal/lib/paths";
 
@@ -89,9 +89,9 @@ export default function AdminMessagesPage() {
         <p className="text-sm text-slate-500">
           {messages.length.toLocaleString("fa-IR")} پیام
         </p>
-        <Button type="button" variant="outline" onClick={() => void loadMessages()}>
+        <AdminButton type="button" variant="outline" onClick={() => void loadMessages()}>
           بروزرسانی
-        </Button>
+        </AdminButton>
       </div>
 
       {error ? <p className="text-sm text-red-500">{error}</p> : null}
@@ -107,7 +107,7 @@ export default function AdminMessagesPage() {
               key: "name",
               header: "فرستنده",
               render: (row) => (
-                <button
+                <AdminButton
                   type="button"
                   onClick={() => {
                     setSelected(row);
@@ -118,7 +118,7 @@ export default function AdminMessagesPage() {
                 >
                   <p className="font-medium">{row.name}</p>
                   <p className="text-xs text-slate-400">{row.subject}</p>
-                </button>
+                </AdminButton>
               ),
             },
             {
@@ -167,9 +167,9 @@ export default function AdminMessagesPage() {
                   className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-slate-400"
                 />
               </label>
-              <Button type="button" onClick={() => void saveNote()}>
+              <AdminButton type="button" onClick={() => void saveNote()}>
                 ذخیره یادداشت
-              </Button>
+              </AdminButton>
             </div>
           ) : (
             <p className="py-12 text-center text-sm text-slate-400">

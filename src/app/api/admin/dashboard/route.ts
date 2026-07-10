@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { isAdminRequestAuthenticatedAsync } from "@asal/lib/server/admin";
 import { getContactMessagesBySource } from "@asal/lib/server/newsletter";
 import { getAllOrders } from "@asal/lib/server/orders";
-import { getAllProducts } from "@asal/lib/products";
+import { getAllProductsAsync } from "@asal/lib/server/products-store";
 
 export async function GET(request: Request) {
   if (!(await isAdminRequestAuthenticatedAsync(request))) {
@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   const [orders, messages, products] = await Promise.all([
     getAllOrders(),
     getContactMessagesBySource("hajiasal"),
-    Promise.resolve(getAllProducts()),
+    getAllProductsAsync(),
   ]);
 
   const activeOrders = orders.filter((o) => o.status !== "cancelled");

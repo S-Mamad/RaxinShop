@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Reveal } from "@/components/ui/Reveal";
-import { AmbientField } from "@/components/ui/AmbientField";
 import { useCopy } from "@/hooks/useCopy";
 
 const data = site as SiteConfig;
@@ -91,12 +90,6 @@ export function Contact() {
 
   return (
     <section id="contact" className="relative overflow-hidden py-20 sm:py-28 md:py-36">
-      <AmbientField tone="steel" className="opacity-35 sm:opacity-50" />
-      <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-void/50"
-        aria-hidden
-      />
-
       <div className="relative mx-auto max-w-3xl px-4 sm:px-6 md:px-10">
         <Reveal className="text-center">
           <h2 className="font-display text-[clamp(1.65rem,5vw,2.75rem)] leading-[1.15] text-foreground">

@@ -27,56 +27,66 @@ const legalLinks = [
 export function Footer() {
   return (
     <footer className="border-t border-white/5 bg-void">
-      <div className="mx-auto max-w-7xl px-4 py-12 md:px-8 md:py-20">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:py-12 md:px-8 md:py-20">
+        <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
-            <h3 className="mb-3 font-display text-xl text-primary">
+            <h3 className="mb-2 font-display text-lg text-primary sm:mb-3 sm:text-xl">
               {siteData.brand.name}
             </h3>
             <p className="max-w-md text-sm leading-relaxed text-secondary">
               {siteData.brand.description}
             </p>
           </div>
-          <div>
-            <h4 className="mb-4 text-sm font-semibold text-primary">دسترسی سریع</h4>
-            <ul className="flex flex-col gap-2.5">
-              {footerLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-secondary transition-colors hover:text-gold"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+
+          <div className="grid grid-cols-2 gap-6 sm:contents">
+            <div>
+              <h4 className="mb-3 text-sm font-semibold text-primary sm:mb-4">
+                دسترسی سریع
+              </h4>
+              <ul className="flex flex-col gap-2 sm:gap-2.5">
+                {footerLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-secondary transition-colors hover:text-gold"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="mb-3 text-sm font-semibold text-primary sm:mb-4">
+                اعتماد و قوانین
+              </h4>
+              <ul className="flex flex-col gap-2 sm:gap-2.5">
+                {legalLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-secondary transition-colors hover:text-gold"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
+
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-primary">اعتماد و قوانین</h4>
-            <ul className="flex flex-col gap-2.5">
-              {legalLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-secondary transition-colors hover:text-gold"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="mb-4 text-sm font-semibold text-primary">تماس با ما</h4>
-            <ul className="flex flex-col gap-3 text-sm text-secondary">
+            <h4 className="mb-3 text-sm font-semibold text-primary sm:mb-4">
+              تماس با ما
+            </h4>
+            <ul className="flex flex-col gap-2.5 text-sm text-secondary sm:gap-3">
               <li className="flex items-center gap-2">
-                <Phone size={16} weight="light" className="text-gold" />
+                <Phone size={16} weight="light" className="shrink-0 text-gold" />
                 <span dir="ltr">{siteData.footer.phone}</span>
               </li>
-              <li className="flex items-center gap-2">
-                <Envelope size={16} weight="light" className="text-gold" />
-                <span>{siteData.footer.email}</span>
+              <li className="flex min-w-0 items-center gap-2">
+                <Envelope size={16} weight="light" className="shrink-0 text-gold" />
+                <span className="truncate">{siteData.footer.email}</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin
@@ -97,14 +107,14 @@ export function Footer() {
               </li>
             </ul>
             {/* اینماد: کد واقعی را از env/پنل جایگزین کنید */}
-            <div className="mt-6 flex h-20 w-20 items-center justify-center rounded-xl border border-dashed border-white/15 text-[10px] leading-tight text-dim">
+            <div className="mt-5 flex h-16 w-16 items-center justify-center rounded-xl border border-dashed border-white/15 text-[10px] leading-tight text-dim sm:mt-6 sm:h-20 sm:w-20">
               جای
               <br />
               اینماد
             </div>
           </div>
         </div>
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/5 pt-6 text-center text-xs text-dim sm:flex-row sm:text-start">
+        <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-white/5 pt-5 text-center text-xs text-dim sm:mt-10 sm:flex-row sm:gap-3 sm:pt-6 sm:text-start">
           <p>
             © {new Date().getFullYear()} {siteData.brand.name}. تمامی حقوق محفوظ
             است.

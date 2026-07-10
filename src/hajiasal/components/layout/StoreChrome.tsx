@@ -8,7 +8,8 @@ import { CartDrawer } from "@asal/components/cart/CartDrawer";
 import { CartLiveRegion } from "@asal/components/cart/CartLiveRegion";
 import { SiteSettingsProvider } from "@asal/context/SiteSettingsContext";
 
-const AUTH_ONLY = /^\/hajiasal\/(login|register|forgot-password)(\/|$)/;
+const BARE_CHROME =
+  /^\/hajiasal\/(login|register|forgot-password|admin|seller)(\/|$)/;
 
 interface StoreChromeProps {
   children: React.ReactNode;
@@ -17,9 +18,9 @@ interface StoreChromeProps {
 
 export function StoreChrome({ children, siteSettings }: StoreChromeProps) {
   const pathname = usePathname();
-  const isAuthOnly = AUTH_ONLY.test(pathname ?? "");
+  const isBare = BARE_CHROME.test(pathname ?? "");
 
-  if (isAuthOnly) {
+  if (isBare) {
     return (
       <SiteSettingsProvider settings={siteSettings}>
         {children}

@@ -5,7 +5,6 @@ import type { SiteConfig, TeamMember } from "@/types";
 import { Reveal } from "@/components/ui/Reveal";
 import { TeamImage } from "@/components/ui/TeamImage";
 import { TeamLinks } from "@/components/ui/TeamLinks";
-import { AmbientField } from "@/components/ui/AmbientField";
 import { useCopy } from "@/hooks/useCopy";
 
 const data = site as SiteConfig;
@@ -42,7 +41,6 @@ export function About() {
       id="about"
       className="relative overflow-hidden border-b border-border py-20 sm:py-24 md:py-32"
     >
-      <AmbientField tone="gold" className="opacity-30 sm:opacity-40" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 md:px-10">
         <Reveal className="mb-10 max-w-xl sm:mb-12 md:mb-14">
           <h2 className="font-display text-[clamp(1.65rem,5vw,2.4rem)] leading-[1.15] text-foreground">

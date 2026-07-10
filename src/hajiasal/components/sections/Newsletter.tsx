@@ -1,29 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { Send } from "lucide-react";
+import { PaperPlaneTilt } from "@phosphor-icons/react";
 import { SectionHeading } from "@asal/components/ui/SectionHeading";
 import { Reveal } from "@asal/components/ui/Reveal";
 import { Button } from "@asal/components/ui/Button";
-import { Input } from "@asal/components/ui/Input";
+import { cn } from "@asal/lib/utils";
 
 export function Newsletter() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
+    "idle",
+  );
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
+    setMessage("");
     try {
       const res = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email.trim() }),
       });
       const data = await res.json();
       setStatus(data.success ? "success" : "error");
-      setMessage(data.message);
+      setMessage(data.message ?? (data.success ? "ثبت شد" : "خطا در ثبت"));
       if (data.success) setEmail("");
     } catch {
       setStatus("error");
@@ -32,8 +35,8 @@ export function Newsletter() {
   };
 
   return (
-    <section className="border-t border-white/5 py-20 md:py-24">
-      <div className="mx-auto max-w-2xl px-4 text-center md:px-8">
+    <section className="border-t border-white/5 py-14 md:py-24">
+      <div className="mx-auto max-w-xl px-4 md:px-8">
         <Reveal>
           <SectionHeading
             title="خبرنامه حاجی عسل"
@@ -41,23 +44,43 @@ export function Newsletter() {
             align="center"
             className="mx-auto"
           />
-          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Input
+          <form
+            onSubmit={handleSubmit}
+            className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-stretch"
+          >
+            <label className="sr-only" htmlFor="newsletter-email">
+              ایمیل
+            </label>
+            <input
+              id="newsletter-email"
               type="email"
+              inputMode="email"
+              autoComplete="email"
               placeholder="ایمیل شما"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="flex-1"
+              dir="ltr"
+              className={cn(
+                "h-12 w-full flex-1 rounded-xl border border-white/8 bg-surface-elevated px-4 text-sm text-primary",
+                "placeholder:text-dim focus:border-gold/50 focus:outline-none focus:ring-1 focus:ring-gold/30",
+              )}
             />
-            <Button type="submit" disabled={status === "loading"} magnetic>
-              <Send size={16} strokeWidth={1.5} />
-              عضویت
+            <Button
+              type="submit"
+              disabled={status === "loading"}
+              className="h-12 w-full shrink-0 sm:w-auto sm:min-w-[7.5rem]"
+            >
+              <PaperPlaneTilt size={16} weight="fill" />
+              {status === "loading" ? "..." : "عضویت"}
             </Button>
           </form>
           {message ? (
             <p
-              className={`mt-3 text-sm ${status === "success" ? "text-gold" : "text-red-400"}`}
+              role="status"
+              className={`mt-3 text-center text-sm ${
+                status === "success" ? "text-gold" : "text-red-400"
+              }`}
             >
               {message}
             </p>

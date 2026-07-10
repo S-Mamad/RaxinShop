@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
-import { type ReactNode } from "react";
+import { type ReactNode, type MouseEventHandler } from "react";
 import { cn } from "@asal/lib/utils";
 import { useMagneticHover } from "@asal/hooks/useMagneticHover";
 
@@ -13,7 +13,7 @@ interface ButtonProps {
   magnetic?: boolean;
   disabled?: boolean;
   type?: "button" | "submit";
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLElement>;
   children: ReactNode;
   className?: string;
 }
@@ -67,14 +67,14 @@ export function Button({
           onMouseLeave={onMouseLeave}
           className="inline-block"
         >
-          <Link href={href} className={styles}>
+          <Link href={href} className={styles} onClick={onClick}>
             {content}
           </Link>
         </div>
       );
     }
     return (
-      <Link href={href} className={styles}>
+      <Link href={href} className={styles} onClick={onClick}>
         {content}
       </Link>
     );

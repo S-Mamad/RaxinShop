@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -26,20 +26,52 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const openCart = useCartStore((s) => s.openCart);
+  const closeCart = useCartStore((s) => s.closeCart);
+  const cartOpen = useCartStore((s) => s.isOpen);
   const itemCount = useCartStore((s) => s.getItemCount());
   const hasHydrated = useCartStore((s) => s._hasHydrated);
   const wishlistCount = useWishlistStore((s) => s.count());
 
   const iconBtn =
-    "flex h-9 w-9 items-center justify-center rounded-lg text-secondary transition-colors hover:bg-white/5 hover:text-gold";
+    "flex h-10 w-10 items-center justify-center rounded-xl text-secondary transition-colors hover:bg-white/5 hover:text-gold active:scale-95";
+
+  useEffect(() => {
+    setMobileOpen(false);
+    setSearchOpen(false);
+  }, [pathname]);
+
+  const openSearch = () => {
+    setMobileOpen(false);
+    closeCart();
+    setSearchOpen(true);
+  };
+
+  const openMobile = () => {
+    setSearchOpen(false);
+    closeCart();
+    setMobileOpen(true);
+  };
+
+  const handleOpenCart = () => {
+    setSearchOpen(false);
+    setMobileOpen(false);
+    openCart();
+  };
+
+  useEffect(() => {
+    if (cartOpen) {
+      setSearchOpen(false);
+      setMobileOpen(false);
+    }
+  }, [cartOpen]);
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-white/5 bg-[#141414]/95 backdrop-blur-xl">
-        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 md:px-8">
+      <header className="fixed inset-x-0 top-0 z-50 h-14 border-b border-white/5 bg-[#141414]/95 backdrop-blur-xl sm:h-16">
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-2 px-3 sm:px-4 md:px-8">
           <Link
             href={hajiasalPath()}
-            className="text-base font-bold tracking-tight text-primary md:text-lg"
+            className="min-w-0 truncate text-sm font-bold tracking-tight text-primary sm:text-base md:text-lg"
           >
             {siteData.brand.name}
           </Link>
@@ -67,10 +99,10 @@ export function Header() {
             })}
           </nav>
 
-          <div className="flex items-center gap-1">
+          <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
             <button
               type="button"
-              onClick={() => setSearchOpen(true)}
+              onClick={openSearch}
               className={iconBtn}
               aria-label="جستجو"
             >
@@ -88,10 +120,12 @@ export function Header() {
                 </span>
               ) : null}
             </Link>
-            <UserMenu scrolled={false} isHome />
+            <div className="hidden sm:block">
+              <UserMenu scrolled={false} isHome />
+            </div>
             <button
               type="button"
-              onClick={openCart}
+              onClick={handleOpenCart}
               className={cn("relative", iconBtn)}
               aria-label="سبد خرید"
             >
@@ -104,16 +138,17 @@ export function Header() {
             </button>
             <button
               type="button"
-              onClick={() => setMobileOpen(true)}
+              onClick={openMobile}
               className={cn(iconBtn, "lg:hidden")}
               aria-label="منو"
+              aria-expanded={mobileOpen}
             >
               <Icon icon={List} size={18} />
             </button>
           </div>
         </div>
       </header>
-      <div className="h-16" aria-hidden />
+      <div className="h-14 sm:h-16" aria-hidden />
       <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>

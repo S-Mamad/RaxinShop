@@ -5,10 +5,7 @@ import {
   parseSessionTokenEdge,
 } from "@asal/lib/auth/session-edge";
 
-const PROTECTED_PREFIXES = [
-  "/hajiasal/checkout",
-  "/hajiasal/account",
-];
+const PROTECTED_PREFIXES = ["/hajiasal/account"];
 
 function isProtected(pathname: string): boolean {
   return PROTECTED_PREFIXES.some(
@@ -19,7 +16,11 @@ function isProtected(pathname: string): boolean {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/hajiasal/admin")) {
+  // Admin/seller panel auth is enforced in route layouts + API cookies.
+  if (
+    pathname.startsWith("/hajiasal/admin") ||
+    pathname.startsWith("/hajiasal/seller")
+  ) {
     return NextResponse.next();
   }
 
@@ -38,9 +39,10 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/hajiasal/checkout/:path*",
     "/hajiasal/account/:path*",
     "/hajiasal/admin",
     "/hajiasal/admin/:path*",
+    "/hajiasal/seller",
+    "/hajiasal/seller/:path*",
   ],
 };

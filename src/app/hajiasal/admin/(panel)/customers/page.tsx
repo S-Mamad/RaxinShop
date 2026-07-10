@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@asal/components/admin/ui/DataTable";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import type { ProfileWithStats } from "@asal/lib/server/profiles";
 import { hajiasalPath } from "@asal/lib/paths";
 
@@ -42,9 +42,9 @@ export default function AdminCustomersPage() {
         <p className="text-sm text-slate-500">
           {customers.length.toLocaleString("fa-IR")} مشتری
         </p>
-        <Button type="button" variant="outline" onClick={() => void loadCustomers()}>
+        <AdminButton type="button" variant="outline" onClick={() => void loadCustomers()}>
           بروزرسانی
-        </Button>
+        </AdminButton>
       </div>
 
       {error ? <p className="text-sm text-red-500">{error}</p> : null}

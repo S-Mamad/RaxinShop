@@ -31,7 +31,7 @@ export function ProductCard({ product }: ProductCardProps) {
       transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
       className="group"
     >
-      <div className="overflow-hidden rounded-2xl border border-white/6 bg-surface transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-8px_rgba(212,160,86,0.15)]">
+      <div className="relative overflow-hidden rounded-2xl border border-white/6 bg-surface transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-8px_rgba(212,160,86,0.15)]">
         <Link href={hajiasalPath(`/product/${product.slug}`)} className="block">
           <div className="relative aspect-square overflow-hidden bg-surface-muted">
             <ProductImage
@@ -50,25 +50,6 @@ export function ProductCard({ product }: ProductCardProps) {
                 <Badge variant="out-of-stock">ناموجود</Badge>
               ) : null}
             </div>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                toggleWishlist(product.id);
-              }}
-              className={cn(
-                "absolute end-2 top-2 flex h-8 w-8 items-center justify-center rounded-full backdrop-blur-sm transition-all sm:end-3 sm:top-3 sm:h-9 sm:w-9",
-                isWishlisted
-                  ? "bg-gold text-void"
-                  : "bg-void/60 text-primary hover:bg-void/80",
-              )}
-              aria-label="علاقه‌مندی"
-            >
-              <Heart
-                size={16}
-                weight={isWishlisted ? "fill" : "regular"}
-              />
-            </button>
           </div>
           <div className="p-3 sm:p-4">
             <p className="mb-1 text-[11px] text-dim sm:text-xs">{product.categoryLabel}</p>
@@ -87,6 +68,19 @@ export function ProductCard({ product }: ProductCardProps) {
             />
           </div>
         </Link>
+        <button
+          type="button"
+          onClick={() => toggleWishlist(product.id)}
+          className={cn(
+            "absolute end-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full backdrop-blur-sm transition-all sm:end-3 sm:top-3 sm:h-9 sm:w-9",
+            isWishlisted
+              ? "bg-gold text-void"
+              : "bg-void/60 text-primary hover:bg-void/80",
+          )}
+          aria-label="علاقه‌مندی"
+        >
+          <Heart size={16} weight={isWishlisted ? "fill" : "regular"} />
+        </button>
       </div>
     </motion.article>
   );

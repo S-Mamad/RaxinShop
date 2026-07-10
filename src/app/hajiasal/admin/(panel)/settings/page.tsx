@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle, XCircle, WarningCircle } from "@phosphor-icons/react";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import { Input } from "@asal/components/ui/Input";
 import { Icon } from "@asal/components/ui/Icon";
 import { hajiasalPath } from "@asal/lib/paths";
@@ -107,9 +107,9 @@ export default function AdminSettingsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-slate-500">تنظیمات سیستم و وضعیت سرویس‌ها</p>
-        <Button type="button" variant="outline" onClick={() => void loadSettings()}>
+        <AdminButton type="button" variant="outline" onClick={() => void loadSettings()}>
           بروزرسانی
-        </Button>
+        </AdminButton>
       </div>
 
       {productionReady ? (
@@ -185,14 +185,14 @@ export default function AdminSettingsPage() {
               className="max-w-xs"
             />
           </label>
-          <Button
+          <AdminButton
             type="button"
             className="self-end"
             onClick={() => void saveShipping()}
             disabled={savingShipping}
           >
             {savingShipping ? "در حال ذخیره..." : "ذخیره ارسال"}
-          </Button>
+          </AdminButton>
         </div>
       </div>
 
@@ -201,14 +201,14 @@ export default function AdminSettingsPage() {
         <p className="mb-4 text-sm text-slate-500">
           با خروج، نشست ادمین از سرور حذف می‌شود.
         </p>
-        <Button
+        <AdminButton
           type="button"
           variant="outline"
           onClick={() => void logout()}
           disabled={loggingOut}
         >
           {loggingOut ? "در حال خروج..." : "خروج از پنل مدیریت"}
-        </Button>
+        </AdminButton>
       </div>
     </div>
   );

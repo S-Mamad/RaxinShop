@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowRight, Package } from "@phosphor-icons/react";
 import { StatusBadge } from "@asal/components/admin/ui/StatusBadge";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import { Icon } from "@asal/components/ui/Icon";
 import type { OrderStatus, StoredOrder } from "@asal/lib/server/orders";
 import { hajiasalPath } from "@asal/lib/paths";
@@ -80,9 +80,9 @@ export default function AdminOrderDetailPage() {
     return (
       <div className="space-y-4">
         <p className="text-sm text-red-500">{error || "سفارش یافت نشد"}</p>
-        <Button href={hajiasalPath("/admin/orders")} variant="outline">
+        <AdminButton href={hajiasalPath("/admin/orders")} variant="outline">
           بازگشت به لیست
-        </Button>
+        </AdminButton>
       </div>
     );
   }

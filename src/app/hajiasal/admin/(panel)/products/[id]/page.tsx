@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Button } from "@asal/components/ui/Button";
+import { AdminButton } from "@asal/components/admin/ui/AdminButton";
 import { Input } from "@asal/components/ui/Input";
 import { hajiasalPath } from "@asal/lib/paths";
 import type { Product, WeightOption } from "@asal/types";
@@ -191,9 +191,9 @@ export default function AdminProductEditPage() {
             جدید
           </label>
         </div>
-        <Button type="button" onClick={() => void save()} disabled={saving}>
+        <AdminButton type="button" onClick={() => void save()} disabled={saving}>
           {saving ? "در حال ذخیره..." : "ذخیره تغییرات"}
-        </Button>
+        </AdminButton>
       </div>
     </div>
   );

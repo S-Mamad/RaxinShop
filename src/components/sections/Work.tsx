@@ -28,10 +28,6 @@ export function Work() {
       id="work"
       className="relative overflow-hidden border-b border-border py-20 sm:py-28 md:py-36"
     >
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_0%,rgba(143,164,196,0.1),transparent_50%)]"
-        aria-hidden
-      />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 md:px-10">
         <Reveal className="mb-10 max-w-2xl sm:mb-12 md:mb-16">
           <h2 className="font-display text-[clamp(1.65rem,5vw,2.75rem)] leading-[1.15] text-foreground">

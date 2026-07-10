@@ -10,10 +10,10 @@ import {
   Check,
   Leaf,
   ShieldCheck,
-  Award,
+  Medal,
   Truck,
   Shield,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import type { Product, WeightOption } from "@asal/types";
 import { ProductGallery } from "@asal/components/product/ProductGallery";
 import { WeightSelector } from "@asal/components/product/WeightSelector";
@@ -33,7 +33,7 @@ const siteData = site as SiteConfig;
 const featureBadges = [
   { icon: Leaf, label: "۱۰۰٪ طبیعی" },
   { icon: ShieldCheck, label: "بدون افزودنی" },
-  { icon: Award, label: "دارای گواهی" },
+  { icon: Medal, label: "دارای گواهی" },
 ];
 
 interface ProductDetailClientProps {
@@ -125,7 +125,7 @@ export function ProductDetailClient({
                 key={label}
                 className="flex items-center gap-2 text-sm text-secondary"
               >
-                <Icon size={16} strokeWidth={1.5} className="text-gold" />
+                <Icon size={16} className="text-gold" />
                 <span>{label}</span>
               </div>
             ))}
@@ -139,7 +139,7 @@ export function ProductDetailClient({
 
           {product.inStock ? (
             <div className="flex items-center gap-2 text-sm text-success">
-              <Check size={16} strokeWidth={2} />
+              <Check size={16} weight="bold" />
               <span>موجود در انبار</span>
             </div>
           ) : null}
@@ -158,7 +158,7 @@ export function ProductDetailClient({
                 className="flex h-11 w-11 items-center justify-center text-secondary hover:text-primary"
                 aria-label="کاهش"
               >
-                <Minus size={16} strokeWidth={1.5} />
+                <Minus size={16} />
               </button>
               <span className="min-w-[2rem] text-center font-medium text-primary">
                 {quantity.toLocaleString("fa-IR")}
@@ -169,7 +169,7 @@ export function ProductDetailClient({
                 className="flex h-11 w-11 items-center justify-center text-secondary hover:text-primary"
                 aria-label="افزایش"
               >
-                <Plus size={16} strokeWidth={1.5} />
+                <Plus size={16} />
               </button>
             </div>
 
@@ -185,7 +185,7 @@ export function ProductDetailClient({
                 onClick={handleAddToCart}
                 className="w-full"
               >
-                <ShoppingBag size={18} strokeWidth={1.5} />
+                <ShoppingBag size={18} />
                 {product.inStock ? "افزودن به سبد خرید" : "ناموجود"}
               </Button>
             </motion.div>
@@ -193,11 +193,11 @@ export function ProductDetailClient({
 
           <div className="flex flex-wrap gap-6 border-t border-white/5 pt-4 text-xs text-secondary">
             <div className="flex items-center gap-2">
-              <Truck size={14} strokeWidth={1.5} className="text-gold" />
+              <Truck size={14} className="text-gold" />
               <span>{freeShippingLabel}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Shield size={14} strokeWidth={1.5} className="text-gold" />
+              <Shield size={14} className="text-gold" />
               <span>{siteData.trustItems[0]?.title ?? "ضمانت کیفیت"}</span>
             </div>
           </div>
